@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lumiose City Interactive Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #111;
+        font-family: "Segoe UI", sans-serif;
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+        border: 2px solid #333;
+      }
+      .panel {
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.4em;
+        user-select: none;
+      }
+      .panel label {
+        display: block;
+        margin-top: 4px;
+      }
+      .panel input,
+      .panel select {
+        width: 120px;
+        padding: 2px 5px;
+        margin-left: 4px;
+        font-size: 12px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: #222;
+        color: #fff;
+      }
+      .panel button {
+        margin: 4px 2px;
+        padding: 6px 10px;
+        background: #444;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .panel button.active {
+        background: #0a84ff;
+      }
+      .colorInput {
+        width: 40px;
+        padding: 0;
+        border: none;
+        margin-left: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      /**************************************************
+       * 🧭 CONFIGURATION
+       **************************************************/
+      const IMAGE_URL = "Lumiose_City_Day.png";
+      const IMAGE_WIDTH_PX = 2000; // ✅ fixed dimensions
+      const IMAGE_HEIGHT_PX = 2000;
+      const PIXELS_PER_UNIT = 1.975; // ✅ correct calibration
+
+      const MAP_WIDTH_UNITS = IMAGE_WIDTH_PX / PIXELS_PER_UNIT;
+      const MAP_HEIGHT_UNITS = IMAGE_HEIGHT_PX / PIXELS_PER_UNIT;
+
+      let radius1 = 50; // blue
+      let radius2 = 70; // red
+      let customMarkers = [];
+
+      let map, origin, originMarker, circle1, circle2, activeLine;
+
+      /**************************************************
+       * 🗺️ INITIALIZE MAP
+       **************************************************/
+      function buildMap() {
+        if (map) {
+          map.off();
+          map.remove();
+        }
+
+        const bounds = [
+          [0, 0],
+          [MAP_HEIGHT_UNITS, MAP_WIDTH_UNITS],
+        ];
+        map = L.map("map", {
+          crs: L.CRS.Simple,
+          minZoom: -1,
+          maxZoom: 4,
+          zoomSnap: 0.25,
+          zoomDelta: 0.25,
+        });
+
+        L.imageOverlay(IMAGE_URL, bounds).addTo(map);
+        map.fitBounds(bounds);
+        map.setMaxBounds(bounds);
+
+        origin = [MAP_HEIGHT_UNITS / 2, MAP_WIDTH_UNITS / 2];
+
+        /**************************************************
+         * 🎯 DRAGGABLE ORIGIN MARKER
+         **************************************************/
+        originMarker = L.marker(origin, { draggable: true }).addTo(map);
+        circle1 = L.circle(origin, {
+          radius: radius1,
+          color: "rgba(0,150,255,0.9)",
+          weight: 2,
+          fill: false,
+        }).addTo(map);
+        circle2 = L.circle(origin, {
+          radius: radius2,
+          color: "rgba(255,100,100,0.8)",
+          weight: 2,
+          fill: false,
+        }).addTo(map);
+
+        // Update circles as marker is dragged
+        originMarker.on("drag", (e) => {
+          const newPos = e.target.getLatLng();
+          circle1.setLatLng(newPos);
+          circle2.setLatLng(newPos);
+        });
+
+        // Finalize new origin position after drag
+        originMarker.on("dragend", (e) => {
+          origin = [e.target.getLatLng().lat, e.target.getLatLng().lng];
+        });
+
+        let mode = "measure";
+        let addPointMode = false;
+        let newMarkerColor = "#00ff00";
+        let newMarkerLabel = "Custom Point";
+
+        map.on("click", (e) => {
+          if (isClickOnPanel) return;
+          const clicked = [e.latlng.lat, e.latlng.lng];
+          if (addPointMode)
+            return addCustomMarker(clicked, newMarkerLabel, newMarkerColor);
+          if (mode === "measure") measureTo(clicked);
+        });
+
+        /**************************************************
+         * 🎛️ CONTROL PANEL
+         **************************************************/
+        const panel = L.control({ position: "topright" });
+        panel.onAdd = () => {
+          const div = L.DomUtil.create("div", "panel");
+          div.innerHTML = `
+          <strong>Map Controls</strong><br>
+          <button id="measureBtn" class="active">Measure</button>
+          <button id="addPointBtn">Add Point</button>
+          <hr style="border-color:#444">
+          <label>Scale (px/unit): <b>${PIXELS_PER_UNIT}</b></label>
+          <label>Blue Radius (u): <input id="r1Input" type="number" step="1" value="${radius1}"></label>
+          <label>Red Radius (u): <input id="r2Input" type="number" step="1" value="${radius2}"></label>
+          <button id="applyBtn">Apply Changes</button>
+          <hr style="border-color:#444">
+          <strong>Custom Point</strong>
+          <label>Label: <input id="labelInput" type="text" value="Custom Point"></label>
+          <label>Color: <input id="colorInput" class="colorInput" type="color" value="#00ff00"></label>
+        `;
+          L.DomEvent.disableClickPropagation(div);
+          return div;
+        };
+        panel.addTo(map);
+
+        const p = document.querySelector(".panel");
+        const measureBtn = p.querySelector("#measureBtn");
+        const addPointBtn = p.querySelector("#addPointBtn");
+        const r1Input = p.querySelector("#r1Input");
+        const r2Input = p.querySelector("#r2Input");
+        const applyBtn = p.querySelector("#applyBtn");
+        const labelInput = p.querySelector("#labelInput");
+        const colorInput = p.querySelector("#colorInput");
+
+        measureBtn.onclick = () => {
+          mode = "measure";
+          addPointMode = false;
+          setActive(measureBtn);
+        };
+        addPointBtn.onclick = () => {
+          mode = "none";
+          addPointMode = true;
+          setActive(addPointBtn);
+        };
+        applyBtn.onclick = () => {
+          radius1 = parseFloat(r1Input.value);
+          radius2 = parseFloat(r2Input.value);
+          circle1.setRadius(radius1);
+          circle2.setRadius(radius2);
+        };
+        labelInput.oninput = (e) => (newMarkerLabel = e.target.value);
+        colorInput.oninput = (e) => (newMarkerColor = e.target.value);
+
+        window.isClickOnPanel = false;
+        p.addEventListener("mouseenter", () => (isClickOnPanel = true));
+        p.addEventListener("mouseleave", () => (isClickOnPanel = false));
+
+        function setActive(btn) {
+          [measureBtn, addPointBtn].forEach((b) =>
+            b.classList.remove("active")
+          );
+          btn.classList.add("active");
+        }
+      }
+
+      /**************************************************
+       * 🔹 HELPERS
+       **************************************************/
+      function measureTo(pt) {
+        if (activeLine) map.removeLayer(activeLine);
+        const du = Math.sqrt(
+          (pt[0] - origin[0]) ** 2 + (pt[1] - origin[1]) ** 2
+        );
+        const dp = du * PIXELS_PER_UNIT;
+        activeLine = L.polyline([origin, pt], {
+          color: "lime",
+          weight: 2,
+          dashArray: "5,5",
+        }).addTo(map);
+        L.popup()
+          .setLatLng(pt)
+          .setContent(
+            `<b>Distance:</b><br>${du.toFixed(2)} u<br>${dp.toFixed(0)} px`
+          )
+          .openOn(map);
+      }
+
+      function addCustomMarker(coords, label, color) {
+        const icon = L.divIcon({
+          className: "custom-pin",
+          html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid #000;"></div>`,
+          iconAnchor: [7, 7],
+        });
+        const marker = L.marker(coords, { icon }).addTo(map);
+        marker.bindPopup(
+          `<b>${label}</b><br><button onclick="deleteMarker(${customMarkers.length})">Delete</button>`
+        );
+        customMarkers.push(marker);
+      }
+
+      window.deleteMarker = (index) => {
+        const m = customMarkers[index];
+        if (m) {
+          map.removeLayer(m);
+          customMarkers[index] = null;
+        }
+      };
+
+      // 🚀 Initialize
+      buildMap();
+    </script>
+  </body>
+</html>
