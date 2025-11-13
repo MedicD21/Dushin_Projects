@@ -1,196 +1,936 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Lumiose Map Editor</title>
+    <meta charset="UTF-8" />
+    <title>Lumiose City Interactive Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
+      html,
       body {
+        height: 100%;
         margin: 0;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
+        background: #111;
       }
       #map {
-        width: 100vw;
-        height: 100vh;
-        background: #333;
-        position: relative;
-        user-select: none;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #333;
       }
-      #map img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-      }
-      .marker {
-        width: 26px;
-        height: 26px;
-        position: absolute;
-        cursor: grab;
-        transform: translate(-50%, -50%);
-        z-index: 10;
-      }
-      #ui {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 200;
-        background: rgba(0, 0, 0, 0.5);
-        padding: 10px;
+      .panel {
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        padding: 12px;
         border-radius: 8px;
-        color: white;
+        font-family: sans-serif;
+        font-size: 13px;
+        line-height: 1.4em;
+        user-select: none;
+        max-width: 280px;
       }
-      button {
-        padding: 6px 10px;
-        margin: 3px;
+      .panel label {
+        display: block;
+        margin-top: 6px;
+      }
+      .panel input,
+      .panel select {
+        width: 150px;
+        padding: 3px 5px;
+        margin-left: 4px;
+      }
+      .panel button {
+        margin: 4px 2px;
+        padding: 6px 8px;
+        background: #444;
+        color: #fff;
         border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      #contextMenu {
-        position: absolute;
-        display: none;
-        background: white;
-        border: 1px solid #666;
         border-radius: 4px;
-        z-index: 300;
-      }
-      #contextMenu div {
-        padding: 6px 10px;
         cursor: pointer;
       }
-      #contextMenu div:hover {
-        background: #eee;
+      .panel button.active {
+        background: #0a84ff;
+      }
+      .panel button.small {
+        padding: 4px 6px;
+        font-size: 11px;
+      }
+      .colorInput {
+        width: 40px;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+      }
+      .panel small {
+        font-size: 11px;
+        color: #ccc;
+      }
+      #panelContent {
+        transition: all 0.2s ease-in-out;
       }
     </style>
   </head>
   <body>
-    <div id="ui">
-      <button onclick="exportMarkers()">Export Markers JSON</button>
-    </div>
-
-    <div id="map">
-      <img id="baseMap" src="lumiose_resized_clean.png" />
-    </div>
-
-    <div id="contextMenu">
-      <div onclick="changeType('bench')">Set to Bench</div>
-      <div onclick="changeType('ladder')">Set to Ladder</div>
-      <div onclick="changeType('elevator')">Set to Elevator</div>
-      <div onclick="deleteMarker()">Delete Marker</div>
-    </div>
+    <div id="map"></div>
 
     <script>
-      let markers = [];
-      let selectedMarker = null;
-      let map = document.getElementById("map");
-      let contextMenu = document.getElementById("contextMenu");
-      let mapImg = document.getElementById("baseMap");
+      /**************************************************
+       * MAP CONFIG
+       **************************************************/
+      const IMAGE_URL = "lumiose_resized_clean.png"; // your clean aligned map
+      const IMAGE_WIDTH_PX = 2027; // from GIMP canvas
+      const IMAGE_HEIGHT_PX = 2013;
+      const PIXELS_PER_UNIT = 1.975; // your calibrated scale
 
-      const ICONS = {
-        bench: "icon_bench.png",
-        ladder: "icon_ladder.png",
-        elevator: "icon_arrow.png",
+      const MAP_WIDTH_UNITS = IMAGE_WIDTH_PX / PIXELS_PER_UNIT;
+      const MAP_HEIGHT_UNITS = IMAGE_HEIGHT_PX / PIXELS_PER_UNIT;
+
+      const SNAP_SIZE_UNITS = 0.5; // fine snap-to-grid
+      const USER_STORAGE_KEY = "lumiose_map_user_markers_v1";
+
+      // Radii in map units
+      let radius1 = 50; // blue
+      let radius2 = 70; // red
+
+      let map, origin, originMarker, circle1, circle2, activeLine;
+
+      // modes
+      let mode = "measure";
+      let addPointMode = false;
+      let captureMode = false;
+
+      let newMarkerColor = "#00ff00";
+      let newMarkerLabel = "Custom Point";
+      let newMarkerType = "circle";
+      let markersLocked = false;
+
+      // layers
+      let circlesLayer, benchesLayer, laddersLayer, elevatorsLayer;
+
+      // marker storage
+      let presetMarkers = []; // from markers.json
+      let userMarkers = []; // user-created
+
+      // UI refs
+      let ui = {};
+
+      /**************************************************
+       * ICONS (image icons for preset markers)
+       **************************************************/
+      const imageIcons = {
+        bench: L.icon({
+          iconUrl: "icon_bench.png",
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        }),
+        ladder: L.icon({
+          iconUrl: "icon_ladder.png",
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        }),
+        elevator: L.icon({
+          iconUrl: "icon_arrow.png",
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        }),
       };
 
-      async function loadMarkers() {
-        let res = await fetch("markers.json");
-        let data = await res.json();
-        markers = data;
-        data.forEach((m) => renderMarker(m));
-      }
-
-      function renderMarker(m) {
-        let el = document.createElement("img");
-        el.src = ICONS[m.type];
-        el.className = "marker";
-        el.style.left = m.clean_x + "px";
-        el.style.top = m.clean_y + "px";
-        el.dataset.id = m.id;
-
-        el.onmousedown = startDrag;
-        el.oncontextmenu = openMenu;
-
-        map.appendChild(el);
-      }
-
-      function startDrag(e) {
-        e.preventDefault();
-        let el = e.target;
-        selectedMarker = getMarkerById(el.dataset.id);
-
-        let offsetX = e.clientX - parseInt(el.style.left);
-        let offsetY = e.clientY - parseInt(el.style.top);
-
-        function move(ev) {
-          el.style.left = ev.clientX - offsetX + "px";
-          el.style.top = ev.clientY - offsetY + "px";
-
-          selectedMarker.clean_x = ev.clientX - offsetX;
-          selectedMarker.clean_y = ev.clientY - offsetY;
-        }
-        function stop() {
-          window.removeEventListener("mousemove", move);
-          window.removeEventListener("mouseup", stop);
-        }
-
-        window.addEventListener("mousemove", move);
-        window.addEventListener("mouseup", stop);
-      }
-
-      function openMenu(e) {
-        e.preventDefault();
-        selectedMarker = getMarkerById(e.target.dataset.id);
-        contextMenu.style.left = e.pageX + "px";
-        contextMenu.style.top = e.pageY + "px";
-        contextMenu.style.display = "block";
-      }
-
-      window.onclick = () => (contextMenu.style.display = "none");
-
-      function changeType(newType) {
-        selectedMarker.type = newType;
-        let el = document.querySelector(`img[data-id='${selectedMarker.id}']`);
-        el.src = ICONS[newType];
-        contextMenu.style.display = "none";
-      }
-
-      function deleteMarker() {
-        document.querySelector(`img[data-id='${selectedMarker.id}']`).remove();
-        markers = markers.filter((m) => m.id !== selectedMarker.id);
-        contextMenu.style.display = "none";
-      }
-
-      map.addEventListener("click", function (e) {
-        if (e.target !== mapImg) return;
-
-        let id = crypto.randomUUID();
-        let m = {
-          id,
-          type: "bench",
-          clean_x: e.offsetX,
-          clean_y: e.offsetY,
-          ble_x: null,
-          ble_y: null,
-        };
-        markers.push(m);
-        renderMarker(m);
-      });
-
-      function exportMarkers() {
-        let blob = new Blob([JSON.stringify(markers, null, 2)], {
-          type: "application/json",
+      function circleDivIcon(color) {
+        return L.divIcon({
+          className: "",
+          html: `
+            <div style="
+              width:18px;
+              height:18px;
+              border-radius:50%;
+              background:${color};
+              border:2px solid #000;">
+            </div>`,
+          iconSize: [18, 18],
+          iconAnchor: [9, 9],
         });
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "markers.json";
+      }
+
+      /**************************************************
+       * BUILD MAP
+       **************************************************/
+      function buildMap() {
+        if (map) {
+          map.off();
+          map.remove();
+        }
+
+        const bounds = [
+          [0, 0],
+          [MAP_HEIGHT_UNITS, MAP_WIDTH_UNITS],
+        ];
+
+        map = L.map("map", {
+          crs: L.CRS.Simple,
+          minZoom: -1,
+          maxZoom: 4,
+          zoomSnap: 0.25,
+          zoomDelta: 0.25,
+        });
+
+        L.imageOverlay(IMAGE_URL, bounds).addTo(map);
+        map.fitBounds(bounds);
+        map.setMaxBounds(bounds);
+
+        // layers (do NOT add benches/ladders/elevators yet -> hidden until toggled)
+        circlesLayer = L.layerGroup().addTo(map);
+        benchesLayer = L.layerGroup();
+        laddersLayer = L.layerGroup();
+        elevatorsLayer = L.layerGroup();
+
+        // origin = center
+        origin = [MAP_HEIGHT_UNITS / 2, MAP_WIDTH_UNITS / 2];
+
+        // origin marker + radii
+        originMarker = L.marker(origin, { draggable: true }).addTo(map);
+
+        circle1 = L.circle(origin, {
+          radius: radius1,
+          color: "rgba(0,150,255,0.9)",
+          fill: false,
+        }).addTo(map);
+
+        circle2 = L.circle(origin, {
+          radius: radius2,
+          color: "rgba(255,100,100,0.8)",
+          fill: false,
+        }).addTo(map);
+
+        originMarker.on("drag", (e) => {
+          const pos = e.target.getLatLng();
+          circle1.setLatLng(pos);
+          circle2.setLatLng(pos);
+        });
+
+        originMarker.on("dragend", (e) => {
+          origin = [e.target.getLatLng().lat, e.target.getLatLng().lng];
+        });
+
+        /**************************************************
+         * MAP CLICK HANDLING
+         **************************************************/
+        map.on("click", (e) => {
+          if (window.isClickOnPanel) return;
+
+          const rawPoint = [e.latlng.lat, e.latlng.lng];
+
+          // Capture mode -> build JSON snippet for markers.json
+          if (captureMode) {
+            handleCaptureClick(e.latlng);
+            return;
+          }
+
+          // Add-point mode -> create user marker
+          if (addPointMode) {
+            const snapped = snapToGrid(rawPoint);
+            addMarkerToMap(snapped, newMarkerLabel, newMarkerColor, newMarkerType, {
+              isPreset: false,
+            });
+            saveUserMarkersToLocalStorage();
+            return;
+          }
+
+          // Measure distance
+          if (mode === "measure") {
+            measureTo(rawPoint);
+          }
+        });
+
+        /**************************************************
+         * PANEL UI
+         **************************************************/
+        const panel = L.control({ position: "topright" });
+        panel.onAdd = () => {
+          const div = L.DomUtil.create("div", "panel");
+          div.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>Map Controls</strong>
+              <button id="collapseBtn"
+                style="background:#222;color:#fff;border:none;
+                padding:2px 6px;border-radius:4px;cursor:pointer;">–</button>
+            </div>
+
+            <div id="panelContent">
+
+              <strong>Modes</strong><br>
+              <button id="measureBtn" class="active">Measure</button>
+              <button id="addPointBtn">Add Point</button>
+              <button id="captureBtn">Capture Mode</button>
+
+              <hr style="border-color:#555">
+
+              <label>Scale: <b>${PIXELS_PER_UNIT}</b> px/unit</label>
+              <label>Blue Radius:
+                <input id="r1Input" type="number" value="${radius1}">
+              </label>
+              <label>Red Radius:
+                <input id="r2Input" type="number" value="${radius2}">
+              </label>
+              <button id="applyBtn">Apply</button>
+
+              <hr style="border-color:#555">
+
+              <strong>Custom Point Settings</strong>
+              <label>Label:
+                <input id="labelInput" type="text" value="Custom Point">
+              </label>
+
+              <label>Icon Type:
+                <select id="iconType">
+                  <option value="circle">Colored Circle</option>
+                  <option value="bench">Bench</option>
+                  <option value="ladder">Ladder</option>
+                  <option value="elevator">Elevator</option>
+                </select>
+              </label>
+
+              <label>Color (circle only):
+                <input id="colorInput" class="colorInput" type="color" value="#00ff00">
+              </label>
+
+              <hr style="border-color:#555">
+
+              <strong>Marker Layers</strong>
+              <label><input type="checkbox" id="toggleCircles" checked> Show Circles</label>
+              <label><input type="checkbox" id="toggleBenches"> Show Benches (preset + custom)</label>
+              <label><input type="checkbox" id="toggleLadders"> Show Ladders (preset + custom)</label>
+              <label><input type="checkbox" id="toggleElevators"> Show Elevators (preset + custom)</label>
+
+              <hr style="border-color:#555">
+
+              <label><input type="checkbox" id="lockMarkers"> Lock all markers (no drag)</label>
+              <small>Origin is always draggable.</small>
+
+              <hr style="border-color:#555">
+              <small><b>Shortcuts:</b>
+                1=Bench, 2=Ladder, 3=Elevator, 4=Circle, M=Measure, P=Add Point
+              </small>
+
+              <hr style="border-color:#555">
+
+              <button id="resetBtn" class="small">Reset Custom Markers</button>
+              <small>Preset markers from markers.json stay; only your custom markers are cleared.</small>
+
+              <hr style="border-color:#555">
+
+              <button id="exportBtn" class="small">Export All Markers</button>
+              <small>Downloads combined JSON of preset + current custom markers.</small>
+
+            </div>
+          `;
+          L.DomEvent.disableClickPropagation(div);
+          return div;
+        };
+        panel.addTo(map);
+
+        /**************************************************
+         * CONNECT PANEL INPUTS
+         **************************************************/
+        const p = document.querySelector(".panel");
+        const collapseBtn = p.querySelector("#collapseBtn");
+        const panelContent = p.querySelector("#panelContent");
+        let panelCollapsed = false;
+
+        collapseBtn.onclick = () => {
+          panelCollapsed = !panelCollapsed;
+          panelContent.style.display = panelCollapsed ? "none" : "block";
+          collapseBtn.textContent = panelCollapsed ? "+" : "–";
+        };
+
+        const measureBtn = p.querySelector("#measureBtn");
+        const addPointBtn = p.querySelector("#addPointBtn");
+        const captureBtn = p.querySelector("#captureBtn");
+        const r1Input = p.querySelector("#r1Input");
+        const r2Input = p.querySelector("#r2Input");
+        const applyBtn = p.querySelector("#applyBtn");
+        const labelInput = p.querySelector("#labelInput");
+        const colorInput = p.querySelector("#colorInput");
+        const iconTypeSelect = p.querySelector("#iconType");
+
+        const toggleCircles = p.querySelector("#toggleCircles");
+        const toggleBenches = p.querySelector("#toggleBenches");
+        const toggleLadders = p.querySelector("#toggleLadders");
+        const toggleElevators = p.querySelector("#toggleElevators");
+        const lockCheckbox = p.querySelector("#lockMarkers");
+        const resetBtn = p.querySelector("#resetBtn");
+        const exportBtn = p.querySelector("#exportBtn");
+
+        ui = {
+          measureBtn,
+          addPointBtn,
+          captureBtn,
+          iconTypeSelect,
+          labelInput,
+          colorInput,
+          r1Input,
+          r2Input,
+          toggleCircles,
+          toggleBenches,
+          toggleLadders,
+          toggleElevators,
+          lockCheckbox,
+          resetBtn,
+          exportBtn,
+        };
+
+        // Mode buttons
+        measureBtn.onclick = () => {
+          mode = "measure";
+          addPointMode = false;
+          captureMode = false;
+          setActiveModeButton(measureBtn);
+          captureBtn.classList.remove("active");
+        };
+
+        addPointBtn.onclick = () => {
+          mode = "none";
+          addPointMode = true;
+          captureMode = false;
+          setActiveModeButton(addPointBtn);
+          captureBtn.classList.remove("active");
+        };
+
+        captureBtn.onclick = () => {
+          captureMode = !captureMode;
+          captureBtn.classList.toggle("active", captureMode);
+          if (captureMode) {
+            mode = "none";
+            addPointMode = false;
+            measureBtn.classList.remove("active");
+            addPointBtn.classList.remove("active");
+          }
+        };
+
+        // Radii update
+        applyBtn.onclick = () => {
+          const r1 = parseFloat(r1Input.value);
+          const r2 = parseFloat(r2Input.value);
+          if (!isNaN(r1)) {
+            radius1 = r1;
+            circle1.setRadius(radius1);
+          }
+          if (!isNaN(r2)) {
+            radius2 = r2;
+            circle2.setRadius(radius2);
+          }
+        };
+
+        // Custom marker settings
+        labelInput.oninput = (e) => (newMarkerLabel = e.target.value);
+        colorInput.oninput = (e) => (newMarkerColor = e.target.value);
+        iconTypeSelect.onchange = (e) => (newMarkerType = e.target.value);
+
+        // Layer toggles
+        toggleCircles.onchange = (e) => {
+          if (e.target.checked) map.addLayer(circlesLayer);
+          else map.removeLayer(circlesLayer);
+        };
+        toggleBenches.onchange = (e) => {
+          if (e.target.checked) map.addLayer(benchesLayer);
+          else map.removeLayer(benchesLayer);
+        };
+        toggleLadders.onchange = (e) => {
+          if (e.target.checked) map.addLayer(laddersLayer);
+          else map.removeLayer(laddersLayer);
+        };
+        toggleElevators.onchange = (e) => {
+          if (e.target.checked) map.addLayer(elevatorsLayer);
+          else map.removeLayer(elevatorsLayer);
+        };
+
+        // Lock/unlock all markers
+        lockCheckbox.onchange = () => {
+          markersLocked = lockCheckbox.checked;
+          [...userMarkers, ...presetMarkers].forEach((m) => {
+            if (!m || !m.dragging) return;
+            markersLocked ? m.dragging.disable() : m.dragging.enable();
+          });
+        };
+
+        // Reset custom markers
+        resetBtn.onclick = () => {
+          const sure = confirm(
+            "Reset all custom markers? Preset markers from markers.json will remain."
+          );
+          if (!sure) return;
+          clearUserMarkers();
+          localStorage.removeItem(USER_STORAGE_KEY);
+        };
+
+        // Export all markers (preset + user)
+        exportBtn.onclick = () => {
+          exportAllMarkers();
+        };
+
+        // Prevent panel hover from triggering map clicks
+        window.isClickOnPanel = false;
+        p.addEventListener("mouseenter", () => (isClickOnPanel = true));
+        p.addEventListener("mouseleave", () => (isClickOnPanel = false));
+
+        function setActiveModeButton(btn) {
+          [measureBtn, addPointBtn].forEach((b) =>
+            b.classList.remove("active")
+          );
+          btn.classList.add("active");
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener("keydown", onKeyDown);
+
+        // Load user markers from LocalStorage
+        loadUserMarkersFromLocalStorage();
+
+        // Load preset markers from markers.json
+        loadPresetMarkers();
+      }
+
+      /**************************************************
+       * HELPERS
+       **************************************************/
+      function snapToGrid(pt) {
+        const s = SNAP_SIZE_UNITS;
+        return [Math.round(pt[0] / s) * s, Math.round(pt[1] / s) * s];
+      }
+
+      function onKeyDown(e) {
+        const tag =
+          (document.activeElement && document.activeElement.tagName) || "";
+        if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(tag)) return;
+
+        switch (e.key) {
+          case "1":
+            newMarkerType = "bench";
+            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "bench";
+            break;
+          case "2":
+            newMarkerType = "ladder";
+            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "ladder";
+            break;
+          case "3":
+            newMarkerType = "elevator";
+            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "elevator";
+            break;
+          case "4":
+            newMarkerType = "circle";
+            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "circle";
+            break;
+          case "m":
+          case "M":
+            mode = "measure";
+            addPointMode = false;
+            captureMode = false;
+            if (ui.measureBtn && ui.addPointBtn && ui.captureBtn) {
+              ui.measureBtn.classList.add("active");
+              ui.addPointBtn.classList.remove("active");
+              ui.captureBtn.classList.remove("active");
+            }
+            break;
+          case "p":
+          case "P":
+            mode = "none";
+            addPointMode = true;
+            captureMode = false;
+            if (ui.measureBtn && ui.addPointBtn && ui.captureBtn) {
+              ui.measureBtn.classList.remove("active");
+              ui.addPointBtn.classList.add("active");
+              ui.captureBtn.classList.remove("active");
+            }
+            break;
+        }
+      }
+
+      /**************************************************
+       * MEASURE
+       **************************************************/
+      function measureTo(pt) {
+        if (activeLine) map.removeLayer(activeLine);
+
+        const du = Math.sqrt(
+          (pt[0] - origin[0]) ** 2 + (pt[1] - origin[1]) ** 2
+        );
+        const dp = du * PIXELS_PER_UNIT;
+
+        activeLine = L.polyline([origin, pt], {
+          color: "lime",
+          dashArray: "5,5",
+        }).addTo(map);
+
+        L.popup()
+          .setLatLng(pt)
+          .setContent(
+            `
+            <b>Distance:</b><br>
+            ${du.toFixed(2)} units<br>
+            ${dp.toFixed(0)} px
+          `
+          )
+          .openOn(map);
+      }
+
+      /**************************************************
+       * CAPTURE MODE POPUP
+       **************************************************/
+      function handleCaptureClick(latlng) {
+        const lat = latlng.lat.toFixed(2);
+        const lng = latlng.lng.toFixed(2);
+
+        const html = `
+          <b>Capture Marker</b><br><br>
+
+          <label>Type:</label><br>
+          <select id="capType">
+            <option value="bench">Bench</option>
+            <option value="ladder">Ladder</option>
+            <option value="elevator">Elevator</option>
+            <option value="circle">Circle (Color Required)</option>
+          </select><br><br>
+
+          <label>Label:</label><br>
+          <input id="capLabel" type="text" value="Marker"><br><br>
+
+          <label>Circle Color (if circle):</label><br>
+          <input id="capColor" type="color" value="#00ff00"><br><br>
+
+          <button id="copyBtn">Copy JSON</button>
+
+          <pre id="jsonOut" style="white-space:pre-wrap;
+                                   background:#222;padding:6px;
+                                   margin-top:10px;border-radius:6px;color:#0f0;">
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": ${lat},
+  "lng": ${lng}
+}
+          </pre>
+        `;
+
+        L.popup().setLatLng(latlng).setContent(html).openOn(map);
+
+        setTimeout(() => {
+          const typeSel = document.getElementById("capType");
+          const labelInput = document.getElementById("capLabel");
+          const colorInput = document.getElementById("capColor");
+          const jsonBox = document.getElementById("jsonOut");
+          const copyBtn = document.getElementById("copyBtn");
+
+          function updateJSON() {
+            const type = typeSel.value;
+            const label = labelInput.value || "Marker";
+            const json = { type, label, lat: parseFloat(lat), lng: parseFloat(lng) };
+            if (type === "circle") {
+              json.color = colorInput.value || "#00ff00";
+            }
+            jsonBox.textContent = JSON.stringify(json, null, 2);
+          }
+
+          typeSel.onchange = updateJSON;
+          labelInput.oninput = updateJSON;
+          colorInput.oninput = updateJSON;
+
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(jsonBox.textContent);
+            copyBtn.textContent = "Copied!";
+            setTimeout(() => (copyBtn.textContent = "Copy JSON"), 1200);
+          };
+        }, 50);
+      }
+
+      /**************************************************
+       * ADD MARKER (BOTH PRESET + USER)
+       **************************************************/
+      let benchCount = 0;
+      let ladderCount = 0;
+      let elevatorCount = 0;
+
+      function addMarkerToMap(coords, label, color, type, options = {}) {
+        const isPreset = !!options.isPreset;
+
+        // auto-name only for user placed ones with default label
+        if (!isPreset && label.trim() === "Custom Point") {
+          if (type === "bench") {
+            benchCount++;
+            label = `Bench #${benchCount}`;
+          } else if (type === "ladder") {
+            ladderCount++;
+            label = `Ladder #${ladderCount}`;
+          } else if (type === "elevator") {
+            elevatorCount++;
+            label = `Elevator #${elevatorCount}`;
+          }
+        }
+
+        // pick layer
+        let targetLayer = circlesLayer;
+        if (type === "bench") targetLayer = benchesLayer;
+        else if (type === "ladder") targetLayer = laddersLayer;
+        else if (type === "elevator") targetLayer = elevatorsLayer;
+
+        // pick icon
+        let leafIcon;
+        if (type === "circle") {
+          leafIcon = circleDivIcon(color || "#00ff00");
+        } else if (type === "bench") {
+          leafIcon = imageIcons.bench;
+        } else if (type === "ladder") {
+          leafIcon = imageIcons.ladder;
+        } else if (type === "elevator") {
+          leafIcon = imageIcons.elevator;
+        } else {
+          leafIcon = circleDivIcon("#ffffff");
+        }
+
+        const marker = L.marker(coords, {
+          icon: leafIcon,
+          draggable: !markersLocked,
+          autoPan: true,
+        }).addTo(targetLayer);
+
+        marker._markerLabel = label;
+        marker._markerType = type;
+        marker._markerColor = color || "#00ff00";
+        marker._isPreset = isPreset;
+
+        if (isPreset) {
+          const index = presetMarkers.length;
+          marker._arrayIndex = index;
+
+          marker.on("dragend", () => {
+            const snapped = snapToGrid([
+              marker.getLatLng().lat,
+              marker.getLatLng().lng,
+            ]);
+            marker.setLatLng({ lat: snapped[0], lng: snapped[1] });
+          });
+
+          bindMarkerPopup(marker, index, true);
+          presetMarkers.push(marker);
+        } else {
+          const index = userMarkers.length;
+          marker._arrayIndex = index;
+
+          marker.on("dragend", () => {
+            const snapped = snapToGrid([
+              marker.getLatLng().lat,
+              marker.getLatLng().lng,
+            ]);
+            marker.setLatLng({ lat: snapped[0], lng: snapped[1] });
+            saveUserMarkersToLocalStorage();
+          });
+
+          bindMarkerPopup(marker, index, false);
+          userMarkers.push(marker);
+        }
+
+        return marker;
+      }
+
+      function bindMarkerPopup(marker, index, isPreset) {
+        const label = marker._markerLabel || "Marker";
+        const typeStr = isPreset ? "'preset'" : "'user'";
+        const deleteBtn = `
+          <button onclick="deleteMarker(${index}, ${typeStr})">Delete</button>
+        `;
+        marker.bindPopup(
+          `
+          <b>${label}</b><br>
+          <button onclick="editMarkerLabel(${index}, ${typeStr})">Edit Label</button>
+          ${deleteBtn}
+        `
+        );
+      }
+
+      function clearUserMarkers() {
+        userMarkers.forEach((m) => {
+          if (m) map.removeLayer(m);
+        });
+        userMarkers = [];
+        benchCount = 0;
+        ladderCount = 0;
+        elevatorCount = 0;
+      }
+
+      /**************************************************
+       * LOAD PRESET MARKERS (markers.json)
+       **************************************************/
+      async function loadPresetMarkers() {
+        try {
+          const res = await fetch("markers.json", { cache: "no-cache" });
+          if (!res.ok) {
+            console.warn("markers.json not found or not OK; skipping preset markers.");
+            return;
+          }
+          const data = await res.json();
+          if (!Array.isArray(data)) {
+            console.warn("markers.json did not contain an array; skipping.");
+            return;
+          }
+
+          data.forEach((m) => {
+            const lat = m.lat;
+            const lng = m.lng;
+            const label = m.label || "Marker";
+            const type = m.type || "bench";
+            const color = m.color || "#00ff00";
+
+            if (typeof lat !== "number" || typeof lng !== "number") return;
+
+            addMarkerToMap([lat, lng], label, color, type, { isPreset: true });
+          });
+        } catch (e) {
+          console.error("Error loading markers.json:", e);
+        }
+      }
+
+      /**************************************************
+       * LOCALSTORAGE (USER MARKERS)
+       **************************************************/
+      function saveUserMarkersToLocalStorage() {
+        const data = userMarkers
+          .filter((m) => m)
+          .map((m) => {
+            const pos = m.getLatLng();
+            return {
+              lat: pos.lat,
+              lng: pos.lng,
+              label: m._markerLabel,
+              type: m._markerType,
+              color: m._markerColor,
+            };
+          });
+
+        try {
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+          console.error("Error saving custom markers:", e);
+        }
+      }
+
+      function loadUserMarkersFromLocalStorage() {
+        let raw;
+        try {
+          raw = localStorage.getItem(USER_STORAGE_KEY);
+        } catch (e) {
+          console.error("Error reading custom markers:", e);
+          return;
+        }
+        if (!raw) return;
+
+        try {
+          const data = JSON.parse(raw);
+          if (!Array.isArray(data)) return;
+
+          clearUserMarkers();
+
+          data.forEach((row) => {
+            const coords = [row.lat, row.lng];
+            const label = row.label || "Custom Point";
+            const color = row.color || "#00ff00";
+            const type = row.type || "circle";
+            addMarkerToMap(coords, label, color, type, { isPreset: false });
+          });
+        } catch (e) {
+          console.error("Error parsing custom markers:", e);
+        }
+      }
+
+      /**************************************************
+       * GLOBAL MARKER OPS (PRESET + USER)
+       **************************************************/
+      window.deleteMarker = (idx, which) => {
+        const arr = which === "preset" ? presetMarkers : userMarkers;
+        const m = arr[idx];
+        if (m) {
+          map.removeLayer(m);
+          arr[idx] = null;
+          if (which === "user") {
+            saveUserMarkersToLocalStorage();
+          }
+        }
+      };
+
+      window.editMarkerLabel = (idx, which) => {
+        const arr = which === "preset" ? presetMarkers : userMarkers;
+        const m = arr[idx];
+        if (!m) return;
+        const current = m._markerLabel || "Label";
+        const updated = prompt("Edit label:", current);
+        if (updated === null) return;
+        const finalLabel = updated.trim() || current;
+        m._markerLabel = finalLabel;
+
+        bindMarkerPopup(m, idx, which === "preset");
+        m.openPopup();
+
+        if (which === "user") {
+          saveUserMarkersToLocalStorage();
+        }
+      };
+
+      /**************************************************
+       * EXPORT ALL MARKERS
+       **************************************************/
+      function exportAllMarkers() {
+        const all = [];
+
+        presetMarkers.forEach((m) => {
+          if (!m) return;
+          const pos = m.getLatLng();
+          all.push({
+            type: m._markerType || "bench",
+            label: m._markerLabel || "Marker",
+            lat: pos.lat,
+            lng: pos.lng,
+            color: m._markerColor || "#00ff00",
+            source: "preset",
+          });
+        });
+
+        userMarkers.forEach((m) => {
+          if (!m) return;
+          const pos = m.getLatLng();
+          all.push({
+            type: m._markerType || "circle",
+            label: m._markerLabel || "Custom",
+            lat: pos.lat,
+            lng: pos.lng,
+            color: m._markerColor || "#00ff00",
+            source: "user",
+          });
+        });
+
+        const jsonText = JSON.stringify(all, null, 2);
+        const blob = new Blob([jsonText], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "markers_export.json";
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        alert(
+          "Exported all markers to markers_export.json.\nYou can use this to update markers.json if you like."
+        );
       }
 
-      function getMarkerById(id) {
-        return markers.find((m) => m.id === id);
-      }
-
-      loadMarkers();
+      /**************************************************
+       * START
+       **************************************************/
+      buildMap();
     </script>
   </body>
 </html>
