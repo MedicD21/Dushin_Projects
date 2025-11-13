@@ -1,20 +1,92 @@
 [
-  {
-    "type": "bench",
-    "label": "Bench #1 - South Boulevard",
-    "lat": 820.5,
-    "lng": 1120.0
-  },
-  {
-    "type": "elevator",
-    "label": "Prism Tower Elevator",
-    "lat": 950.0,
-    "lng": 980.0
-  },
-  {
-    "type": "ladder",
-    "label": "Back Alley Ladder",
-    "lat": 700.5,
-    "lng": 460.5
-  }
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": 953.18,
+  "lng": 522.20
+},
+{
+  "type": "ladder",
+  "label": "Marker",
+  "lat": 938.02,
+  "lng": 533.13
+},
+{
+  "type": "ladder",
+  "label": "Marker",
+  "lat": 938.58,
+  "lng": 625.23
+},   
+{
+  "type": "ladder",
+  "label": "Marker",
+  "lat": 933.91,
+  "lng": 645.85
+},
+{
+  "type": "circle",
+  "label": "Eevee",
+  "lat": 923.57,
+  "lng": 667.07,
+  "color": "#956f71"
+},
+{
+  "type": "ladder",
+  "label": "Marker",
+  "lat": 895.11,
+  "lng": 678.12
+},
+{
+  "type": "ladder",
+  "label": "Marker",
+  "lat": 853.65,
+  "lng": 667.77
+},
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": 847.01,
+  "lng": 708.92
+},
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": 847.01,
+  "lng": 708.92
+},
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": 847.01,
+  "lng": 708.92
+},
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": 847.01,
+  "lng": 708.92
+},
+{
+  "type": "bench",
+  "label": "Marker",
+  "lat": 847.01,
+  "lng": 708.92
+},
+{
+  "type": "ladder",
+  "label": "Marker",
+  "lat": 822.37,
+  "lng": 596.44
+},
+
+    
+       
+
+
+
+
+
+
+
+
 ]
