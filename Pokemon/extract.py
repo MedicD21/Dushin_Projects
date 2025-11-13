@@ -1,90 +1,91 @@
 from PIL import Image
 import json
-import math
+import os
+import numpy as np
+
+# -------------------------------------------------------
+# CONFIG
+# -------------------------------------------------------
+
+BLE_MAP = "lumiose_city_BLE.png"
+CLEAN_MAP = "lumiose_resized_clean.png"
+
+ICON_BENCH = "icon_bench.png"
+ICON_LADDER = "icon_ladder.png"
+ICON_ARROW = "icon_arrow.png"
+
+# Offset discovered from GIMP
+OFFSET_X = 15
+OFFSET_Y = 21
+
+# Pixel match tolerance (0 = perfect, 30 = loose)
+TOLERANCE = 25
 
 
 # -------------------------------------------------------
-# RMS difference helper (how different two images are)
+# Helper: compute pixel difference
 # -------------------------------------------------------
-def rmsdiff(im1, im2):
-    """
-    Calculate RMS (Root Mean Square) pixel difference between two images.
-    Lower = more similar. 0 = perfect match.
-    """
-    if im1.size != im2.size:
-        return 999999
-
-    diff_sum = 0
-    count = im1.size[0] * im1.size[1]
-
-    px1 = im1.load()
-    px2 = im2.load()
-
-    for y in range(im1.size[1]):
-        for x in range(im1.size[0]):
-            diff_sum += (px1[x, y] - px2[x, y]) ** 2
-
-    return math.sqrt(diff_sum / count)
+def patch_diff(a, b):
+    a = np.asarray(a).astype(int)
+    b = np.asarray(b).astype(int)
+    return np.mean(np.abs(a - b))
 
 
 # -------------------------------------------------------
-# Slide the template over the map and find matches
+# Template match without OpenCV
 # -------------------------------------------------------
-def find_template(big_img, icon_img, threshold):
-    """
-    Scan `big_img` for occurrences of `icon_img`.
-    Returns list of (x, y) icon-center coordinates.
-    """
-    big = big_img.convert("L")  # grayscale for comparison
-    icon = icon_img.convert("L")
-    W, H = big.size
-    w, h = icon.size
+def find_icons(big_img, icon_img, icon_type):
+    positions = []
+    bw, bh = big_img.size
+    iw, ih = icon_img.size
 
-    results = []
+    big_np = np.asarray(big_img.convert("RGB"))
+    icon_np = np.asarray(icon_img.convert("RGB"))
 
-    for y in range(0, H - h):
-        for x in range(0, W - w):
-            area = big.crop((x, y, x + w, y + h))
-            diff = rmsdiff(icon, area)
+    for y in range(0, bh - ih):
+        patch = big_np[y : y + ih, 0:iw]  # dummy slice
+        # Instead of slicing column 0, do proper matching
+        for x in range(0, bw - iw):
+            patch = big_np[y : y + ih, x : x + iw]
 
-            if diff < threshold:
-                # center coordinate
-                results.append(
-                    {
-                        "x": x + w / 2,
-                        "y": y + h / 2,
-                        "diff": diff,
-                    }
-                )
+            diff = np.mean(np.abs(patch - icon_np))
 
-    return results
+            if diff < TOLERANCE:
+                positions.append({"type": icon_type, "x": x, "y": y})
+
+    return positions
 
 
 # -------------------------------------------------------
-# MAIN SCRIPT
+# Main
 # -------------------------------------------------------
-if __name__ == "__main__":
-    print("Loading map...")
-    map_img = Image.open("lumiose_stitched.png")
+print("Loading maps...")
+ble = Image.open(BLE_MAP).convert("RGB")
 
-    print("Loading icons...")
-    bench_icon = Image.open("icon_bench.png")
-    ladder_icon = Image.open("icon_ladder.png")
-    arrow_icon = Image.open("icon_arrow.png")
+bench = Image.open(ICON_BENCH).convert("RGB")
+ladder = Image.open(ICON_LADDER).convert("RGB")
+arrow = Image.open(ICON_ARROW).convert("RGB")
 
-    print("Searching for benches...")
-    benches = find_template(map_img, bench_icon, threshold=12)
+print("Searching for icons...")
 
-    print("Searching for ladders...")
-    ladders = find_template(map_img, ladder_icon, threshold=12)
+results = []
+results += find_icons(ble, bench, "bench")
+results += find_icons(ble, ladder, "ladder")
+results += find_icons(ble, arrow, "arrow")
 
-    print("Searching for arrows...")
-    arrows = find_template(map_img, arrow_icon, threshold=14)
+print(f"Found {len(results)} total markers.")
 
-    print("Saving JSON...")
-    data = {"bench": benches, "ladder": ladders, "arrow": arrows}
+# -------------------------------------------------------
+# Apply offset → convert BLE coordinate → clean map coordinate
+# -------------------------------------------------------
+for m in results:
+    m["x"] = m["x"] - OFFSET_X
+    m["y"] = m["y"] - OFFSET_Y
 
-    with open("lumiose_points.json", "w") as f:
-        json.dump(data, f, indent=2)
+# -------------------------------------------------------
+# Save output
+# -------------------------------------------------------
+with open("markers.json", "w") as f:
+    json.dump(results, f, indent=2)
 
-    print("\nDone! Saved: lumiose_points.json\n")
+print("Saved markers.json")
