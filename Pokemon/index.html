@@ -9,6 +9,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
       html,
       body {
@@ -23,13 +24,15 @@
       }
       .panel {
         background: rgba(0, 0, 0, 0.75);
-        color: #fff;
+        color: #d4d3d3;
         padding: 12px;
         border-radius: 8px;
-        font-family: sans-serif;
+        font-family: helvetica, serif;
         font-size: 13px;
         line-height: 1.4em;
         user-select: none;
+        max-width: auto;
+        
       }
       .panel label {
         display: block;
@@ -37,24 +40,29 @@
       }
       .panel input,
       .panel select {
-        width: 120px;
+        width: 140px;
         padding: 3px 5px;
         margin-left: 4px;
       }
       .panel button {
         margin: 4px 2px;
-        padding: 6px 12px;
+        padding: 6px 8px;
         background: #444;
         color: #fff;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        align-items: center;
       }
       .panel button.active {
-        background: #0a84ff;
+        background: #0773df;
+      }
+      .panel button.small {
+        padding: 4px 6px;
+        font-size: 11px;
       }
       .colorInput {
-        width: 40px;
+        width: 20px;
         padding: 0;
         border: none;
         cursor: pointer;
@@ -63,8 +71,12 @@
         font-size: 11px;
         color: #ccc;
       }
+      #panelContent {
+        transition: all 0.2s ease-in-out;
+      }
     </style>
   </head>
+
   <body>
     <div id="map"></div>
 
@@ -75,20 +87,20 @@
       const IMAGE_URL = "Lumiose_City_Day.png";
       const IMAGE_WIDTH_PX = 2000;
       const IMAGE_HEIGHT_PX = 2000;
-      const PIXELS_PER_UNIT = 1.975; // your calibrated scale
+      const PIXELS_PER_UNIT = 1.975;
 
       const MAP_WIDTH_UNITS = IMAGE_WIDTH_PX / PIXELS_PER_UNIT;
       const MAP_HEIGHT_UNITS = IMAGE_HEIGHT_PX / PIXELS_PER_UNIT;
 
-      const SNAP_SIZE_UNITS = 0.5; // very fine snap-to-grid
+      const SNAP_SIZE_UNITS = 0.5;
+      const STORAGE_KEY = "lumiose_map_markers_v1";
 
-      let radius1 = 50; // blue circle
-      let radius2 = 70; // red circle
+      let radius1 = 50;
+      let radius2 = 70;
       let customMarkers = [];
 
       let map, origin, originMarker, circle1, circle2, activeLine;
 
-      // global state for modes
       let mode = "measure";
       let addPointMode = false;
       let newMarkerColor = "#00ff00";
@@ -96,49 +108,55 @@
       let newMarkerType = "circle";
       let markersLocked = false;
 
-      // layer groups for toggling
       let circlesLayer, benchesLayer, laddersLayer, elevatorsLayer;
-
-      // UI refs (filled in buildMap)
       let ui = {};
 
       /**************************************************
-       * SVG ICONS (Bench, Ladder, Elevator)
+       * SVG ICONS
        **************************************************/
       const ICONS = {
         circle: (color) => `
-    <div style="width:18px;height:18px;border-radius:50%;background:${color};
-         border:2px solid #000;"></div>
-  `,
+          <div style="width:18px;height:18px;border-radius:50%;
+                       background:${color};border:2px solid #000;"></div>
+        `,
         bench: `
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <rect x="2" y="10" width="20" height="4" fill="#b0793c" stroke="#000" stroke-width="1"/>
-      <rect x="2" y="6" width="20" height="4" fill="#d08c43" stroke="#000" stroke-width="1"/>
-      <rect x="4" y="14" width="2" height="6" fill="#7a4e21"/>
-      <rect x="18" y="14" width="2" height="6" fill="#7a4e21"/>
-    </svg>
-  `,
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <rect x="2" y="10" width="20" height="4"
+                  fill="#b0793c" stroke="#000" stroke-width="1"/>
+            <rect x="2" y="6" width="20" height="4"
+                  fill="#d08c43" stroke="#000" stroke-width="1"/>
+            <rect x="4" y="14" width="2" height="6" fill="#7a4e21"/>
+            <rect x="18" y="14" width="2" height="6" fill="#7a4e21"/>
+          </svg>
+        `,
         ladder: `
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <rect x="7" y="3" width="3" height="18" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
-      <rect x="14" y="3" width="3" height="18" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
-      <rect x="7" y="6" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
-      <rect x="7" y="10" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
-      <rect x="7" y="14" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
-      <rect x="7" y="18" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
-    </svg>
-  `,
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <rect x="7" y="3" width="3" height="18"
+                  fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+            <rect x="14" y="3" width="3" height="18"
+                  fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+            <rect x="7" y="6" width="10" height="2"
+                  fill="#999" stroke="#000" stroke-width="1"/>
+            <rect x="7" y="10" width="10" height="2"
+                  fill="#999" stroke="#000" stroke-width="1"/>
+            <rect x="7" y="14" width="10" height="2"
+                  fill="#999" stroke="#000" stroke-width="1"/>
+            <rect x="7" y="18" width="10" height="2"
+                  fill="#999" stroke="#000" stroke-width="1"/>
+          </svg>
+        `,
         elevator: `
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <rect x="4" y="4" width="16" height="16" fill="#bbbbbb" stroke="#000" stroke-width="1"/>
-      <polygon points="8,10 12,6 16,10" fill="#333"/>
-      <polygon points="8,14 12,18 16,14" fill="#333"/>
-    </svg>
-  `,
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="16" height="16"
+                  fill="#bbbbbb" stroke="#000" stroke-width="1"/>
+            <polygon points="8,10 12,6 16,10" fill="#333"/>
+            <polygon points="8,14 12,18 16,14" fill="#333"/>
+          </svg>
+        `,
       };
 
       /**************************************************
-       * INITIALIZE MAP
+       * BUILD MAP
        **************************************************/
       function buildMap() {
         if (map) {
@@ -150,6 +168,7 @@
           [0, 0],
           [MAP_HEIGHT_UNITS, MAP_WIDTH_UNITS],
         ];
+
         map = L.map("map", {
           crs: L.CRS.Simple,
           minZoom: -1,
@@ -162,7 +181,6 @@
         map.fitBounds(bounds);
         map.setMaxBounds(bounds);
 
-        // layer groups for marker types
         circlesLayer = L.layerGroup().addTo(map);
         benchesLayer = L.layerGroup().addTo(map);
         laddersLayer = L.layerGroup().addTo(map);
@@ -170,15 +188,14 @@
 
         origin = [MAP_HEIGHT_UNITS / 2, MAP_WIDTH_UNITS / 2];
 
-        /***********************************************
-         * DRAGGABLE ORIGIN MARKER
-         ***********************************************/
         originMarker = L.marker(origin, { draggable: true }).addTo(map);
+
         circle1 = L.circle(origin, {
           radius: radius1,
           color: "rgba(0,150,255,0.9)",
           fill: false,
         }).addTo(map);
+
         circle2 = L.circle(origin, {
           radius: radius2,
           color: "rgba(255,100,100,0.8)",
@@ -186,21 +203,17 @@
         }).addTo(map);
 
         originMarker.on("drag", (e) => {
-          const p = e.target.getLatLng();
-          circle1.setLatLng(p);
-          circle2.setLatLng(p);
+          const pos = e.target.getLatLng();
+          circle1.setLatLng(pos);
+          circle2.setLatLng(pos);
         });
 
         originMarker.on("dragend", (e) => {
           origin = [e.target.getLatLng().lat, e.target.getLatLng().lng];
         });
 
-        /***********************************************
-         * MAP CLICK LOGIC
-         ***********************************************/
         map.on("click", (e) => {
           if (isClickOnPanel) return;
-
           const rawPoint = [e.latlng.lat, e.latlng.lng];
 
           if (addPointMode) {
@@ -211,74 +224,105 @@
               newMarkerColor,
               newMarkerType
             );
+            saveMarkersToLocalStorage();
             return;
           }
+
           if (mode === "measure") measureTo(rawPoint);
         });
 
-        /***********************************************
-         * CONTROL PANEL UI
-         ***********************************************/
+        /**************************************************
+         * PANEL
+         **************************************************/
         const panel = L.control({ position: "topright" });
         panel.onAdd = () => {
           const div = L.DomUtil.create("div", "panel");
 
           div.innerHTML = `
-      <strong>Map Controls</strong><br>
-      <button id="measureBtn" class="active">Measure</button>
-      <button id="addPointBtn">Add Point</button>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>Map Controls</strong>
+              <button id="collapseBtn"
+                      style="background:#222;color:#fff;border:none;
+                             padding:2px 6px;border-radius:4px;cursor:pointer;">–</button>
+            </div>
 
-      <hr style="border-color:#555">
+            <div id="panelContent">
 
-      <label>Scale: <b>${PIXELS_PER_UNIT}</b> px/unit</label>
-      <label>Blue Radius: <input id="r1Input" type="number" value="${radius1}"></label>
-      <label>Red Radius: <input id="r2Input" type="number" value="${radius2}"></label>
-      <button id="applyBtn">Apply</button>
+              <strong>Map Controls</strong><br>
+              <button id="measureBtn" class="active">Measure</button>
+              <button id="addPointBtn">Add Point</button>
 
-      <hr style="border-color:#555">
+              <hr style="border-color:#555">
 
-      <strong>Custom Point Settings</strong>
-      <label>Label: <input id="labelInput" type="text" value="Custom Point"></label>
+              <label>Scale: <b>${PIXELS_PER_UNIT}</b> px/unit</label>
+              <label>Blue Radius: <input id="r1Input" type="number" value="${radius1}"></label>
+              <label>Red Radius: <input id="r2Input" type="number" value="${radius2}"></label>
+              <button id="applyBtn">Apply</button>
 
-      <label>Icon Type:
-        <select id="iconType">
-          <option value="circle">Colored Circle</option>
-          <option value="bench">Bench</option>
-          <option value="ladder">Ladder</option>
-          <option value="elevator">Elevator</option>
-        </select>
-      </label>
+              <hr style="border-color:#555">
 
-      <label>Color (circle only):
-        <input id="colorInput" class="colorInput" type="color" value="#00ff00">
-      </label>
+              <strong>Custom Point Settings</strong>
+              <label>Label: <input id="labelInput" type="text" value="Custom Point"></label>
 
-      <hr style="border-color:#555">
+              <label>Icon Type:
+                <select id="iconType">
+                  <option value="circle">Colored Circle</option>
+                  <option value="bench">Bench</option>
+                  <option value="ladder">Ladder</option>
+                  <option value="elevator">Elevator</option>
+                </select>
+              </label>
 
-      <strong>Marker Layers</strong>
-      <label><input type="checkbox" id="toggleCircles" checked> Show Circles</label>
-      <label><input type="checkbox" id="toggleBenches" checked> Show Benches</label>
-      <label><input type="checkbox" id="toggleLadders" checked> Show Ladders</label>
-      <label><input type="checkbox" id="toggleElevators" checked> Show Elevators</label>
+              <label>Color (circle only):
+                <input id="colorInput" class="colorInput" type="color" value="#00ff00">
+              </label>
 
-      <hr style="border-color:#555">
+              <hr style="border-color:#555">
 
-      <label><input type="checkbox" id="lockMarkers"> Lock markers (no drag)</label>
-      <small>Origin marker is always draggable.</small>
+              <strong>Marker Layers</strong>
+              <label><input type="checkbox" id="toggleCircles" checked> Show Circles</label>
+              <label><input type="checkbox" id="toggleBenches" checked> Show Benches</label>
+              <label><input type="checkbox" id="toggleLadders" checked> Show Ladders</label>
+              <label><input type="checkbox" id="toggleElevators" checked> Show Elevators</label>
 
-      <hr style="border-color:#555">
-      <small><b>Shortcuts:</b> 1=Bench, 2=Ladder, 3=Elevator, 4=Circle, M=Measure, P=Add Point</small>
-    `;
+              <hr style="border-color:#555">
+
+              <label><input type="checkbox" id="lockMarkers"> Lock markers (no drag)</label>
+              <small>Origin marker is always draggable.</small>
+
+              <hr style="border-color:#555">
+              <small><b>Shortcuts:</b>
+                1=Bench, 2=Ladder, 3=Elevator, 4=Circle, M=Measure, P=Add Point
+              </small>
+
+              <hr style="border-color:#555">
+
+              <button id="resetBtn" class="small">Reset Map</button>
+              <small>Clears all markers for this browser.</small>
+
+            </div>
+          `;
 
           L.DomEvent.disableClickPropagation(div);
           return div;
         };
         panel.addTo(map);
 
-        /***********************************************
-         * CONNECT PANEL INPUTS
-         ***********************************************/
+        /**************************************************
+         * HOOK UP UI
+         **************************************************/
         const p = document.querySelector(".panel");
+
+        const collapseBtn = p.querySelector("#collapseBtn");
+        const panelContent = p.querySelector("#panelContent");
+        let panelCollapsed = false;
+
+        collapseBtn.onclick = () => {
+          panelCollapsed = !panelCollapsed;
+          panelContent.style.display = panelCollapsed ? "none" : "block";
+          collapseBtn.textContent = panelCollapsed ? "+" : "–";
+        };
+
         const measureBtn = p.querySelector("#measureBtn");
         const addPointBtn = p.querySelector("#addPointBtn");
         const r1Input = p.querySelector("#r1Input");
@@ -287,14 +331,13 @@
         const labelInput = p.querySelector("#labelInput");
         const colorInput = p.querySelector("#colorInput");
         const iconTypeSelect = p.querySelector("#iconType");
-
         const toggleCircles = p.querySelector("#toggleCircles");
         const toggleBenches = p.querySelector("#toggleBenches");
         const toggleLadders = p.querySelector("#toggleLadders");
         const toggleElevators = p.querySelector("#toggleElevators");
         const lockCheckbox = p.querySelector("#lockMarkers");
+        const resetBtn = p.querySelector("#resetBtn");
 
-        // store UI refs for keyboard shortcuts
         ui = {
           measureBtn,
           addPointBtn,
@@ -308,6 +351,7 @@
           toggleLadders,
           toggleElevators,
           lockCheckbox,
+          resetBtn,
         };
 
         measureBtn.onclick = () => {
@@ -315,6 +359,7 @@
           addPointMode = false;
           setActive(measureBtn);
         };
+
         addPointBtn.onclick = () => {
           mode = "none";
           addPointMode = true;
@@ -332,32 +377,42 @@
         colorInput.oninput = (e) => (newMarkerColor = e.target.value);
         iconTypeSelect.onchange = (e) => (newMarkerType = e.target.value);
 
-        // layer visibility
-        toggleCircles.onchange = (e) => {
-          if (e.target.checked) map.addLayer(circlesLayer);
-          else map.removeLayer(circlesLayer);
-        };
-        toggleBenches.onchange = (e) => {
-          if (e.target.checked) map.addLayer(benchesLayer);
-          else map.removeLayer(benchesLayer);
-        };
-        toggleLadders.onchange = (e) => {
-          if (e.target.checked) map.addLayer(laddersLayer);
-          else map.removeLayer(laddersLayer);
-        };
-        toggleElevators.onchange = (e) => {
-          if (e.target.checked) map.addLayer(elevatorsLayer);
-          else map.removeLayer(elevatorsLayer);
-        };
+        toggleCircles.onchange = (e) =>
+          e.target.checked
+            ? map.addLayer(circlesLayer)
+            : map.removeLayer(circlesLayer);
 
-        // lock / unlock dragging
-        lockCheckbox.onchange = (e) => {
-          markersLocked = e.target.checked;
+        toggleBenches.onchange = (e) =>
+          e.target.checked
+            ? map.addLayer(benchesLayer)
+            : map.removeLayer(benchesLayer);
+
+        toggleLadders.onchange = (e) =>
+          e.target.checked
+            ? map.addLayer(laddersLayer)
+            : map.removeLayer(laddersLayer);
+
+        toggleElevators.onchange = (e) =>
+          e.target.checked
+            ? map.addLayer(elevatorsLayer)
+            : map.removeLayer(elevatorsLayer);
+
+        lockCheckbox.onchange = () => {
+          markersLocked = lockCheckbox.checked;
           customMarkers.forEach((m) => {
             if (!m || !m.dragging) return;
-            if (markersLocked) m.dragging.disable();
-            else m.dragging.enable();
+            markersLocked ? m.dragging.disable() : m.dragging.enable();
           });
+        };
+
+        resetBtn.onclick = () => {
+          const sure = confirm(
+            "Are you sure you want to reset the map? This will remove all markers for this browser."
+          );
+          if (!sure) return;
+
+          clearAllMarkersLocal();
+          localStorage.removeItem(STORAGE_KEY);
         };
 
         window.isClickOnPanel = false;
@@ -371,8 +426,9 @@
           btn.classList.add("active");
         }
 
-        // keyboard shortcuts
         document.addEventListener("keydown", onKeyDown);
+
+        loadMarkersFromLocalStorage();
       }
 
       /**************************************************
@@ -384,57 +440,52 @@
       }
 
       function onKeyDown(e) {
-        // ignore when typing in inputs
         const tag =
-          document.activeElement && document.activeElement.tagName
-            ? document.activeElement.tagName
-            : "";
+          (document.activeElement && document.activeElement.tagName) || "";
+
         if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(tag)) return;
 
-        if (!map) return;
-
         switch (e.key) {
-          case "1": // bench
+          case "1":
             newMarkerType = "bench";
-            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "bench";
+            ui.iconTypeSelect.value = "bench";
             break;
-          case "2": // ladder
+
+          case "2":
             newMarkerType = "ladder";
-            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "ladder";
+            ui.iconTypeSelect.value = "ladder";
             break;
-          case "3": // elevator
+
+          case "3":
             newMarkerType = "elevator";
-            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "elevator";
+            ui.iconTypeSelect.value = "elevator";
             break;
-          case "4": // circle
+
+          case "4":
             newMarkerType = "circle";
-            if (ui.iconTypeSelect) ui.iconTypeSelect.value = "circle";
+            ui.iconTypeSelect.value = "circle";
             break;
+
           case "m":
           case "M":
             mode = "measure";
             addPointMode = false;
-            if (ui.measureBtn && ui.addPointBtn) {
-              ui.measureBtn.classList.add("active");
-              ui.addPointBtn.classList.remove("active");
-            }
+            ui.measureBtn.classList.add("active");
+            ui.addPointBtn.classList.remove("active");
             break;
+
           case "p":
           case "P":
             mode = "none";
             addPointMode = true;
-            if (ui.measureBtn && ui.addPointBtn) {
-              ui.measureBtn.classList.remove("active");
-              ui.addPointBtn.classList.add("active");
-            }
-            break;
-          default:
+            ui.measureBtn.classList.remove("active");
+            ui.addPointBtn.classList.add("active");
             break;
         }
       }
 
       /**************************************************
-       * FUNCTIONS
+       * MEASUREMENT
        **************************************************/
       function measureTo(pt) {
         if (activeLine) map.removeLayer(activeLine);
@@ -442,6 +493,7 @@
         const du = Math.sqrt(
           (pt[0] - origin[0]) ** 2 + (pt[1] - origin[1]) ** 2
         );
+
         const dp = du * PIXELS_PER_UNIT;
 
         activeLine = L.polyline([origin, pt], {
@@ -453,45 +505,35 @@
           .setLatLng(pt)
           .setContent(
             `
-    <b>Distance:</b><br>
-    ${du.toFixed(2)} units<br>
-    ${dp.toFixed(0)} px
-  `
+            <b>Distance:</b><br>
+            ${du.toFixed(2)} units<br>
+            ${dp.toFixed(0)} px
+          `
           )
           .openOn(map);
       }
 
+      /**************************************************
+       * ADD CUSTOM MARKERS
+       **************************************************/
       let benchCount = 0;
       let ladderCount = 0;
       let elevatorCount = 0;
 
       function addCustomMarker(coords, label, color, type) {
-        // Auto-name logic
         if (type === "bench") {
           benchCount++;
-          label =
-            label.trim() === "Custom Point" ? `Bench #${benchCount}` : label;
+          if (label === "Custom Point") label = `Bench #${benchCount}`;
         } else if (type === "ladder") {
           ladderCount++;
-          label =
-            label.trim() === "Custom Point" ? `Ladder #${ladderCount}` : label;
+          if (label === "Custom Point") label = `Ladder #${ladderCount}`;
         } else if (type === "elevator") {
           elevatorCount++;
-          label =
-            label.trim() === "Custom Point"
-              ? `Elevator #${elevatorCount}`
-              : label;
-        } // circle keeps custom label
-
-        // Build icon HTML
-        let html;
-        if (type === "circle") {
-          html = ICONS.circle(color);
-        } else {
-          html = ICONS[type];
+          if (label === "Custom Point") label = `Elevator #${elevatorCount}`;
         }
 
-        // Choose layer group
+        let html = type === "circle" ? ICONS.circle(color) : ICONS[type];
+
         let targetLayer = circlesLayer;
         if (type === "bench") targetLayer = benchesLayer;
         else if (type === "ladder") targetLayer = laddersLayer;
@@ -513,44 +555,107 @@
 
         marker._markerLabel = label;
         marker._markerType = type;
+        marker._markerColor = color;
+
+        marker.on("dragend", () => {
+          const snapped = snapToGrid([
+            marker.getLatLng().lat,
+            marker.getLatLng().lng,
+          ]);
+          marker.setLatLng({ lat: snapped[0], lng: snapped[1] });
+          saveMarkersToLocalStorage();
+        });
 
         marker.bindPopup(`
-    <b>${label}</b><br>
-    <button onclick="editMarkerLabel(${index})">Edit Label</button>
-    <button onclick="deleteMarker(${index})">Delete</button>
-  `);
+          <b>${label}</b><br>
+          <button onclick="editMarkerLabel(${index})">Edit Label</button>
+          <button onclick="deleteMarker(${index})">Delete</button>
+        `);
 
         customMarkers.push(marker);
+        return marker;
       }
 
-      window.deleteMarker = (idx) => {
-        const m = customMarkers[idx];
-        if (m) {
-          map.removeLayer(m);
-          customMarkers[idx] = null;
+      function clearAllMarkersLocal() {
+        circlesLayer.clearLayers();
+        benchesLayer.clearLayers();
+        laddersLayer.clearLayers();
+        elevatorsLayer.clearLayers();
+        customMarkers = [];
+        benchCount = 0;
+        ladderCount = 0;
+        elevatorCount = 0;
+      }
+
+      /**************************************************
+       * LOCAL STORAGE
+       **************************************************/
+      function saveMarkersToLocalStorage() {
+        const data = customMarkers
+          .filter((m) => m)
+          .map((m) => {
+            const pos = m.getLatLng();
+            return {
+              lat: pos.lat,
+              lng: pos.lng,
+              label: m._markerLabel,
+              type: m._markerType,
+              color: m._markerColor,
+            };
+          });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function loadMarkersFromLocalStorage() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        try {
+          const data = JSON.parse(raw);
+          clearAllMarkersLocal();
+
+          data.forEach((d) =>
+            addCustomMarker([d.lat, d.lng], d.label, d.color, d.type)
+          );
+        } catch (err) {
+          console.error("localStorage parse error:", err);
         }
+      }
+
+      /**************************************************
+       * EDIT / DELETE MARKERS
+       **************************************************/
+      window.deleteMarker = (i) => {
+        const m = customMarkers[i];
+        if (!m) return;
+        map.removeLayer(m);
+        customMarkers[i] = null;
+        saveMarkersToLocalStorage();
       };
 
-      window.editMarkerLabel = (idx) => {
-        const m = customMarkers[idx];
+      window.editMarkerLabel = (i) => {
+        const m = customMarkers[i];
         if (!m) return;
-        const current = m._markerLabel || "Label";
+
+        const current = m._markerLabel;
         const updated = prompt("Edit label:", current);
         if (updated === null) return;
+
         const finalLabel = updated.trim() || current;
         m._markerLabel = finalLabel;
 
-        m.bindPopup(
-          `
-    <b>${finalLabel}</b><br>
-    <button onclick="editMarkerLabel(${idx})">Edit Label</button>
-    <button onclick="deleteMarker(${idx})">Delete</button>
-  `
-        ).openPopup();
+        m.bindPopup(`
+          <b>${finalLabel}</b><br>
+          <button onclick="editMarkerLabel(${i})">Edit Label</button>
+          <button onclick="deleteMarker(${i})">Delete</button>
+        `);
+
+        saveMarkersToLocalStorage();
       };
 
       /**************************************************
-       * START
+       * START MAP
        **************************************************/
       buildMap();
     </script>
