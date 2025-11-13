@@ -15,7 +15,6 @@
         height: 100%;
         margin: 0;
         background: #111;
-        font-family: "Segoe UI", sans-serif;
       }
       #map {
         width: 100%;
@@ -23,32 +22,27 @@
         border: 2px solid #333;
       }
       .panel {
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.75);
         color: #fff;
-        padding: 10px;
+        padding: 12px;
         border-radius: 8px;
+        font-family: sans-serif;
         font-size: 13px;
         line-height: 1.4em;
         user-select: none;
       }
       .panel label {
         display: block;
-        margin-top: 4px;
+        margin-top: 6px;
       }
-      .panel input,
-      .panel select {
+      .panel input {
         width: 120px;
-        padding: 2px 5px;
+        padding: 3px 5px;
         margin-left: 4px;
-        font-size: 12px;
-        border: 1px solid #555;
-        border-radius: 4px;
-        background: #222;
-        color: #fff;
       }
       .panel button {
         margin: 4px 2px;
-        padding: 6px 10px;
+        padding: 6px 12px;
         background: #444;
         color: #fff;
         border: none;
@@ -62,7 +56,6 @@
         width: 40px;
         padding: 0;
         border: none;
-        margin-left: 8px;
         cursor: pointer;
       }
     </style>
@@ -72,24 +65,59 @@
 
     <script>
       /**************************************************
-       * 🧭 CONFIGURATION
+       * MAP CONFIG
        **************************************************/
       const IMAGE_URL = "Lumiose_City_Day.png";
-      const IMAGE_WIDTH_PX = 2000; // ✅ fixed dimensions
+      const IMAGE_WIDTH_PX = 2000;
       const IMAGE_HEIGHT_PX = 2000;
-      const PIXELS_PER_UNIT = 1.975; // ✅ correct calibration
+      const PIXELS_PER_UNIT = 1.975; // your calibrated scale
 
       const MAP_WIDTH_UNITS = IMAGE_WIDTH_PX / PIXELS_PER_UNIT;
       const MAP_HEIGHT_UNITS = IMAGE_HEIGHT_PX / PIXELS_PER_UNIT;
 
-      let radius1 = 50; // blue
-      let radius2 = 70; // red
+      let radius1 = 50; // blue circle
+      let radius2 = 70; // red circle
       let customMarkers = [];
 
       let map, origin, originMarker, circle1, circle2, activeLine;
 
       /**************************************************
-       * 🗺️ INITIALIZE MAP
+       * SVG ICONS (Bench, Ladder, Elevator)
+       **************************************************/
+      const ICONS = {
+        circle: (color) => `
+    <div style="width:18px;height:18px;border-radius:50%;background:${color};
+         border:2px solid #000;"></div>
+  `,
+        bench: `
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      <rect x="2" y="10" width="20" height="4" fill="#b0793c" stroke="#000" stroke-width="1"/>
+      <rect x="2" y="6" width="20" height="4" fill="#d08c43" stroke="#000" stroke-width="1"/>
+      <rect x="4" y="14" width="2" height="6" fill="#7a4e21"/>
+      <rect x="18" y="14" width="2" height="6" fill="#7a4e21"/>
+    </svg>
+  `,
+        ladder: `
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      <rect x="7" y="3" width="3" height="18" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="14" y="3" width="3" height="18" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="7" y="6" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
+      <rect x="7" y="10" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
+      <rect x="7" y="14" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
+      <rect x="7" y="18" width="10" height="2" fill="#999" stroke="#000" stroke-width="1"/>
+    </svg>
+  `,
+        elevator: `
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="16" fill="#bbbbbb" stroke="#000" stroke-width="1"/>
+      <polygon points="8,10 12,6 16,10" fill="#333"/>
+      <polygon points="8,14 12,18 16,14" fill="#333"/>
+    </svg>
+  `,
+      };
+
+      /**************************************************
+       * INITIALIZE MAP
        **************************************************/
       function buildMap() {
         if (map) {
@@ -115,73 +143,103 @@
 
         origin = [MAP_HEIGHT_UNITS / 2, MAP_WIDTH_UNITS / 2];
 
-        /**************************************************
-         * 🎯 DRAGGABLE ORIGIN MARKER
-         **************************************************/
+        /***********************************************
+         * DRAGGABLE ORIGIN MARKER
+         ***********************************************/
         originMarker = L.marker(origin, { draggable: true }).addTo(map);
         circle1 = L.circle(origin, {
           radius: radius1,
           color: "rgba(0,150,255,0.9)",
-          weight: 2,
           fill: false,
         }).addTo(map);
         circle2 = L.circle(origin, {
           radius: radius2,
           color: "rgba(255,100,100,0.8)",
-          weight: 2,
           fill: false,
         }).addTo(map);
 
-        // Update circles as marker is dragged
         originMarker.on("drag", (e) => {
-          const newPos = e.target.getLatLng();
-          circle1.setLatLng(newPos);
-          circle2.setLatLng(newPos);
+          const p = e.target.getLatLng();
+          circle1.setLatLng(p);
+          circle2.setLatLng(p);
         });
 
-        // Finalize new origin position after drag
         originMarker.on("dragend", (e) => {
           origin = [e.target.getLatLng().lat, e.target.getLatLng().lng];
         });
 
+        /***********************************************
+         * MAP CLICK LOGIC
+         ***********************************************/
         let mode = "measure";
         let addPointMode = false;
         let newMarkerColor = "#00ff00";
         let newMarkerLabel = "Custom Point";
+        let newMarkerType = "circle";
 
         map.on("click", (e) => {
           if (isClickOnPanel) return;
-          const clicked = [e.latlng.lat, e.latlng.lng];
-          if (addPointMode)
-            return addCustomMarker(clicked, newMarkerLabel, newMarkerColor);
-          if (mode === "measure") measureTo(clicked);
+
+          const point = [e.latlng.lat, e.latlng.lng];
+
+          if (addPointMode) {
+            addCustomMarker(
+              point,
+              newMarkerLabel,
+              newMarkerColor,
+              newMarkerType
+            );
+            return;
+          }
+          if (mode === "measure") measureTo(point);
         });
 
-        /**************************************************
-         * 🎛️ CONTROL PANEL
-         **************************************************/
+        /***********************************************
+         * CONTROL PANEL UI
+         ***********************************************/
         const panel = L.control({ position: "topright" });
         panel.onAdd = () => {
           const div = L.DomUtil.create("div", "panel");
+
           div.innerHTML = `
-          <strong>Map Controls</strong><br>
-          <button id="measureBtn" class="active">Measure</button>
-          <button id="addPointBtn">Add Point</button>
-          <hr style="border-color:#444">
-          <label>Scale (px/unit): <b>${PIXELS_PER_UNIT}</b></label>
-          <label>Blue Radius (u): <input id="r1Input" type="number" step="1" value="${radius1}"></label>
-          <label>Red Radius (u): <input id="r2Input" type="number" step="1" value="${radius2}"></label>
-          <button id="applyBtn">Apply Changes</button>
-          <hr style="border-color:#444">
-          <strong>Custom Point</strong>
-          <label>Label: <input id="labelInput" type="text" value="Custom Point"></label>
-          <label>Color: <input id="colorInput" class="colorInput" type="color" value="#00ff00"></label>
-        `;
+      <strong>Map Controls</strong><br>
+      <button id="measureBtn" class="active">Measure</button>
+      <button id="addPointBtn">Add Point</button>
+
+      <hr style="border-color:#555">
+
+      <label>Scale: <b>${PIXELS_PER_UNIT}</b> px/unit</label>
+      <label>Blue Radius: <input id="r1Input" type="number" value="${radius1}"></label>
+      <label>Red Radius: <input id="r2Input" type="number" value="${radius2}"></label>
+      <button id="applyBtn">Apply</button>
+
+      <hr style="border-color:#555">
+
+      <strong>Custom Point Settings</strong>
+      <label>Label: <input id="labelInput" type="text" value="Custom Point"></label>
+
+      <label>Icon Type:
+        <select id="iconType">
+          <option value="circle">Colored Circle</option>
+          <option value="bench">Bench</option>
+          <option value="ladder">Ladder</option>
+          <option value="elevator">Elevator</option>
+        </select>
+      </label>
+
+      <label>Color (circle only):
+        <input id="colorInput" class="colorInput" type="color" value="#00ff00">
+      </label>
+    `;
+
           L.DomEvent.disableClickPropagation(div);
           return div;
         };
         panel.addTo(map);
 
+        /***********************************************
+         * CONNECT PANEL INPUTS
+         ***********************************************/
         const p = document.querySelector(".panel");
         const measureBtn = p.querySelector("#measureBtn");
         const addPointBtn = p.querySelector("#addPointBtn");
@@ -190,6 +248,7 @@
         const applyBtn = p.querySelector("#applyBtn");
         const labelInput = p.querySelector("#labelInput");
         const colorInput = p.querySelector("#colorInput");
+        const iconTypeSelect = p.querySelector("#iconType");
 
         measureBtn.onclick = () => {
           mode = "measure";
@@ -201,14 +260,17 @@
           addPointMode = true;
           setActive(addPointBtn);
         };
+
         applyBtn.onclick = () => {
           radius1 = parseFloat(r1Input.value);
           radius2 = parseFloat(r2Input.value);
           circle1.setRadius(radius1);
           circle2.setRadius(radius2);
         };
+
         labelInput.oninput = (e) => (newMarkerLabel = e.target.value);
         colorInput.oninput = (e) => (newMarkerColor = e.target.value);
+        iconTypeSelect.onchange = (e) => (newMarkerType = e.target.value);
 
         window.isClickOnPanel = false;
         p.addEventListener("mouseenter", () => (isClickOnPanel = true));
@@ -223,49 +285,66 @@
       }
 
       /**************************************************
-       * 🔹 HELPERS
+       * FUNCTIONS
        **************************************************/
       function measureTo(pt) {
         if (activeLine) map.removeLayer(activeLine);
+
         const du = Math.sqrt(
           (pt[0] - origin[0]) ** 2 + (pt[1] - origin[1]) ** 2
         );
         const dp = du * PIXELS_PER_UNIT;
+
         activeLine = L.polyline([origin, pt], {
           color: "lime",
-          weight: 2,
           dashArray: "5,5",
         }).addTo(map);
+
         L.popup()
           .setLatLng(pt)
           .setContent(
-            `<b>Distance:</b><br>${du.toFixed(2)} u<br>${dp.toFixed(0)} px`
+            `
+    <b>Distance:</b><br>
+    ${du.toFixed(2)} units<br>
+    ${dp.toFixed(0)} px
+  `
           )
           .openOn(map);
       }
 
-      function addCustomMarker(coords, label, color) {
+      function addCustomMarker(coords, label, color, type) {
+        let html;
+
+        if (type === "circle") {
+          html = ICONS.circle(color);
+        } else {
+          html = ICONS[type];
+        }
+
         const icon = L.divIcon({
-          className: "custom-pin",
-          html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid #000;"></div>`,
-          iconAnchor: [7, 7],
+          className: "",
+          html: `<div style="width:24px;height:24px;">${html}</div>`,
+          iconAnchor: [12, 12],
         });
+
         const marker = L.marker(coords, { icon }).addTo(map);
-        marker.bindPopup(
-          `<b>${label}</b><br><button onclick="deleteMarker(${customMarkers.length})">Delete</button>`
-        );
+        marker.bindPopup(`<b>${label}</b><br>
+    <button onclick="deleteMarker(${customMarkers.length})">Delete</button>`);
+
         customMarkers.push(marker);
       }
 
-      window.deleteMarker = (index) => {
-        const m = customMarkers[index];
+      window.deleteMarker = (idx) => {
+        const m = customMarkers[idx];
         if (m) {
           map.removeLayer(m);
-          customMarkers[index] = null;
+          customMarkers[idx] = null;
         }
       };
 
-      // 🚀 Initialize
+      /**************************************************
+       * START
+       **************************************************/
       buildMap();
     </script>
   </body>
