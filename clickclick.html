@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lumiose Map Marker Tool</title>
+  <style>
+    body { margin: 0; background: #222; color: white; font-family: Arial; }
+    #map {
+      display: block;
+      margin: 0 auto;
+      cursor: crosshair;
+      max-width: 100%;
+    }
+    #status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="status">Current type: <b>bench</b> (press B/L/A)</div>
+
+<img id="map" src="lumiose_city_BLE.png">
+
+<script>
+let markers = [];
+let currentType = "bench";
+
+const status = document.getElementById("status");
+
+document.addEventListener("keydown", (e) => {
+  if (e.key.toLowerCase() === "b") {
+    currentType = "bench";
+  } else if (e.key.toLowerCase() === "l") {
+    currentType = "ladder";
+  } else if (e.key.toLowerCase() === "a") {
+    currentType = "arrow";
+  } else if (e.key.toLowerCase() === "s") {
+    const blob = new Blob([JSON.stringify(markers, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "markers.json";
+    a.click();
+    return;
+  }
+  status.innerHTML = `Current type: <b>${currentType}</b> (press B/L/A)`;
+});
+
+document.getElementById("map").addEventListener("click", function (e) {
+  const rect = this.getBoundingClientRect();
+  const x = Math.round(e.clientX - rect.left);
+  const y = Math.round(e.clientY - rect.top);
+
+  const entry = { x, y, type: currentType };
+  markers.push(entry);
+  console.log("Added marker:", entry);
+});
+</script>
+
+</body>
+</html>
