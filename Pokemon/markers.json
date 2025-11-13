@@ -1,0 +1,20 @@
+[
+  {
+    "type": "bench",
+    "label": "Bench #1 - South Boulevard",
+    "lat": 820.5,
+    "lng": 1120.0
+  },
+  {
+    "type": "elevator",
+    "label": "Prism Tower Elevator",
+    "lat": 950.0,
+    "lng": 980.0
+  },
+  {
+    "type": "ladder",
+    "label": "Back Alley Ladder",
+    "lat": 700.5,
+    "lng": 460.5
+  }
+]
