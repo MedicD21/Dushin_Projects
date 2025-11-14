@@ -7,17 +7,124 @@
       "Yellow"
     ],
     "source": "Serebii.net AttackDex-Gen1",
-    "scraped_date": "2025-11-14 01:49:41",
-    "total_moves": 164,
+    "scraped_date": "2025-11-14 05:56:36",
+    "total_moves": 165,
     "merge_info": {
-      "new_moves": 164,
-      "updated_moves": 0,
-      "total_after_merge": 164
+      "new_moves": 154,
+      "updated_moves": 10,
+      "total_after_merge": 165
     }
   },
   "moves": [
     {
       "name": "Serebii.net Generation 1 AttackDex",
+      "battle_type": "Normal",
+      "category": "",
+      "power_points": 20,
+      "base_power": 15,
+      "accuracy": 85,
+      "battle_effect": "Traps and squeezes the target over two to five turns. The target cannot move while under attack.",
+      "secondary_effect": "",
+      "effect_rate": "",
+      "speed_priority": 0,
+      "pokemon_hit_in_battle": "",
+      "physical_contact": false,
+      "sound_type": false,
+      "punch_move": false,
+      "biting_move": false,
+      "snatchable": false,
+      "slicing_move": false,
+      "bullet_type": false,
+      "wind_move": false,
+      "powder_move": false,
+      "metronome": false,
+      "affected_by_gravity": false,
+      "defrosts_when_used": false,
+      "reflected_by_magic_coat": false,
+      "blocked_by_protect": false,
+      "copyable_by_mirror_move": false,
+      "learned_by": [
+        {
+          "dex_number": "0023",
+          "name": "Ekans",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0024",
+          "name": "Arbok",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0069",
+          "name": "Bellsprout",
+          "form": "Normal",
+          "method": "TM",
+          "level": 13
+        },
+        {
+          "dex_number": "0070",
+          "name": "Weepinbell",
+          "form": "Normal",
+          "method": "TM",
+          "level": 113
+        },
+        {
+          "dex_number": "0071",
+          "name": "Victreebel",
+          "form": "Normal",
+          "method": "TM",
+          "level": 13
+        },
+        {
+          "dex_number": "0072",
+          "name": "Tentacool",
+          "form": "Normal",
+          "method": "TM",
+          "level": 13
+        },
+        {
+          "dex_number": "0073",
+          "name": "Tentacruel",
+          "form": "Normal",
+          "method": "TM",
+          "level": 113
+        },
+        {
+          "dex_number": "0108",
+          "name": "Lickitung",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0147",
+          "name": "Dratini",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0148",
+          "name": "Dragonair",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0149",
+          "name": "Dragonite",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "name": "Absorb",
       "battle_type": "Grass",
       "category": "",
       "power_points": 20,
@@ -82,7 +189,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Acid",
       "battle_type": "Poison",
       "category": "",
       "power_points": 30,
@@ -182,7 +289,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Acid Armor",
       "battle_type": "Poison",
       "category": "",
       "power_points": 40,
@@ -233,7 +340,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Agility",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 30,
@@ -459,7 +566,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Amnesia",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 20,
@@ -531,7 +638,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Aurora Beam",
       "battle_type": "Ice",
       "category": "",
       "power_points": 20,
@@ -596,7 +703,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Barrage",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -640,7 +747,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Barrier",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 30,
@@ -698,7 +805,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bide",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -1598,7 +1705,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bind",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -1649,7 +1756,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bite",
       "battle_type": "Normal",
       "category": "",
       "power_points": 25,
@@ -1805,7 +1912,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Blizzard",
       "battle_type": "Ice",
       "category": "",
       "power_points": 5,
@@ -2203,7 +2310,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Body Slam",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -2913,7 +3020,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bone Club",
       "battle_type": "Ground",
       "category": "",
       "power_points": 20,
@@ -2957,7 +3064,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bonemerang",
       "battle_type": "Ground",
       "category": "",
       "power_points": 10,
@@ -3001,7 +3108,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bubble",
       "battle_type": "Water",
       "category": "",
       "power_points": 30,
@@ -3094,7 +3201,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Bubble Beam",
       "battle_type": "Water",
       "category": "",
       "power_points": 20,
@@ -3466,7 +3573,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Clamp",
       "battle_type": "Water",
       "category": "",
       "power_points": 10,
@@ -3510,7 +3617,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Comet Punch",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -3554,7 +3661,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Confuse Ray",
       "battle_type": "Ghost",
       "category": "",
       "power_points": 10,
@@ -3640,7 +3747,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Confusion",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 25,
@@ -3761,7 +3868,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Constrict",
       "battle_type": "Normal",
       "category": "",
       "power_points": 35,
@@ -3812,7 +3919,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Conversion",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -3849,7 +3956,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Counter",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 20,
@@ -4162,7 +4269,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Crabhammer",
       "battle_type": "Water",
       "category": "",
       "power_points": 10,
@@ -4206,7 +4313,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Cut",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -4416,7 +4523,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Defense Curl",
       "battle_type": "Normal",
       "category": "",
       "power_points": 40,
@@ -4502,7 +4609,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Dig",
       "battle_type": "Ground",
       "category": "",
       "power_points": 10,
@@ -4786,7 +4893,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Disable",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -4928,7 +5035,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Dizzy Punch",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -4965,7 +5072,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Double-Edge",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -5838,7 +5945,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Double Kick",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 30,
@@ -5924,7 +6031,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Double Slap",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -6024,7 +6131,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Double Team",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -6938,7 +7045,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Dragon Rage",
       "battle_type": "Dragon",
       "category": "",
       "power_points": 10,
@@ -7068,7 +7175,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Dream Eater",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 15,
@@ -7155,7 +7262,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Drill Peck",
       "battle_type": "Flying",
       "category": "",
       "power_points": 20,
@@ -7220,7 +7327,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Earthquake",
       "battle_type": "Ground",
       "category": "",
       "power_points": 10,
@@ -7465,7 +7572,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Egg Bomb",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -7519,7 +7626,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Ember",
       "battle_type": "Fire",
       "category": "",
       "power_points": 25,
@@ -7626,7 +7733,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Explosion",
       "battle_type": "Normal",
       "category": "",
       "power_points": 5,
@@ -7813,7 +7920,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fire Blast",
       "battle_type": "Fire",
       "category": "",
       "power_points": 5,
@@ -8119,7 +8226,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fire Punch",
       "battle_type": "Fire",
       "category": "",
       "power_points": 15,
@@ -8163,7 +8270,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fire Spin",
       "battle_type": "Fire",
       "category": "",
       "power_points": 15,
@@ -8249,7 +8356,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fissure",
       "battle_type": "Ground",
       "category": "",
       "power_points": 5,
@@ -8459,7 +8566,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Flamethrower",
       "battle_type": "Fire",
       "category": "",
       "power_points": 15,
@@ -8538,7 +8645,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Flash",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -8748,7 +8855,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fly",
       "battle_type": "Flying",
       "category": "",
       "power_points": 15,
@@ -8862,7 +8969,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Focus Energy",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -9004,7 +9111,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fury Attack",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -9118,7 +9225,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Fury Swipes",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -9218,7 +9325,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Glare",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -9262,7 +9369,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Growl",
       "battle_type": "Normal",
       "category": "",
       "power_points": 40,
@@ -9502,7 +9609,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Growth",
       "battle_type": "Normal",
       "category": "",
       "power_points": 40,
@@ -9588,7 +9695,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Guillotine",
       "battle_type": "Normal",
       "category": "",
       "power_points": 5,
@@ -9639,7 +9746,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Gust",
       "battle_type": "Normal",
       "category": "",
       "power_points": 35,
@@ -9697,7 +9804,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Harden",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -9839,7 +9946,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Haze",
       "battle_type": "Ice",
       "category": "",
       "power_points": 30,
@@ -9904,7 +10011,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Headbutt",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -9997,7 +10104,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Hi Jump Kick",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 20,
@@ -10034,7 +10141,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Horn Attack",
       "battle_type": "Normal",
       "category": "",
       "power_points": 25,
@@ -10127,7 +10234,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Horn Drill",
       "battle_type": "Normal",
       "category": "",
       "power_points": 5,
@@ -10301,7 +10408,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Hydro Pump",
       "battle_type": "Water",
       "category": "",
       "power_points": 5,
@@ -10464,7 +10571,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Hyper Beam",
       "battle_type": "Normal",
       "category": "",
       "power_points": 5,
@@ -10992,7 +11099,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Hyper Fang",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -11036,7 +11143,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Hypnosis",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 20,
@@ -11136,7 +11243,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Ice Beam",
       "battle_type": "Ice",
       "category": "",
       "power_points": 10,
@@ -11537,7 +11644,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Ice Punch",
       "battle_type": "Ice",
       "category": "",
       "power_points": 15,
@@ -11581,7 +11688,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Jump Kick",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 25,
@@ -11618,7 +11725,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Karate Chop",
       "battle_type": "Normal",
       "category": "",
       "power_points": 25,
@@ -11683,7 +11790,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Kinesis",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 15,
@@ -11727,7 +11834,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Leech Life",
       "battle_type": "Bug",
       "category": "",
       "power_points": 15,
@@ -11799,7 +11906,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Leech Seed",
       "battle_type": "Grass",
       "category": "",
       "power_points": 10,
@@ -11857,7 +11964,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Leer",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -12174,7 +12281,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Lick",
       "battle_type": "Ghost",
       "category": "",
       "power_points": 30,
@@ -12232,7 +12339,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Light Screen",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 30,
@@ -12325,7 +12432,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Lovely Kiss",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -12362,7 +12469,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Low Kick",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 20,
@@ -12427,7 +12534,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Meditate",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 40,
@@ -12485,7 +12592,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Mega Drain",
       "battle_type": "Grass",
       "category": "",
       "power_points": 10,
@@ -12689,7 +12796,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Mega Kick",
       "battle_type": "Normal",
       "category": "",
       "power_points": 5,
@@ -12990,7 +13097,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Mega Punch",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -13329,7 +13436,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Metronome",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -13548,7 +13655,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Mimic",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -14448,7 +14555,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Minimize",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -14520,7 +14627,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Mirror Move",
       "battle_type": "Flying",
       "category": "",
       "power_points": 20,
@@ -14585,7 +14692,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Mist",
       "battle_type": "Ice",
       "category": "",
       "power_points": 30,
@@ -14643,7 +14750,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Night Shade",
       "battle_type": "Ghost",
       "category": "",
       "power_points": 15,
@@ -14694,7 +14801,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Pay Day",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -14846,7 +14953,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Peck",
       "battle_type": "Flying",
       "category": "",
       "power_points": 35,
@@ -14939,7 +15046,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Petal Dance",
       "battle_type": "Grass",
       "category": "",
       "power_points": 20,
@@ -14990,7 +15097,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Pin Missile",
       "battle_type": "Bug",
       "category": "",
       "power_points": 20,
@@ -15034,7 +15141,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Poison Gas",
       "battle_type": "Poison",
       "category": "",
       "power_points": 40,
@@ -15092,7 +15199,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Poison Powder",
       "battle_type": "Poison",
       "category": "",
       "power_points": 35,
@@ -15220,7 +15327,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Poison Sting",
       "battle_type": "Poison",
       "category": "",
       "power_points": 35,
@@ -15341,7 +15448,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Pound",
       "battle_type": "Normal",
       "category": "",
       "power_points": 35,
@@ -15434,7 +15541,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Psybeam",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 20,
@@ -15506,7 +15613,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Psychic",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 10,
@@ -15810,7 +15917,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Psywave",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 15,
@@ -16044,7 +16151,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Quick Attack",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -16172,7 +16279,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Rage",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -17151,7 +17258,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Razor Leaf",
       "battle_type": "Grass",
       "category": "",
       "power_points": 25,
@@ -17223,7 +17330,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Razor Wind",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -17355,7 +17462,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Recover",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -17420,7 +17527,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Reflect",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 20,
@@ -18005,7 +18112,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Rest",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 10,
@@ -18933,7 +19040,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Roar",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -18991,7 +19098,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Rock Slide",
       "battle_type": "Rock",
       "category": "",
       "power_points": 10,
@@ -19153,7 +19260,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Rock Throw",
       "battle_type": "Rock",
       "category": "",
       "power_points": 15,
@@ -19211,7 +19318,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Rolling Kick",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 15,
@@ -19248,7 +19355,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sand-Attack",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -19362,7 +19469,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Scratch",
       "battle_type": "Normal",
       "category": "",
       "power_points": 35,
@@ -19532,7 +19639,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Screech",
       "battle_type": "Normal",
       "category": "",
       "power_points": 40,
@@ -19688,7 +19795,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Seismic Toss",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 20,
@@ -20078,7 +20185,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Self-Destruct",
       "battle_type": "Normal",
       "category": "",
       "power_points": 5,
@@ -20277,7 +20384,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sharpen",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -20314,7 +20421,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sing",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -20386,7 +20493,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Skull Bash",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -21031,7 +21138,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sky Attack",
       "battle_type": "Flying",
       "category": "",
       "power_points": 5,
@@ -21140,7 +21247,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Slam",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -21233,7 +21340,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Slash",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -21375,7 +21482,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sleep Powder",
       "battle_type": "Grass",
       "category": "",
       "power_points": 15,
@@ -21503,7 +21610,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sludge",
       "battle_type": "Poison",
       "category": "",
       "power_points": 20,
@@ -21561,7 +21668,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Smog",
       "battle_type": "Poison",
       "category": "",
       "power_points": 20,
@@ -21619,7 +21726,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Smokescreen",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -21684,7 +21791,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Soft-Boiled",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -21726,7 +21833,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Solar Beam",
       "battle_type": "Grass",
       "category": "",
       "power_points": 10,
@@ -21954,7 +22061,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Sonic Boom",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -22012,7 +22119,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Spike Cannon",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -22063,7 +22170,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Splash",
       "battle_type": "Normal",
       "category": "",
       "power_points": 40,
@@ -22100,7 +22207,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Spore",
       "battle_type": "Grass",
       "category": "",
       "power_points": 15,
@@ -22144,7 +22251,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Stomp",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -22237,7 +22344,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Strength",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -22603,7 +22710,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "String Shot",
       "battle_type": "Bug",
       "category": "",
       "power_points": 40,
@@ -22647,7 +22754,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Stun Spore",
       "battle_type": "Grass",
       "category": "",
       "power_points": 30,
@@ -22768,7 +22875,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Submission",
       "battle_type": "Fighting",
       "category": "",
       "power_points": 25,
@@ -23137,7 +23244,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Substitute",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -24044,7 +24151,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Super Fang",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -24088,7 +24195,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Supersonic",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -24223,7 +24330,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Surf",
       "battle_type": "Water",
       "category": "",
       "power_points": 15,
@@ -24499,7 +24606,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Swift",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -24970,7 +25077,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Swords Dance",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -25189,7 +25296,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Tackle",
       "battle_type": "Normal",
       "category": "",
       "power_points": 35,
@@ -25485,7 +25592,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Tail Whip",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -25711,7 +25818,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Take Down",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -26652,7 +26759,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Teleport",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 20,
@@ -26895,7 +27002,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Thrash",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -26967,7 +27074,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Thunder",
       "battle_type": "Electric",
       "category": "",
       "power_points": 10,
@@ -27325,7 +27432,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Thunderbolt",
       "battle_type": "Electric",
       "category": "",
       "power_points": 15,
@@ -27662,7 +27769,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Thunder Punch",
       "battle_type": "Electric",
       "category": "",
       "power_points": 15,
@@ -27706,7 +27813,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Thunder Shock",
       "battle_type": "Electric",
       "category": "",
       "power_points": 30,
@@ -27785,7 +27892,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Thunder Wave",
       "battle_type": "Electric",
       "category": "",
       "power_points": 20,
@@ -28051,7 +28158,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Toxic",
       "battle_type": "Poison",
       "category": "",
       "power_points": 10,
@@ -28951,7 +29058,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Transform",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -28995,7 +29102,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Tri Attack",
       "battle_type": "Normal",
       "category": "",
       "power_points": 10,
@@ -29172,7 +29279,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Twineedle",
       "battle_type": "Bug",
       "category": "",
       "power_points": 20,
@@ -29209,7 +29316,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Vice Grip",
       "battle_type": "Normal",
       "category": "",
       "power_points": 30,
@@ -29260,7 +29367,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Vine Whip",
       "battle_type": "Grass",
       "category": "",
       "power_points": 10,
@@ -29332,7 +29439,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Waterfall",
       "battle_type": "Water",
       "category": "",
       "power_points": 15,
@@ -29376,7 +29483,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Water Gun",
       "battle_type": "Water",
       "category": "",
       "power_points": 25,
@@ -29874,7 +29981,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Whirlwind",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,
@@ -30034,7 +30141,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Wing Attack",
       "battle_type": "Flying",
       "category": "",
       "power_points": 35,
@@ -30113,7 +30220,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Withdraw",
       "battle_type": "Water",
       "category": "",
       "power_points": 40,
@@ -30199,7 +30306,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 1 AttackDex",
+      "name": "Wrap",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,

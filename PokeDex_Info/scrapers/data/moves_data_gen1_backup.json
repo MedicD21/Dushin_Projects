@@ -7,7 +7,7 @@
       "Yellow"
     ],
     "source": "Serebii.net AttackDex-Gen1",
-    "scraped_date": "2025-11-14 01:50:58",
+    "scraped_date": "2025-11-14 05:51:55",
     "total_moves": 11,
     "merge_info": {
       "new_moves": 10,
@@ -22,8 +22,8 @@
       "category": "",
       "power_points": 20,
       "base_power": 15,
-      "accuracy": null,
-      "battle_effect": "Traps and squeezes the target over several turns. The target cannot move while under attack.",
+      "accuracy": 85,
+      "battle_effect": "Traps and squeezes the target over two to five turns. The target cannot move while under attack.",
       "secondary_effect": "",
       "effect_rate": "",
       "speed_priority": 0,
@@ -45,25 +45,81 @@
       "copyable_by_mirror_move": false,
       "learned_by": [
         {
-          "dex_number": "0095",
-          "name": "Onix",
+          "dex_number": "0023",
+          "name": "Ekans",
           "form": "Normal",
           "method": "TM",
-          "level": 15
+          "level": 1
         },
         {
-          "dex_number": "0114",
-          "name": "Tangela",
+          "dex_number": "0024",
+          "name": "Arbok",
           "form": "Normal",
           "method": "TM",
-          "level": 24
+          "level": 1
         },
         {
-          "dex_number": "0127",
-          "name": "Pinsir",
+          "dex_number": "0069",
+          "name": "Bellsprout",
           "form": "Normal",
           "method": "TM",
-          "level": 21
+          "level": 13
+        },
+        {
+          "dex_number": "0070",
+          "name": "Weepinbell",
+          "form": "Normal",
+          "method": "TM",
+          "level": 113
+        },
+        {
+          "dex_number": "0071",
+          "name": "Victreebel",
+          "form": "Normal",
+          "method": "TM",
+          "level": 13
+        },
+        {
+          "dex_number": "0072",
+          "name": "Tentacool",
+          "form": "Normal",
+          "method": "TM",
+          "level": 13
+        },
+        {
+          "dex_number": "0073",
+          "name": "Tentacruel",
+          "form": "Normal",
+          "method": "TM",
+          "level": 113
+        },
+        {
+          "dex_number": "0108",
+          "name": "Lickitung",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0147",
+          "name": "Dratini",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0148",
+          "name": "Dragonair",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
+        },
+        {
+          "dex_number": "0149",
+          "name": "Dragonite",
+          "form": "Normal",
+          "method": "TM",
+          "level": 1
         }
       ]
     },

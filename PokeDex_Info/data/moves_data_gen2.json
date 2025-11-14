@@ -7,7 +7,7 @@
       "Crystal"
     ],
     "source": "Serebii.net AttackDex-Gen2",
-    "scraped_date": "2025-11-14 01:32:20",
+    "scraped_date": "2025-11-14 05:44:50",
     "total_moves": 10,
     "merge_info": {
       "new_moves": 10,
@@ -17,7 +17,7 @@
   },
   "moves": [
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Absorb",
       "battle_type": "Grass",
       "category": "",
       "power_points": 20,
@@ -110,7 +110,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Acid",
       "battle_type": "Poison",
       "category": "",
       "power_points": 30,
@@ -196,7 +196,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Acid Armor",
       "battle_type": "Poison",
       "category": "",
       "power_points": 40,
@@ -259,7 +259,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Aeroblast",
       "battle_type": "Flying",
       "category": "",
       "power_points": 5,
@@ -296,7 +296,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Agility",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 30,
@@ -619,7 +619,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Amnesia",
       "battle_type": "Psychic",
       "category": "",
       "power_points": 20,
@@ -841,7 +841,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "AncientPower",
       "battle_type": "Rock",
       "category": "",
       "power_points": 5,
@@ -1091,7 +1091,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Attract",
       "battle_type": "Normal",
       "category": "",
       "power_points": 15,
@@ -2477,7 +2477,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Aurora Beam",
       "battle_type": "Ice",
       "category": "",
       "power_points": 20,
@@ -2641,7 +2641,7 @@
       ]
     },
     {
-      "name": "Serebii.net Generation 2 AttackDex",
+      "name": "Barrage",
       "battle_type": "Normal",
       "category": "",
       "power_points": 20,

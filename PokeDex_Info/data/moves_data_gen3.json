@@ -7,7 +7,7 @@
       "Emerald"
     ],
     "source": "Serebii.net AttackDex-Gen3",
-    "scraped_date": "2025-11-14 01:37:20",
+    "scraped_date": "2025-11-14 05:45:11",
     "total_moves": 9,
     "merge_info": {
       "new_moves": 9,
@@ -17,7 +17,7 @@
   },
   "moves": [
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Absorb",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -173,7 +173,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Acid",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -269,7 +269,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Acid Armor",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -335,7 +335,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Aerial Ace",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -1139,7 +1139,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Agility",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -1535,7 +1535,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Air Cutter",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -1601,7 +1601,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Amnesia",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -1943,7 +1943,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Ancientpower",
       "battle_type": "",
       "category": "",
       "power_points": null,
@@ -2291,7 +2291,7 @@
       }
     },
     {
-      "name": "Serebii.net Generation III AttackDex",
+      "name": "Arm Thrust",
       "battle_type": "",
       "category": "",
       "power_points": null,

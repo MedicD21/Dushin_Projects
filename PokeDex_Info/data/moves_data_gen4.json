@@ -7,7 +7,7 @@
       "Platinum"
     ],
     "source": "Serebii.net AttackDex-Gen4",
-    "scraped_date": "2025-11-14 01:38:55",
+    "scraped_date": "2025-11-14 05:46:09",
     "total_moves": 10,
     "merge_info": {
       "new_moves": 10,
@@ -17,7 +17,7 @@
   },
   "moves": [
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Absorb",
       "battle_type": "Grass",
       "category": "Special",
       "power_points": 25,
@@ -215,7 +215,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Acid",
       "battle_type": "Poison",
       "category": "Special",
       "power_points": 30,
@@ -334,7 +334,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Acid Armor",
       "battle_type": "Poison",
       "category": "Other",
       "power_points": 40,
@@ -430,7 +430,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Acupressure",
       "battle_type": "Normal",
       "category": "Other",
       "power_points": 30,
@@ -513,7 +513,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Aerial Ace",
       "battle_type": "Flying",
       "category": "Physical",
       "power_points": 20,
@@ -1640,7 +1640,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Aeroblast",
       "battle_type": "Flying",
       "category": "Special",
       "power_points": 5,
@@ -1684,7 +1684,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Agility",
       "battle_type": "Psychic",
       "category": "Other",
       "power_points": 30,
@@ -2396,7 +2396,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Air Cutter",
       "battle_type": "Flying",
       "category": "Special",
       "power_points": 25,
@@ -2870,7 +2870,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Air Slash",
       "battle_type": "Flying",
       "category": "Special",
       "power_points": 20,
@@ -3105,7 +3105,7 @@
       }
     },
     {
-      "name": "Serebii.net AttackDex",
+      "name": "Amnesia",
       "battle_type": "Psychic",
       "category": "Other",
       "power_points": 20,
