@@ -119,12 +119,13 @@ class ComprehensivePokemonScraper:
                     games_to_update = games
                     break
 
-            # Update game appearances
+            # Update game appearances with simplified region names
+            simplified_region = self._simplify_region_name(region_info)
             for game in games_to_update:
                 pokemon_entry["game_appearances"][game] = {
                     "dex_number": dex_num,
                     "available": True,
-                    "region": region_info,
+                    "region": simplified_region,
                 }
 
     def _parse_table_data(self, table, pokemon_entry: Dict):
@@ -202,6 +203,44 @@ class ComprehensivePokemonScraper:
         if location_tables:
             pokemon_entry["locations"]["has_location_data"] = True
             pokemon_entry["locations"]["location_count"] = len(location_tables)
+
+    def _simplify_region_name(self, region_info: str) -> str:
+        """Simplify region names to be cleaner and more consistent"""
+        region_lower = region_info.lower()
+
+        if "kanto" in region_lower:
+            return "Kanto"
+        elif "johto" in region_lower:
+            return "Johto"
+        elif "hoenn" in region_lower:
+            return "Hoenn"
+        elif "sinnoh" in region_lower:
+            return "Sinnoh"
+        elif "unova" in region_lower:
+            return "Unova"
+        elif "kalos" in region_lower:
+            return "Kalos"
+        elif "alola" in region_lower:
+            return "Alola"
+        elif "galar" in region_lower:
+            return "Galar"
+        elif "paldea" in region_lower:
+            return "Paldea"
+        elif "hisui" in region_lower:
+            return "Hisui"
+        elif "lumiose" in region_lower:
+            return "Lumiose"
+        elif "isle of armor" in region_lower:
+            return "Isle of Armor"
+        elif "crown tundra" in region_lower:
+            return "Crown Tundra"
+        elif "blueberry" in region_lower:
+            return "Blueberry Academy"
+        elif "kitakami" in region_lower:
+            return "Kitakami"
+        else:
+            # Return original if no match found
+            return region_info
 
     def scrape_all_pokemon(self, limit: Optional[int] = None, start_index: int = 0):
         """Scrape comprehensive data for all Pokemon"""
@@ -331,11 +370,11 @@ def main():
     # Interactive menu
     while True:
         print("Options:")
-        print("1. Test on single Pokemon (Bulbasaur)")
-        print("2. Scrape limited batch (specify number)")
-        print("3. Scrape all Pokemon (full run)")
-        print("4. Continue from specific index")
-        print("5. Show current statistics")
+        print("1. Test on single Pokemon (Bulbasaur) - [PREVIEW ONLY - NO SAVE]")
+        print("2. Scrape limited batch (specify number) - [SAVES TO FILE]")
+        print("3. Scrape all Pokemon (full run) - [SAVES TO FILE]")
+        print("4. Continue from specific index - [SAVES TO FILE]")
+        print("5. Show current statistics - [READ ONLY]")
         print("6. Exit")
 
         choice = input("Choose an option (1-6): ").strip()

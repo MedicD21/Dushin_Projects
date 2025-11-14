@@ -4610,74 +4610,6 @@
     }
   },
   {
-    "name": "Nidoran\u2640 (female)",
-    "pokedex_number": 29,
-    "species": "Poison Pin Pok\u00e9mon",
-    "types": [
-      "Poison"
-    ],
-    "abilities": {
-      "regular": [
-        "Poison Point",
-        "Rivalry"
-      ],
-      "hidden": "Hustle"
-    },
-    "base_stats": {
-      "hp": 55,
-      "attack": 47,
-      "defense": 52,
-      "speed": 41
-    },
-    "physical_info": {
-      "height": "0.4 m (1\u203204\u2033)",
-      "weight": "7.0 kg (15.4 lbs)"
-    },
-    "breeding_info": {
-      "egg_groups": [
-        "Field",
-        "Monster"
-      ],
-      "gender_ratio": "0% male, 100% female",
-      "egg_cycles": "20 (4,884\u20135,140 steps)",
-      "base_friendship": "50 (normal)",
-      "growth_rate": "Medium Slow"
-    },
-    "game_mechanics": {
-      "ev_yield": "1 HP",
-      "catch_rate": "235 (30.7% with Pok\u00e9Ball, full HP)",
-      "base_exp": "55"
-    },
-    "dex_entries": {
-      "red": "Although small, its venomous barbs render this POK\u00e9MON dangerous. The female has smaller horns.",
-      "blue": "Although small, its venomous barbs render this POK\u00e9MON dangerous. The female has smaller horns.",
-      "yellow": "A mild-mannered POK\u00e9MON that does not like to fight. Beware, its small horns secrete venom.",
-      "gold": "The poison hidden in its small horn is extremely potent. Even a tiny scratch can have fatal results.",
-      "silver": "Although not very combative, it will torment its foes with poison spikes if it is threatened in any way.",
-      "crystal": "Small and very docile, it protects itself with its small, poisonous horn when attacked.",
-      "ruby": "NIDORAN has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied POK\u00e9MON. When enraged, it releases a horrible toxin from its horn.",
-      "sapphire": "NIDORAN has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied POK\u00e9MON. When enraged, it releases a horrible toxin from its horn.",
-      "emerald": "Its highly toxic barbs are thought to have developed as protection for this small-bodied POK\u00e9MON. When enraged, it releases a horrible toxin from its horn.",
-      "firered": "Though small, it must be treated with caution because of its powerfully toxic barbs. The female has smaller horns.",
-      "leafgreen": "Although small, its venomous barbs render this POK\u00e9MON dangerous. The female has smaller horns.",
-      "diamond": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "pearl": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "platinum": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "heartgold": "The poison hidden in its small horn is extremely potent. Even a tiny scratch can have fatal results.",
-      "soulsilver": "Although not very combative, it will torment its foes with poison spikes if it is threatened in any way.",
-      "black": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "white": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "black2": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "white2": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
-      "x": "Although small, its venomous barbs render this Pok\u00e9mon dangerous. The female has smaller horns.",
-      "y": "Small and very docile, it protects itself with its small, poisonous horn when attacked.",
-      "omegaruby": "Nidoran\u2640 has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied Pok\u00e9mon. When enraged, it releases a horrible toxin from its horn.",
-      "alphasapphire": "Nidoran\u2640 has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied Pok\u00e9mon. When enraged, it releases a horrible toxin from its horn.",
-      "sword": "Females are more sensitive to smells than males. While foraging, they\u2019ll use their whiskers to check wind direction and stay downwind of predators.",
-      "shield": "It uses its hard incisor teeth to crush and eat berries. The tip of a female Nidoran\u2019s horn is a bit more rounded than the tip of a male\u2019s horn."
-    }
-  },
-  {
     "number": "#0030",
     "name": "Nidorina",
     "abilities": [
@@ -4932,74 +4864,6 @@
       "alphasapphire": "Nidoqueen\u2019s body is encased in extremely hard scales. It is adept at sending foes flying with harsh tackles. This Pok\u00e9mon is at its strongest when it is defending its young.",
       "sword": "Nidoqueen is better at defense than offense. With scales like armor, this Pok\u00e9mon will shield its children from any kind of attack.",
       "shield": "It pacifies offspring by placing them in the gaps between the spines on its back. The spines will never secrete poison while young are present."
-    }
-  },
-  {
-    "name": "Nidoran\u2642 (male)",
-    "pokedex_number": 32,
-    "species": "Poison Pin Pok\u00e9mon",
-    "types": [
-      "Poison"
-    ],
-    "abilities": {
-      "regular": [
-        "Poison Point",
-        "Rivalry"
-      ],
-      "hidden": "Hustle"
-    },
-    "base_stats": {
-      "hp": 46,
-      "attack": 57,
-      "defense": 40,
-      "speed": 50
-    },
-    "physical_info": {
-      "height": "0.5 m (1\u203208\u2033)",
-      "weight": "9.0 kg (19.8 lbs)"
-    },
-    "breeding_info": {
-      "egg_groups": [
-        "Field",
-        "Monster"
-      ],
-      "gender_ratio": "100% male, 0% female",
-      "egg_cycles": "20 (4,884\u20135,140 steps)",
-      "base_friendship": "50 (normal)",
-      "growth_rate": "Medium Slow"
-    },
-    "game_mechanics": {
-      "ev_yield": "1 Attack",
-      "catch_rate": "235 (30.7% with Pok\u00e9Ball, full HP)",
-      "base_exp": "55"
-    },
-    "dex_entries": {
-      "red": "Stiffens its ears to sense danger. The larger its horns, the more powerful its secreted venom.",
-      "blue": "Stiffens its ears to sense danger. The larger its horns, the more powerful its secreted venom.",
-      "yellow": "Its large ears are always kept upright. If it senses danger, it will attack with a poisonous sting.",
-      "gold": "It is small, but its horn is filled with poison. It charges then stabs with the horn to inject poison.",
-      "silver": "It raises its big ears to check its surroundings. It will strike first if it senses any danger.",
-      "crystal": "It constantly moves its large ears in many directions in order to detect danger right away.",
-      "ruby": "The male NIDORAN has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this POK\u00e9MON\u2019s notice.",
-      "sapphire": "The male NIDORAN has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this POK\u00e9MON\u2019s notice.",
-      "emerald": "The male NIDORAN has developed muscles that freely move its ears in any direction. Even the slightest sound does not escape this POK\u00e9MON\u2019s notice.",
-      "firered": "Its large ears are flapped like wings when it is listening to distant sounds. It extends toxic barbs when angered.",
-      "leafgreen": "It stiffens its ears to sense danger. The larger its horns, the more powerful its secreted venom.",
-      "diamond": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "pearl": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "platinum": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "heartgold": "It is small, but its horn is filled with poison. It charges then stabs with the horn to inject poison.",
-      "soulsilver": "It raises its big ears to check its surroundings. It will strike first if it senses any danger.",
-      "black": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "white": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "black2": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "white2": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "x": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
-      "y": "Its large ears are flapped like wings when it is listening to distant sounds. It extends toxic barbs when angered.",
-      "omegaruby": "Nidoran\u2642 has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this Pok\u00e9mon\u2019s notice.",
-      "alphasapphire": "Nidoran\u2642 has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this Pok\u00e9mon\u2019s notice.",
-      "sword": "The horn on a male Nidoran\u2019s forehead contains a powerful poison. This is a very cautious Pok\u00e9mon, always straining its large ears.",
-      "shield": "Small but brave, this Pok\u00e9mon will hold its ground and even risk its life in battle to protect the female it\u2019s friendly with."
     }
   },
   {
@@ -64023,6 +63887,142 @@
       "ev_yield": "3 Defense",
       "catch_rate": "3 (0.4% with Pok\u00e9Ball, full HP)",
       "base_exp": "\u2014"
+    }
+  },
+  {
+    "name": "Nidoran\u2640 (female)",
+    "pokedex_number": 29,
+    "species": "Poison Pin Pok\u00e9mon",
+    "types": [
+      "Poison"
+    ],
+    "abilities": {
+      "regular": [
+        "Poison Point",
+        "Rivalry"
+      ],
+      "hidden": "Hustle"
+    },
+    "base_stats": {
+      "hp": 55,
+      "attack": 47,
+      "defense": 52,
+      "speed": 41
+    },
+    "physical_info": {
+      "height": "0.4 m (1\u203204\u2033)",
+      "weight": "7.0 kg (15.4 lbs)"
+    },
+    "breeding_info": {
+      "egg_groups": [
+        "Field",
+        "Monster"
+      ],
+      "gender_ratio": "0% male, 100% female",
+      "egg_cycles": "20 (4,884\u20135,140 steps)",
+      "base_friendship": "50 (normal)",
+      "growth_rate": "Medium Slow"
+    },
+    "game_mechanics": {
+      "ev_yield": "1 HP",
+      "catch_rate": "235 (30.7% with Pok\u00e9Ball, full HP)",
+      "base_exp": "55"
+    },
+    "dex_entries": {
+      "red": "Although small, its venomous barbs render this POK\u00e9MON dangerous. The female has smaller horns.",
+      "blue": "Although small, its venomous barbs render this POK\u00e9MON dangerous. The female has smaller horns.",
+      "yellow": "A mild-mannered POK\u00e9MON that does not like to fight. Beware, its small horns secrete venom.",
+      "gold": "The poison hidden in its small horn is extremely potent. Even a tiny scratch can have fatal results.",
+      "silver": "Although not very combative, it will torment its foes with poison spikes if it is threatened in any way.",
+      "crystal": "Small and very docile, it protects itself with its small, poisonous horn when attacked.",
+      "ruby": "NIDORAN has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied POK\u00e9MON. When enraged, it releases a horrible toxin from its horn.",
+      "sapphire": "NIDORAN has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied POK\u00e9MON. When enraged, it releases a horrible toxin from its horn.",
+      "emerald": "Its highly toxic barbs are thought to have developed as protection for this small-bodied POK\u00e9MON. When enraged, it releases a horrible toxin from its horn.",
+      "firered": "Though small, it must be treated with caution because of its powerfully toxic barbs. The female has smaller horns.",
+      "leafgreen": "Although small, its venomous barbs render this POK\u00e9MON dangerous. The female has smaller horns.",
+      "diamond": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "pearl": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "platinum": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "heartgold": "The poison hidden in its small horn is extremely potent. Even a tiny scratch can have fatal results.",
+      "soulsilver": "Although not very combative, it will torment its foes with poison spikes if it is threatened in any way.",
+      "black": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "white": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "black2": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "white2": "While it does not prefer to fight, even one drop of the poison it secretes from barbs can be fatal.",
+      "x": "Although small, its venomous barbs render this Pok\u00e9mon dangerous. The female has smaller horns.",
+      "y": "Small and very docile, it protects itself with its small, poisonous horn when attacked.",
+      "omegaruby": "Nidoran\u2640 has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied Pok\u00e9mon. When enraged, it releases a horrible toxin from its horn.",
+      "alphasapphire": "Nidoran\u2640 has barbs that secrete a powerful poison. They are thought to have developed as protection for this small-bodied Pok\u00e9mon. When enraged, it releases a horrible toxin from its horn.",
+      "sword": "Females are more sensitive to smells than males. While foraging, they\u2019ll use their whiskers to check wind direction and stay downwind of predators.",
+      "shield": "It uses its hard incisor teeth to crush and eat berries. The tip of a female Nidoran\u2019s horn is a bit more rounded than the tip of a male\u2019s horn."
+    }
+  },
+  {
+    "name": "Nidoran\u2642 (male)",
+    "pokedex_number": 32,
+    "species": "Poison Pin Pok\u00e9mon",
+    "types": [
+      "Poison"
+    ],
+    "abilities": {
+      "regular": [
+        "Poison Point",
+        "Rivalry"
+      ],
+      "hidden": "Hustle"
+    },
+    "base_stats": {
+      "hp": 46,
+      "attack": 57,
+      "defense": 40,
+      "speed": 50
+    },
+    "physical_info": {
+      "height": "0.5 m (1\u203208\u2033)",
+      "weight": "9.0 kg (19.8 lbs)"
+    },
+    "breeding_info": {
+      "egg_groups": [
+        "Field",
+        "Monster"
+      ],
+      "gender_ratio": "100% male, 0% female",
+      "egg_cycles": "20 (4,884\u20135,140 steps)",
+      "base_friendship": "50 (normal)",
+      "growth_rate": "Medium Slow"
+    },
+    "game_mechanics": {
+      "ev_yield": "1 Attack",
+      "catch_rate": "235 (30.7% with Pok\u00e9Ball, full HP)",
+      "base_exp": "55"
+    },
+    "dex_entries": {
+      "red": "Stiffens its ears to sense danger. The larger its horns, the more powerful its secreted venom.",
+      "blue": "Stiffens its ears to sense danger. The larger its horns, the more powerful its secreted venom.",
+      "yellow": "Its large ears are always kept upright. If it senses danger, it will attack with a poisonous sting.",
+      "gold": "It is small, but its horn is filled with poison. It charges then stabs with the horn to inject poison.",
+      "silver": "It raises its big ears to check its surroundings. It will strike first if it senses any danger.",
+      "crystal": "It constantly moves its large ears in many directions in order to detect danger right away.",
+      "ruby": "The male NIDORAN has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this POK\u00e9MON\u2019s notice.",
+      "sapphire": "The male NIDORAN has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this POK\u00e9MON\u2019s notice.",
+      "emerald": "The male NIDORAN has developed muscles that freely move its ears in any direction. Even the slightest sound does not escape this POK\u00e9MON\u2019s notice.",
+      "firered": "Its large ears are flapped like wings when it is listening to distant sounds. It extends toxic barbs when angered.",
+      "leafgreen": "It stiffens its ears to sense danger. The larger its horns, the more powerful its secreted venom.",
+      "diamond": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "pearl": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "platinum": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "heartgold": "It is small, but its horn is filled with poison. It charges then stabs with the horn to inject poison.",
+      "soulsilver": "It raises its big ears to check its surroundings. It will strike first if it senses any danger.",
+      "black": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "white": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "black2": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "white2": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "x": "It scans its surroundings by raising its ears out of the grass. Its toxic horn is for protection.",
+      "y": "Its large ears are flapped like wings when it is listening to distant sounds. It extends toxic barbs when angered.",
+      "omegaruby": "Nidoran\u2642 has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this Pok\u00e9mon\u2019s notice.",
+      "alphasapphire": "Nidoran\u2642 has developed muscles for moving its ears. Thanks to them, the ears can be freely moved in any direction. Even the slightest sound does not escape this Pok\u00e9mon\u2019s notice.",
+      "sword": "The horn on a male Nidoran\u2019s forehead contains a powerful poison. This is a very cautious Pok\u00e9mon, always straining its large ears.",
+      "shield": "Small but brave, this Pok\u00e9mon will hold its ground and even risk its life in battle to protect the female it\u2019s friendly with."
     }
   }
 ]
