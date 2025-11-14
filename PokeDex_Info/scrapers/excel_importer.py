@@ -528,14 +528,14 @@ class ExcelDataImporter:
 
         # Process each game
         for excel_game, our_game in game_mappings.items():
-            # Check if dex number exists for this game (row_dict keys are lowercase)
-            dex_number = row_dict.get(excel_game.lower())
+            # Check if dex number exists for this game (keys are case-sensitive)
+            dex_number = row_dict.get(excel_game)
 
             # Find corresponding location column
             location = None
             for location_col, location_game in location_mappings.items():
                 if location_game == our_game:
-                    location = row_dict.get(location_col.lower())
+                    location = row_dict.get(location_col)
                     break
 
             if pd.notna(dex_number) and dex_number != "":

@@ -143,25 +143,76 @@ class PokemonDataOrchestrator:
                 if result.returncode != 0:
                     print(f"Game dex scraper exited with code {result.returncode}")
 
+            elif scraper_name == "moves":
+                print("Running moves scraper...")
+                result = subprocess.run(
+                    [sys.executable, "scrapers/moves_scraper.py"],
+                    cwd=os.path.dirname(__file__),
+                    capture_output=False,
+                )
+                if result.returncode != 0:
+                    print(f"Moves scraper exited with code {result.returncode}")
+
+            elif scraper_name == "items":
+                print("Running items scraper...")
+                result = subprocess.run(
+                    [sys.executable, "scrapers/items_scraper.py"],
+                    cwd=os.path.dirname(__file__),
+                    capture_output=False,
+                )
+                if result.returncode != 0:
+                    print(f"Items scraper exited with code {result.returncode}")
+
             else:
                 print(f"Scraper '{scraper_name}' not implemented yet")
 
         except Exception as e:
             print(f"Error running {scraper_name} scraper: {e}")
 
+    def run_excel_import(self):
+        """Run Excel data import"""
+        print("Running Excel data import...")
+
+        import subprocess
+        import sys
+
+        try:
+            print("Importing data from Master_Pokedex_Database.xlsx...")
+            result = subprocess.run(
+                [sys.executable, "scrapers/excel_importer.py"],
+                cwd=os.path.dirname(__file__),
+                capture_output=False,
+            )
+            if result.returncode == 0:
+                print("✅ Excel import completed successfully!")
+            else:
+                print(f"Excel import exited with code {result.returncode}")
+
+        except Exception as e:
+            print(f"Error running Excel import: {e}")
+
     def show_menu(self):
         """Display main menu"""
         print("=== Pokemon Data Collection System ===")
         print()
-        print("Available Operations:")
+        print("Data Sources:")
         print("1. Show project status - [READ ONLY]")
-        print("2. Run basic Pokemon scraper - [SAVES TO data/pokemon_data.json]")
-        print("3. Run comprehensive Pokemon scraper - [HAS PREVIEW & SAVE OPTIONS]")
-        print("4. Run game dex scraper - [SAVES TO data/pokemon_data.json]")
-        print("5. Run abilities scraper - [SAVES TO data/abilities_data.json]")
-        print("6. Run all scrapers (complete collection) - [SAVES ALL DATA]")
-        print("7. Data management tools - [BACKUP/VALIDATION TOOLS]")
-        print("8. Exit")
+        print()
+        print("Excel Import:")
+        print("2. Import from Excel spreadsheet - [MERGES WITH data/pokemon_data.json]")
+        print()
+        print("Serebii Web Scrapers:")
+        print("3. Run basic Pokemon scraper - [SAVES TO data/pokemon_data.json]")
+        print("4. Run comprehensive Pokemon scraper - [HAS PREVIEW & SAVE OPTIONS]")
+        print("5. Run game dex scraper - [SAVES TO data/pokemon_data.json]")
+        print("6. Run abilities scraper - [SAVES TO data/abilities_data.json]")
+        print("7. Run moves scraper - [SAVES TO data/moves_data.json]")
+        print("8. Run items scraper - [SAVES TO data/items_data.json]")
+        print("9. Run all scrapers (complete collection) - [SAVES ALL DATA]")
+        print()
+        print("Tools & Management:")
+        print("10. Data management tools - [BACKUP/VALIDATION TOOLS]")
+        print("11. Exit")
         print()
 
     def data_management_menu(self):
@@ -171,11 +222,12 @@ class PokemonDataOrchestrator:
             print("1. Backup current data")
             print("2. Validate data integrity")
             print("3. Export data summary")
-            print("4. Clean up duplicate entries")
-            print("5. Reset specific dataset")
-            print("6. Return to main menu")
+            print("4. Check Excel file status")
+            print("5. Clean up duplicate entries")
+            print("6. Reset specific dataset")
+            print("7. Return to main menu")
 
-            choice = input("Choose option (1-6): ").strip()
+            choice = input("Choose option (1-7): ").strip()
 
             if choice == "1":
                 self.backup_data()
@@ -184,10 +236,12 @@ class PokemonDataOrchestrator:
             elif choice == "3":
                 self.export_summary()
             elif choice == "4":
-                self.clean_duplicates()
+                self.check_excel_status()
             elif choice == "5":
-                self.reset_dataset()
+                self.clean_duplicates()
             elif choice == "6":
+                self.reset_dataset()
+            elif choice == "7":
                 break
             else:
                 print("Invalid choice.")
@@ -265,6 +319,57 @@ class PokemonDataOrchestrator:
         print(f"Summary exported to {summary_file}")
         print(json.dumps(summary, indent=2))
 
+    def check_excel_status(self):
+        """Check Excel file status and information"""
+        excel_file = "Master_Pokedex_Database.xlsx"
+
+        print("=== Excel File Status ===")
+
+        if os.path.exists(excel_file):
+            from datetime import datetime
+
+            # Get file info
+            file_size = os.path.getsize(excel_file)
+            mod_time = os.path.getmtime(excel_file)
+            mod_date = datetime.fromtimestamp(mod_time).strftime("%Y-%m-%d %H:%M:%S")
+
+            print(f"✅ Excel file found: {excel_file}")
+            print(f"   Size: {file_size:,} bytes ({file_size/(1024*1024):.1f} MB)")
+            print(f"   Last modified: {mod_date}")
+
+            # Try to get basic Excel info
+            try:
+                import pandas as pd
+
+                excel_info = pd.ExcelFile(excel_file)
+                sheet_names = [str(name) for name in excel_info.sheet_names]
+                print(f"   Sheets: {', '.join(sheet_names)}")
+
+                # Check main sheet
+                if "MasterDex" in excel_info.sheet_names:
+                    df = pd.read_excel(excel_file, sheet_name="MasterDex", header=1)
+                    print(
+                        f"   MasterDex sheet: {len(df)} rows, {len(df.columns)} columns"
+                    )
+
+                    # Check for ref_id column
+                    if "ref_id" in df.columns:
+                        base_forms = df[df["ref_id"].str.endswith("-00", na=False)]
+                        print(f"   Base forms (-00): {len(base_forms)} entries")
+                    else:
+                        print("   Warning: 'ref_id' column not found")
+
+            except ImportError:
+                print("   Note: Install pandas to see detailed Excel info")
+            except Exception as e:
+                print(f"   Error reading Excel file: {e}")
+
+        else:
+            print(f"❌ Excel file not found: {excel_file}")
+            print("   Make sure the Excel file is in the project root directory")
+
+        print()
+
     def clean_duplicates(self):
         """Clean duplicate entries"""
         print("Duplicate cleaning not yet implemented")
@@ -304,27 +409,47 @@ class PokemonDataOrchestrator:
         """Main program loop"""
         while True:
             self.show_menu()
-            choice = input("Choose option (1-8): ").strip()
+            choice = input("Choose option (1-11): ").strip()
 
             if choice == "1":
                 self.show_project_status()
             elif choice == "2":
-                self.run_scraper("basic")
+                self.run_excel_import()
+                input("\nPress Enter to continue...")
             elif choice == "3":
-                self.run_scraper("comprehensive")
+                self.run_scraper("basic")
+                input("\nPress Enter to continue...")
             elif choice == "4":
-                self.run_scraper("games")
+                self.run_scraper("comprehensive")
+                input("\nPress Enter to continue...")
             elif choice == "5":
-                self.run_scraper("abilities")
+                self.run_scraper("games")
+                input("\nPress Enter to continue...")
             elif choice == "6":
+                self.run_scraper("abilities")
+                input("\nPress Enter to continue...")
+            elif choice == "7":
+                self.run_scraper("moves")
+                input("\nPress Enter to continue...")
+            elif choice == "8":
+                self.run_scraper("items")
+                input("\nPress Enter to continue...")
+            elif choice == "9":
                 print("Running all scrapers...")
-                for scraper in ["basic", "comprehensive", "games", "abilities"]:
+                for scraper in [
+                    "basic",
+                    "comprehensive",
+                    "games",
+                    "abilities",
+                    "moves",
+                    "items",
+                ]:
                     print(f"\n--- Running {scraper} scraper ---")
                     self.run_scraper(scraper)
                 print("All scrapers completed!")
-            elif choice == "7":
+            elif choice == "10":
                 self.data_management_menu()
-            elif choice == "8":
+            elif choice == "11":
                 print("Goodbye!")
                 break
             else:

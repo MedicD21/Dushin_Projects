@@ -1,0 +1,3 @@
+fix pokemon_data with all of the base stats 
+do items scraper 
+configure weaknesses chart 

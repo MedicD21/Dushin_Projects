@@ -1,84 +1,116 @@
 # Pokemon Data Collection System
 
-A comprehensive Python-based system for scraping and organizing Pokemon data from Serebii.net.
+A comprehensive Python-based system for scraping Pokemon data from Serebii.net and importing data from Excel spreadsheets. This system collects, processes, and organizes Pokemon data for analysis and future programming projects.
 
 ## Project Structure
 
 ```
 PokeDex_Info/
-├── main.py                     # Main orchestrator script
-├── requirements.txt            # Python dependencies
-├── data/                       # Data storage
-│   ├── pokemon_data.json      # Main Pokemon dataset
-│   ├── pokemon_games.json     # Pokemon games information
-│   ├── abilities_data.json    # Abilities database
-│   └── moves_data.json        # Moves database
-├── scrapers/                   # Specialized scrapers
-│   ├── pokemon_info.py        # Basic Pokemon info scraper
-│   ├── comprehensive_scraper.py # Detailed Pokemon data scraper
-│   ├── game_dex_scraper_v3.py # Game-specific dex numbers
-│   └── abilities_scraper.py   # Abilities scraper
-├── utils/                      # Shared utilities
-│   ├── config.py              # Configuration and utilities
-│   └── grab_info.py           # Data access functions
-└── README.md                   # This file
+├── main.py                               # Main orchestrator script
+├── requirements.txt                      # Python dependencies
+├── Master_Pokedex_Database.xlsx         # Excel data source
+├── venv/                                # Virtual environment
+├── data/                                # Data storage
+│   ├── pokemon_data.json               # Main Pokemon dataset (1025 entries)
+│   ├── pokemon_data_backup_before_excel.json # Backup before Excel import
+│   ├── pokemon_games.json              # Pokemon games information
+│   └── abilities_data.json             # Abilities database
+├── scrapers/                            # Data collection scripts
+│   ├── pokemon_info.py                 # Basic Pokemon info scraper
+│   ├── comprehensive_scraper.py        # Detailed Pokemon data scraper
+│   ├── game_dex_scraper.py            # Game-specific dex numbers
+│   ├── abilities_scraper.py           # Abilities scraper
+│   └── excel_importer.py              # Excel data importer & merger
+└── utils/                               # Shared utilities
+    ├── config.py                       # Configuration and utilities
+    └── grab_info.py                    # Data access functions
 ```
 
-## Features
+## What Each Component Does
 
-### Data Collection
+### 📁 Data Files (`data/`)
 
-- **Basic Pokemon Info**: National dex number, name, types, abilities, base stats
-- **Physical Information**: Height, weight, species category
-- **Regional Pokedex Numbers**: Dex numbers across all games and regions
-- **Game Appearances**: Which games each Pokemon appears in
-- **Evolution Data**: Evolution chains and requirements
-- **Location Data**: Where to find Pokemon in each game
-- **Abilities Database**: Detailed ability information
-- **Moves Database**: Move sets and learning methods
+- **`pokemon_data.json`** - The main Pokemon dataset containing 1025 Pokemon with comprehensive information including base stats, breeding info, physical data, game appearances, evolution chains, and Pokedex entries across all games
+- **`pokemon_data_backup_before_excel.json`** - Backup created before Excel imports to preserve data integrity
+- **`pokemon_games.json`** - Database of all Pokemon games with regional information and chronological data
+- **`abilities_data.json`** - Complete abilities database with descriptions and effects
 
-### Scrapers Available
+### 🔧 Scrapers (`scrapers/`)
 
-1. **Basic Scraper** (`pokemon_info.py`)
+1. **`pokemon_info.py`** - Basic Pokemon Data Scraper
 
    - Scrapes fundamental Pokemon data from Serebii's main Pokedex
-   - Collects: National #, name, types, abilities, base stats (HP, Att, Def, SpA, SpD, Speed)
+   - Collects: National dex number, name, types, abilities, base stats (HP, Attack, Defense, Sp. Attack, Sp. Defense, Speed)
+   - Fast and efficient for basic data collection
 
-2. **Comprehensive Scraper** (`comprehensive_scraper.py`)
+2. **`comprehensive_scraper.py`** - Detailed Pokemon Data Scraper
 
-   - Collects detailed information from individual Pokemon pages
-   - Adds: Physical stats, species info, regional dex numbers, game appearances
-   - Parses complex HTML structures and concatenated data
+   - Collects comprehensive information from individual Pokemon pages
+   - Adds: Physical stats, species info, regional dex numbers, game appearances, locations
+   - Parses complex HTML structures and handles concatenated data
+   - More thorough but slower than basic scraper
 
-3. **Game Dex Scraper** (`game_dex_scraper_v3.py`)
+3. **`game_dex_scraper.py`** - Regional Pokedex Number Scraper
 
-   - Focuses specifically on regional Pokedex numbers
+   - Focuses specifically on regional Pokedex numbers across all games
    - Maps regional entries to specific games (e.g., "Kanto (RBY)" → Red/Blue/Yellow)
-   - Handles DLC areas and special regions
+   - Handles DLC areas and special regions like Isle of Armor, Crown Tundra
 
-4. **Abilities Scraper** (`abilities_scraper.py`)
-   - Scrapes detailed ability information
-   - Collects descriptions, effects, and Pokemon that have each ability
+4. **`abilities_scraper.py`** - Abilities Database Scraper
 
-### Utilities
+   - Scrapes detailed ability information from Serebii
+   - Collects descriptions, effects, and lists of Pokemon that have each ability
+   - Creates comprehensive abilities reference
 
-- **Configuration System** (`utils/config.py`)
+5. **`excel_importer.py`** - Excel Data Importer & Merger
+   - Imports data from `Master_Pokedex_Database.xlsx`
+   - Merges Excel data with existing JSON data intelligently
+   - Handles data normalization (e.g., fixes comma-separated gender ratios)
+   - Creates backups before making changes
+   - Processes breeding info, game mechanics, physical data, and Pokedex entries
 
-  - Centralized settings and URL management
-  - Data file path management
-  - Common parsing utilities
-  - Request handling with rate limiting
+### 🛠️ Utilities (`utils/`)
 
-- **Data Access Functions** (`utils/grab_info.py`)
-  - Easy access to Pokemon data
-  - Game information queries
-  - Data filtering and search functions
+- **`config.py`** - Configuration System & Utilities
+
+  - Centralized settings and URL management for all scrapers
+  - Data file path management and constants
+  - Common parsing utilities and helper functions
+  - Request handling with rate limiting to respect Serebii's servers
+  - Shared data structures and validation functions
+
+- **`grab_info.py`** - Data Access Functions
+  - Easy programmatic access to Pokemon data
+  - Game information queries and filtering
+  - Search functions for finding specific Pokemon or data
+  - Helper functions for analyzing and working with the dataset
+
+### 📊 Excel Integration
+
+- **`Master_Pokedex_Database.xlsx`** - Excel Data Source
+  - Comprehensive Excel spreadsheet with 1025+ Pokemon entries
+  - Contains base stats, breeding information, physical data, and game-specific information
+  - Serves as authoritative source for certain data fields
+  - Updated and maintained separately, then imported via `excel_importer.py`
+
+### 🚀 Main Script
+
+- **`main.py`** - Orchestrator Script
+  - Coordinates all scrapers and data collection processes
+  - Manages the workflow for comprehensive data gathering
+  - Handles error recovery and progress tracking
+  - Entry point for running the complete data collection system
 
 ## Usage
 
 ### Quick Start
 
 ```bash
+# Activate virtual environment
+source venv/bin/activate  # On macOS/Linux
+# or
+venv\Scripts\activate     # On Windows
+
 # Install dependencies
 pip install -r requirements.txt
 
@@ -86,17 +118,29 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### Running Individual Scrapers
+### Running Individual Components
+
+#### Website Scrapers
 
 ```bash
-# Basic Pokemon data
+# Basic Pokemon data from Serebii
 python scrapers/pokemon_info.py
 
 # Comprehensive data collection
 python scrapers/comprehensive_scraper.py
 
 # Game-specific dex numbers
-python scrapers/game_dex_scraper_v3.py
+python scrapers/game_dex_scraper.py
+
+# Abilities database
+python scrapers/abilities_scraper.py
+```
+
+#### Excel Data Processing
+
+```bash
+# Import and merge Excel data (creates backup automatically)
+python scrapers/excel_importer.py
 ```
 
 ### Using Data Access Functions
@@ -118,8 +162,11 @@ games = get_all_games()
 
 ### Pokemon Data Format
 
+The main `pokemon_data.json` contains comprehensive Pokemon information organized into logical categories:
+
 ```json
 {
+  "ref_id": "0001-00",
   "number": "#0001",
   "name": "Bulbasaur",
   "types": ["Grass", "Poison"],
@@ -130,16 +177,36 @@ games = get_all_games()
     "defense": 49,
     "sp_attack": 65,
     "sp_defense": 65,
-    "speed": 45
+    "speed": 45,
+    "total": 318
   },
   "physical_info": {
     "species": "Seed Pokémon",
-    "height_meters": 0.7,
-    "weight_kilograms": 6.9
+    "height": "0.7 m (2′04″)",
+    "weight": "6.9 kg (15.2 lbs)"
+  },
+  "breeding_info": {
+    "egg_groups": ["Grass", "Monster"],
+    "gender_ratio": "87.5% male, 12.5% female",
+    "egg_cycles": 20,
+    "base_friendship": 50
+  },
+  "game_mechanics": {
+    "catch_rate": 45,
+    "base_exp": 64,
+    "growth_rate": "Medium Slow",
+    "ev_yield": "1 Sp. Atk"
+  },
+  "evolution_info": {
+    "evolution_chain": "Bulbasaur → Ivysaur (Level 16) → Venusaur (Level 32)"
   },
   "game_appearances": {
-    "Red": { "dex_number": 1, "available": true },
-    "Blue": { "dex_number": 1, "available": true }
+    "Red": {
+      "dex_number": 1,
+      "available": true,
+      "location": "Pallet Town",
+      "dex_entry": "A strange seed was planted on its back at birth..."
+    }
   }
 }
 ```
@@ -156,7 +223,16 @@ games = get_all_games()
 }
 ```
 
-## Regional Dex Mapping
+## Data Integration Features
+
+### Excel to JSON Merging
+
+- **Intelligent Merging**: Excel data takes precedence for base stats, breeding info, and physical data
+- **Data Normalization**: Automatically fixes formatting issues (e.g., comma-separated gender ratios)
+- **Backup Creation**: Creates automatic backups before any data modifications
+- **Validation**: Ensures data integrity during import process
+
+### Regional Dex Mapping
 
 The system automatically maps regional Pokedex entries to specific games:
 
@@ -170,7 +246,7 @@ The system automatically maps regional Pokedex entries to specific games:
 - **Lumiose** → Legends Z-A
 - And many more...
 
-## Development
+## Development & Maintenance
 
 ### Adding New Scrapers
 
@@ -178,20 +254,29 @@ The system automatically maps regional Pokedex entries to specific games:
 2. Import and add to `main.py` orchestrator
 3. Follow existing patterns for data structure
 4. Use utilities from `utils/config.py` for consistency
+5. Include respectful delays and error handling
 
-### Data Management
+### Data Management Best Practices
 
-- Automatic backups before major operations
-- Data validation and integrity checking
-- Export tools for analysis
-- Duplicate detection and cleanup
+- **Automatic Backups**: System creates backups before major operations
+- **Data Validation**: Built-in integrity checking and validation
+- **Progress Tracking**: Long-running operations save progress
+- **Error Recovery**: Robust error handling for network issues and parsing errors
 
-## Notes
+### Excel Data Updates
 
-- Scrapers include respectful delays (0.5s between requests)
-- Error handling for network issues and parsing errors
-- Progress saving for long-running operations
-- Comprehensive logging and status reporting
+1. Update `Master_Pokedex_Database.xlsx` with new information
+2. Run `python scrapers/excel_importer.py` to merge changes
+3. System automatically creates backup and validates data
+4. Check console output for merge statistics and any issues
+
+## System Features
+
+- **Respectful Scraping**: 0.5-second delays between requests to avoid overwhelming servers
+- **Data Integrity**: Comprehensive validation and backup systems
+- **Flexible Architecture**: Easy to extend with new scrapers and data sources
+- **Excel Integration**: Seamless merging of spreadsheet data with scraped information
+- **Clean Data Structure**: Organized JSON format perfect for analysis and programming
 
 ## Contributing
 
