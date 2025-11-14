@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boss Gal IT Ticket System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-black: #f6e0d4;
+        --logo-pink: #d15570;
+        --pastel-green: #96d3b5;
+        --light-cream: #c4ab9e;
+        --text-dark: #2d2d2d;
+        --border-color: #e8d5d9;
+        --success: #9fe4c2;
+        --warning: #f0b090;
+        --danger: #f0a8a8;
+        --info: #a8c8d9;
+      }
+
+      body {
+        font-family: "Futura", sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--light-cream) 0%,
+          #ffffff 100%
+        );
+        color: var(--text-dark);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      /* Header */
+      header {
+        background: var(--primary-black);
+        padding: 30px 40px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-bottom: 3px solid var(--logo-pink);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .header-title {
+        color: var(--light-beige);
+      }
+
+      .header-title h1 {
+        font-size: 2.5em;
+        font-weight: normal;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+      }
+
+      .header-title p {
+        color: var(--logo-pink);
+        font-style: italic;
+        font-size: 0.95em;
+      }
+
+      .header-title img {
+        max-height: 100px;
+        width: auto;
+        margin-bottom: 10px;
+      }
+
+      .header-stats {
+        display: flex;
+        gap: 30px;
+      }
+
+      .stat-box {
+        text-align: center;
+        padding: 15px 25px;
+        background: rgba(217, 155, 168, 0.1);
+        border-radius: 8px;
+        border-left: 3px solid var(--logo-pink);
+      }
+
+      .stat-number {
+        font-size: 2em;
+        color: var(--logo-pink);
+        font-weight: bold;
+      }
+
+      .stat-label {
+        color: var(--pastel-green);
+        font-size: 0.85em;
+        margin-top: 5px;
+      }
+
+      /* Main Content */
+      .main-wrapper {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 25px;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        background: var(--primary-black);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        height: fit-content;
+      }
+
+      .sidebar h2 {
+        color: black;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+        border-bottom: 2px solid var(--logo-pink);
+        padding-bottom: 10px;
+      }
+
+      .filter-group {
+        margin-bottom: 25px;
+      }
+
+      .filter-label {
+        display: block;
+        color: var(--text-dark);
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .filter-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .filter-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+
+      .filter-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--logo-pink);
+      }
+
+      .filter-checkbox label {
+        cursor: pointer;
+        flex: 1;
+        color: var(--text-dark);
+      }
+
+      .btn-new-ticket {
+        width: 100%;
+        padding: 12px 20px;
+        background: var(--pastel-green);
+        color: black;
+        border: 2px solid var(--logo-pink);
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+      }
+
+      .btn-new-ticket:hover {
+        background: var(--logo-pink);
+        color: var(--pastel-green);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(217, 155, 168, 0.3);
+      }
+
+      /* Main Content Area */
+      .content {
+        background: var(--primary-black);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--logo-pink);
+      }
+
+      .content-header h2 {
+        font-size: 1.8em;
+        color: black;
+      }
+
+      .search-box {
+        flex: 1;
+        max-width: 300px;
+        padding: 10px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+      }
+
+      .search-box:focus {
+        outline: none;
+        border-color: var(--logo-pink);
+        box-shadow: 0 0 10px rgba(217, 155, 168, 0.2);
+      }
+
+      /* Ticket Grid */
+      .tickets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+      }
+
+      .ticket-card {
+        background: rgb(133, 170, 139);
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ticket-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 5px;
+        width: 100%;
+        background: var(--info);
+      }
+
+      .ticket-card.urgent::before {
+        background: var(--danger);
+      }
+
+      .ticket-card.high::before {
+        background: var(--warning);
+      }
+
+      .ticket-card.medium::before {
+        background: var(--info);
+      }
+
+      .ticket-card.low::before {
+        background: var(--success);
+      }
+
+      .ticket-card:hover {
+        box-shadow: 0 8px 25px rgba(217, 155, 168, 0.2);
+        transform: translateY(-5px);
+        border-color: var(--logo-pink);
+      }
+
+      .ticket-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+      }
+
+      .ticket-id {
+        font-weight: bold;
+        color: var(--logo-pink);
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .ticket-status {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .ticket-status.open {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .ticket-status.in-progress {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .ticket-status.on-hold {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
+
+      .ticket-status.closed {
+        background: #e8f5e9;
+        color: #388e3c;
+      }
+
+      .ticket-status.resolved {
+        background: #e8f5e9;
+        color: #388e3c;
+      }
+
+      .ticket-title {
+        font-size: 1.2em;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .ticket-description {
+        color: #0c0c0c;
+        font-size: 0.95em;
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+
+      .ticket-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+        font-size: 0.85em;
+      }
+
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .meta-label {
+        color: var(--logo-pink);
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+      }
+
+      .meta-value {
+        color: var(--text-dark);
+        font-weight: bold;
+      }
+
+      .ticket-footer {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .btn-small {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        background: rgb(203, 216, 186);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85em;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-small:hover {
+        border-color: var(--logo-pink);
+        color: var(--logo-pink);
+        background: rgba(255, 238, 242, 0.466);
+      }
+
+      .btn-small.delete {
+        color: red;
+      }
+
+      .btn-small.delete:hover {
+        border-color: var(--danger);
+        background: rgba(235, 175, 171, 0.05);
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--logo-pink);
+      }
+
+      .modal-header h2 {
+        color: var(--primary-black);
+        font-size: 1.8em;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 2em;
+        cursor: pointer;
+        color: var(--text-dark);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .close-btn:hover {
+        color: var(--logo-pink);
+        transform: rotate(90deg);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9em;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1em;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--logo-pink);
+        box-shadow: 0 0 10px rgba(217, 155, 168, 0.2);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .modal-footer {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-primary {
+        background: var(--primary-black);
+        color: var(--light-cream);
+        border: 2px solid var(--logo-pink);
+      }
+
+      .btn-primary:hover {
+        background: var(--logo-pink);
+        color: var(--primary-black);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(217, 155, 168, 0.3);
+      }
+
+      .btn-secondary {
+        background: var(--border-color);
+        color: var(--text-dark);
+      }
+
+      .btn-secondary:hover {
+        background: #d0d0d0;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+      }
+
+      .empty-state-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+
+      .empty-state h3 {
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        font-size: 1.3em;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .main-wrapper {
+          grid-template-columns: 1fr;
+        }
+
+        .header-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .header-stats {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .tickets-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Priority Badge */
+      .priority-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75em;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .priority-badge.urgent {
+        background: rgba(235, 2, 2, 0.2);
+        color: var(--danger);
+      }
+
+      .priority-badge.high {
+        background: rgba(255, 153, 0, 0.342);
+        color: var(--warning);
+      }
+
+      .priority-badge.medium {
+        background: rgba(33, 150, 243, 0.2);
+        color: var(--info);
+      }
+
+      .priority-badge.low {
+        background: rgba(76, 175, 80, 0.2);
+        color: var(--success);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="header-content">
+          <div class="header-title">
+            <img src="boss logo.jpg" alt="Boss Gal Logo" />
+            <p>IT Ticket Management System</p>
+          </div>
+          <div class="header-stats">
+            <div class="stat-box">
+              <div class="stat-number" id="total-tickets">0</div>
+              <div class="stat-label">Total Tickets</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="open-tickets">0</div>
+              <div class="stat-label">Open</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="urgent-tickets">0</div>
+              <div class="stat-label">Urgent</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="main-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <h2>Filters</h2>
+
+          <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <div class="filter-options">
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-open"
+                  class="status-filter"
+                  value="open"
+                  checked
+                />
+                <label for="filter-open">Open</label>
+              </div>
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-in-progress"
+                  class="status-filter"
+                  value="in-progress"
+                  checked
+                />
+                <label for="filter-in-progress">In Progress</label>
+              </div>
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-on-hold"
+                  class="status-filter"
+                  value="on-hold"
+                  checked
+                />
+                <label for="filter-on-hold">On Hold</label>
+              </div>
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-resolved"
+                  class="status-filter"
+                  value="resolved"
+                  checked
+                />
+                <label for="filter-resolved">Resolved</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Priority</label>
+            <div class="filter-options">
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-urgent"
+                  class="priority-filter"
+                  value="urgent"
+                  checked
+                />
+                <label for="filter-urgent">Urgent</label>
+              </div>
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-high"
+                  class="priority-filter"
+                  value="high"
+                  checked
+                />
+                <label for="filter-high">High</label>
+              </div>
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-medium"
+                  class="priority-filter"
+                  value="medium"
+                  checked
+                />
+                <label for="filter-medium">Medium</label>
+              </div>
+              <div class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  id="filter-low"
+                  class="priority-filter"
+                  value="low"
+                  checked
+                />
+                <label for="filter-low">Low</label>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-new-ticket" id="btn-create">
+            + Create Ticket
+          </button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+          <div class="content-header">
+            <h2>Tickets</h2>
+            <input
+              type="text"
+              class="search-box"
+              id="search-input"
+              placeholder="Search tickets..."
+            />
+          </div>
+
+          <div class="tickets-grid" id="tickets-container">
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <h3>No Tickets Yet</h3>
+              <p>Create your first ticket to get started</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal" id="ticket-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">New Ticket</h2>
+          <button class="close-btn" id="close-btn">&times;</button>
+        </div>
+
+        <form id="ticket-form">
+          <div class="form-group">
+            <label for="ticket-title">Title</label>
+            <input
+              type="text"
+              id="ticket-title"
+              required
+              placeholder="Brief description of the issue"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="ticket-description">Description</label>
+            <textarea
+              id="ticket-description"
+              placeholder="Detailed description of the issue..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ticket-priority">Priority</label>
+              <select id="ticket-priority" required>
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="ticket-status">Status</label>
+              <select id="ticket-status" required>
+                <option value="open" selected>Open</option>
+                <option value="in-progress">In Progress</option>
+                <option value="on-hold">On Hold</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ticket-category">Category</label>
+              <select id="ticket-category" required>
+                <option value="hardware">Hardware</option>
+                <option value="software" selected>Software</option>
+                <option value="network">Network</option>
+                <option value="security">Security</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="ticket-assigned">Assigned To</label>
+              <input
+                type="text"
+                id="ticket-assigned"
+                placeholder="Staff member name"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ticket-notes">Internal Notes</label>
+            <textarea
+              id="ticket-notes"
+              placeholder="Add internal notes or updates..."
+              style="min-height: 80px"
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn-primary" id="save-ticket">
+              Save Ticket
+            </button>
+            <button type="button" class="btn-secondary" id="cancel-btn">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn-secondary delete"
+              id="delete-ticket"
+              style="display: none"
+            >
+              Delete
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Ticket System App
+      class TicketSystem {
+        constructor() {
+          this.tickets = [];
+          this.currentEditingId = null;
+          this.init();
+        }
+
+        init() {
+          this.loadFromStorage();
+          this.setupEventListeners();
+          this.renderTickets();
+          this.addDemoData();
+        }
+
+        setupEventListeners() {
+          // Modal controls
+          document
+            .getElementById("btn-create")
+            .addEventListener("click", () => this.openModal());
+          document
+            .getElementById("close-btn")
+            .addEventListener("click", () => this.closeModal());
+          document
+            .getElementById("cancel-btn")
+            .addEventListener("click", () => this.closeModal());
+          document
+            .getElementById("ticket-form")
+            .addEventListener("submit", (e) => this.handleFormSubmit(e));
+          document
+            .getElementById("delete-ticket")
+            .addEventListener("click", () => this.deleteTicket());
+
+          // Filters
+          document
+            .querySelectorAll(".status-filter, .priority-filter")
+            .forEach((checkbox) => {
+              checkbox.addEventListener("change", () => this.renderTickets());
+            });
+
+          // Search
+          document
+            .getElementById("search-input")
+            .addEventListener("input", () => this.renderTickets());
+
+          // Close modal on outside click
+          document
+            .getElementById("ticket-modal")
+            .addEventListener("click", (e) => {
+              if (e.target.id === "ticket-modal") this.closeModal();
+            });
+        }
+
+        openModal(id = null) {
+          const modal = document.getElementById("ticket-modal");
+          const form = document.getElementById("ticket-form");
+          const deleteBtn = document.getElementById("delete-ticket");
+          const modalTitle = document.getElementById("modal-title");
+
+          if (id) {
+            const ticket = this.tickets.find((t) => t.id === id);
+            if (ticket) {
+              modalTitle.textContent = `Edit Ticket #${ticket.id}`;
+              document.getElementById("ticket-title").value = ticket.title;
+              document.getElementById("ticket-description").value =
+                ticket.description;
+              document.getElementById("ticket-priority").value =
+                ticket.priority;
+              document.getElementById("ticket-status").value = ticket.status;
+              document.getElementById("ticket-category").value =
+                ticket.category;
+              document.getElementById("ticket-assigned").value =
+                ticket.assigned;
+              document.getElementById("ticket-notes").value = ticket.notes;
+              deleteBtn.style.display = "block";
+              this.currentEditingId = id;
+            }
+          } else {
+            form.reset();
+            modalTitle.textContent = "New Ticket";
+            deleteBtn.style.display = "none";
+            this.currentEditingId = null;
+          }
+
+          modal.classList.add("active");
+        }
+
+        closeModal() {
+          const modal = document.getElementById("ticket-modal");
+          modal.classList.remove("active");
+          this.currentEditingId = null;
+        }
+
+        handleFormSubmit(e) {
+          e.preventDefault();
+
+          const ticket = {
+            id: this.currentEditingId || this.generateId(),
+            title: document.getElementById("ticket-title").value,
+            description: document.getElementById("ticket-description").value,
+            priority: document.getElementById("ticket-priority").value,
+            status: document.getElementById("ticket-status").value,
+            category: document.getElementById("ticket-category").value,
+            assigned: document.getElementById("ticket-assigned").value,
+            notes: document.getElementById("ticket-notes").value,
+            created: this.currentEditingId
+              ? this.tickets.find((t) => t.id === this.currentEditingId).created
+              : new Date().toISOString(),
+            updated: new Date().toISOString(),
+          };
+
+          if (this.currentEditingId) {
+            const index = this.tickets.findIndex(
+              (t) => t.id === this.currentEditingId
+            );
+            this.tickets[index] = ticket;
+          } else {
+            this.tickets.unshift(ticket);
+          }
+
+          this.saveToStorage();
+          this.renderTickets();
+          this.closeModal();
+        }
+
+        deleteTicket() {
+          if (
+            this.currentEditingId &&
+            confirm("Are you sure you want to delete this ticket?")
+          ) {
+            this.tickets = this.tickets.filter(
+              (t) => t.id !== this.currentEditingId
+            );
+            this.saveToStorage();
+            this.renderTickets();
+            this.closeModal();
+          }
+        }
+
+        getActiveFilters() {
+          const statuses = Array.from(
+            document.querySelectorAll(".status-filter:checked")
+          ).map((cb) => cb.value);
+          const priorities = Array.from(
+            document.querySelectorAll(".priority-filter:checked")
+          ).map((cb) => cb.value);
+          return { statuses, priorities };
+        }
+
+        getSearchTerm() {
+          return document.getElementById("search-input").value.toLowerCase();
+        }
+
+        renderTickets() {
+          const { statuses, priorities } = this.getActiveFilters();
+          const searchTerm = this.getSearchTerm();
+
+          let filtered = this.tickets.filter((ticket) => {
+            const matchesStatus = statuses.includes(ticket.status);
+            const matchesPriority = priorities.includes(ticket.priority);
+            const matchesSearch =
+              ticket.title.toLowerCase().includes(searchTerm) ||
+              ticket.description.toLowerCase().includes(searchTerm) ||
+              ticket.id.toString().includes(searchTerm);
+
+            return matchesStatus && matchesPriority && matchesSearch;
+          });
+
+          const container = document.getElementById("tickets-container");
+
+          if (filtered.length === 0) {
+            container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <h3>No Tickets Found</h3>
+                            <p>Try adjusting your filters or create a new ticket</p>
+                        </div>
+                    `;
+          } else {
+            container.innerHTML = filtered
+              .map((ticket) => this.createTicketCard(ticket))
+              .join("");
+            container.querySelectorAll(".ticket-card").forEach((card) => {
+              card.addEventListener("click", (e) => {
+                if (!e.target.closest("button")) {
+                  const id = parseInt(card.dataset.id);
+                  this.openModal(id);
+                }
+              });
+            });
+
+            container.querySelectorAll(".btn-edit").forEach((btn) => {
+              btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.closest(".ticket-card").dataset.id);
+                this.openModal(id);
+              });
+            });
+
+            container.querySelectorAll(".btn-delete").forEach((btn) => {
+              btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.closest(".ticket-card").dataset.id);
+                this.currentEditingId = id;
+                this.deleteTicket();
+              });
+            });
+          }
+
+          this.updateStats();
+        }
+
+        createTicketCard(ticket) {
+          const createdDate = new Date(ticket.created).toLocaleDateString();
+          return `
+                    <div class="ticket-card ${ticket.priority}" data-id="${
+            ticket.id
+          }">
+                        <div class="ticket-header">
+                            <div>
+                                <div class="ticket-id">Ticket #${
+                                  ticket.id
+                                }</div>
+                                <div class="priority-badge ${
+                                  ticket.priority
+                                }">${ticket.priority}</div>
+                            </div>
+                            <span class="ticket-status ${ticket.status}">${
+            ticket.status
+          }</span>
+                        </div>
+
+                        <div class="ticket-title">${this.escapeHtml(
+                          ticket.title
+                        )}</div>
+                        <div class="ticket-description">${this.escapeHtml(
+                          ticket.description.substring(0, 100)
+                        )}${ticket.description.length > 100 ? "..." : ""}</div>
+
+                        <div class="ticket-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Category</span>
+                                <span class="meta-value">${this.capitalizeFirst(
+                                  ticket.category
+                                )}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Assigned</span>
+                                <span class="meta-value">${
+                                  ticket.assigned || "Unassigned"
+                                }</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Created</span>
+                                <span class="meta-value">${createdDate}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Status</span>
+                                <span class="meta-value">${this.capitalizeFirst(
+                                  ticket.status
+                                )}</span>
+                            </div>
+                        </div>
+
+                        <div class="ticket-footer">
+                            <button class="btn-small btn-edit">Edit</button>
+                            <button class="btn-small delete btn-delete">Delete</button>
+                        </div>
+                    </div>
+                `;
+        }
+
+        updateStats() {
+          const total = this.tickets.length;
+          const open = this.tickets.filter((t) => t.status === "open").length;
+          const urgent = this.tickets.filter(
+            (t) => t.priority === "urgent"
+          ).length;
+
+          document.getElementById("total-tickets").textContent = total;
+          document.getElementById("open-tickets").textContent = open;
+          document.getElementById("urgent-tickets").textContent = urgent;
+        }
+
+        addDemoData() {
+          if (this.tickets.length === 0) {
+            const demoTickets = [
+              {
+                id: 1001,
+                title: "Email Server Not Responding",
+                description:
+                  "The email server is down and users cannot send or receive emails. This is affecting all departments.",
+                priority: "urgent",
+                status: "in-progress",
+                category: "network",
+                assigned: "John Smith",
+                notes:
+                  "Server status indicates critical error. Support team investigating.",
+                created: new Date(
+                  Date.now() - 2 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+              },
+              {
+                id: 1002,
+                title: "VPN Connection Issues",
+                description:
+                  "Multiple remote users reporting intermittent VPN disconnections when working from home.",
+                priority: "high",
+                status: "in-progress",
+                category: "network",
+                assigned: "Sarah Johnson",
+                notes: "Checking VPN gateway logs and bandwidth usage.",
+                created: new Date(
+                  Date.now() - 4 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 1 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 1003,
+                title: "Printer Driver Installation",
+                description:
+                  "Need to install new network printer drivers on 15 workstations in the Marketing department.",
+                priority: "medium",
+                status: "open",
+                category: "hardware",
+                assigned: "Mike Davis",
+                notes:
+                  "Hardware procurement order placed. Waiting for delivery.",
+                created: new Date(
+                  Date.now() - 6 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 4 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 1004,
+                title: "Security Patch Update Required",
+                description:
+                  "Critical security patches need to be applied to all Windows servers within 48 hours.",
+                priority: "urgent",
+                status: "open",
+                category: "security",
+                assigned: "Lisa Anderson",
+                notes: "Schedule maintenance window during non-business hours.",
+                created: new Date(
+                  Date.now() - 8 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 2 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 1005,
+                title: "Database Backup Failure",
+                description:
+                  "Automated backup job failed for the production database. Need to investigate and restore.",
+                priority: "urgent",
+                status: "on-hold",
+                category: "software",
+                assigned: "Robert Chen",
+                notes:
+                  "Waiting on DBA approval before proceeding with restoration.",
+                created: new Date(
+                  Date.now() - 12 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 6 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 1006,
+                title: "Software License Renewal",
+                description:
+                  "Adobe Creative Suite licenses expire in 30 days and need to be renewed for design team.",
+                priority: "low",
+                status: "open",
+                category: "software",
+                assigned: "Emily Wright",
+                notes: "Quotes received from three vendors. Awaiting approval.",
+                created: new Date(
+                  Date.now() - 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 12 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 1007,
+                title: "Monitor Resolution Issue",
+                description:
+                  "User in Executive office reports incorrect display resolution on dual monitor setup.",
+                priority: "low",
+                status: "resolved",
+                category: "hardware",
+                assigned: "James Wilson",
+                notes: "Updated graphics driver. Issue resolved successfully.",
+                created: new Date(
+                  Date.now() - 48 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 24 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 1008,
+                title: "Network Speed Optimization",
+                description:
+                  "Request to optimize network performance for data center. Currently experiencing slowdowns during peak hours.",
+                priority: "high",
+                status: "in-progress",
+                category: "network",
+                assigned: "David Martinez",
+                notes:
+                  "Analyzing network traffic patterns and implementing QoS rules.",
+                created: new Date(
+                  Date.now() - 3 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updated: new Date(
+                  Date.now() - 6 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+            ];
+
+            this.tickets = demoTickets;
+            this.saveToStorage();
+            this.renderTickets();
+          }
+        }
+
+        generateId() {
+          return Math.max(...this.tickets.map((t) => t.id), 1000) + 1;
+        }
+
+        saveToStorage() {
+          localStorage.setItem("ticketSystem", JSON.stringify(this.tickets));
+        }
+
+        loadFromStorage() {
+          const stored = localStorage.getItem("ticketSystem");
+          this.tickets = stored ? JSON.parse(stored) : [];
+        }
+
+        escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        capitalizeFirst(str) {
+          return str.charAt(0).toUpperCase() + str.slice(1).replace(/-/g, " ");
+        }
+      }
+
+      // Initialize the app
+      const app = new TicketSystem();
+    </script>
+  </body>
+</html>
