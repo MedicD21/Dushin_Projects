@@ -78,7 +78,9 @@ class ExcelDataImporter:
 
         # Gender Ratio
         if pd.notna(row.get("Gender Ratio")):
-            breeding_info["gender_ratio"] = row["Gender Ratio"]
+            breeding_info["gender_ratio"] = self._clean_gender_ratio(
+                row["Gender Ratio"]
+            )
 
         # Egg Cycles
         if pd.notna(row.get("Egg Cycles")):
@@ -93,6 +95,35 @@ class ExcelDataImporter:
             breeding_info["growth_rate"] = row["Growth Rate"]
 
         return breeding_info
+
+    def _clean_gender_ratio(self, value: Any) -> Any:
+        """Clean up gender ratio values coming from the spreadsheet.
+
+        The spreadsheet sometimes stores genderless as comma-separated characters
+        (eg. "G,e,n,d,e,r,l,e,s,s"). We want to join those into a single word
+        "Genderless" while leaving numeric ratios ("87.5% male, 12.5% female")
+        and other complex strings intact.
+        """
+        if not isinstance(value, str):
+            return value
+
+        val = value.strip()
+
+        # If the value contains a percentage or digits, assume it's already a numeric ratio
+        if any(ch.isdigit() for ch in val) or "%" in val:
+            return val
+
+        # If it looks like comma-separated letters (or letters+spaces), join them
+        if "," in val:
+            # Remove commas and spaces
+            joined = val.replace(",", "").replace(" ", "").strip()
+            if joined.isalpha():
+                # Normalize capitalization (e.g., genderless)
+                return joined.capitalize()
+            # If the joined result isn't a simple word, fall back to original trimmed value
+            return val.replace(", ", "")
+
+        return val
 
     def _process_game_mechanics(self, row: pd.Series) -> Dict[str, Any]:
         """Process game mechanics data from Excel row"""
@@ -606,6 +637,23 @@ class ExcelDataImporter:
                     else:
                         # Add new game entry
                         merged["game_appearances"][game_name] = game_data
+
+            # Special case: Merge breeding_info but prefer Excel gender_ratio
+            elif key == "breeding_info" and isinstance(value, dict):
+                if "breeding_info" not in merged:
+                    merged["breeding_info"] = {}
+
+                for sub_key, sub_value in value.items():
+                    if sub_key == "gender_ratio":
+                        # Always take Excel's gender_ratio (cleaned)
+                        merged["breeding_info"][sub_key] = self._clean_gender_ratio(
+                            sub_value
+                        )
+                    elif (
+                        sub_key not in merged["breeding_info"]
+                        or not merged["breeding_info"][sub_key]
+                    ):
+                        merged["breeding_info"][sub_key] = sub_value
             elif key not in merged or not merged[key]:
                 # Add missing field from Excel
                 merged[key] = value
