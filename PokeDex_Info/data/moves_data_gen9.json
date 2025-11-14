@@ -6,9 +6,14 @@
       "Violet",
       "Legends: Z-A"
     ],
-    "source": "Serebii.net AttackDx-SV",
-    "scraped_date": "2025-11-14 00:59:26",
-    "total_moves": 9
+    "source": "Serebii.net AttackDex-Gen9",
+    "scraped_date": "2025-11-14 01:22:15",
+    "total_moves": 9,
+    "merge_info": {
+      "new_moves": 0,
+      "updated_moves": 9,
+      "total_after_merge": 9
+    }
   },
   "moves": [
     {
@@ -21,7 +26,6 @@
       "battle_effect": "The user attacks by draining targets of their nutrients. The user's HP will be restored by a portion of the damage dealt.",
       "secondary_effect": "User recovers half the damage inflicted.",
       "effect_rate": "",
-      "base_critical_hit_rate": "4.17%",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Selected Target",
       "physical_contact": false,
@@ -39,17 +43,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "7 seconds",
-        "base_power_za": "20",
-        "distance": "0.5-3",
-        "effect_rate_za": "-- %",
-        "effect_duration": "0 seconds",
-        "frame_data": "Charge: 10 Frames Attack Loop: 25 Frames",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0043",
@@ -576,7 +569,17 @@
           "method": "Z-A Level Up",
           "level": 1
         }
-      ]
+      ],
+      "base_critical_hit_rate": "4.17%",
+      "pokemon_legends_za_data": {
+        "cooldown": "7 seconds",
+        "base_power_za": "20",
+        "distance": "0.5-3",
+        "effect_rate_za": "-- %",
+        "effect_duration": "0 seconds",
+        "frame_data": "Charge: 10 Frames Attack Loop: 25 Frames",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Accelerock",
@@ -588,7 +591,6 @@
       "battle_effect": "The user smashes into the target at high speed. This move always goes first.",
       "secondary_effect": "Has increased Speed Priority",
       "effect_rate": "",
-      "base_critical_hit_rate": "4.17%",
       "speed_priority": 1,
       "pokemon_hit_in_battle": "Selected Target",
       "physical_contact": true,
@@ -606,17 +608,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "",
-        "base_power_za": "",
-        "distance": "",
-        "effect_rate_za": "",
-        "effect_duration": "",
-        "frame_data": "",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0745",
@@ -625,7 +616,17 @@
           "method": "Level Up",
           "level": 1
         }
-      ]
+      ],
+      "base_critical_hit_rate": "4.17%",
+      "pokemon_legends_za_data": {
+        "cooldown": "",
+        "base_power_za": "",
+        "distance": "",
+        "effect_rate_za": "",
+        "effect_duration": "",
+        "frame_data": "",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Acid",
@@ -637,7 +638,6 @@
       "battle_effect": "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
       "secondary_effect": "May lower opponent's Special Defense one stage.",
       "effect_rate": "",
-      "base_critical_hit_rate": "4.17%",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "All Adjacent Foes",
       "physical_contact": false,
@@ -655,17 +655,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "",
-        "base_power_za": "",
-        "distance": "",
-        "effect_rate_za": "",
-        "effect_duration": "",
-        "frame_data": "",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0023",
@@ -812,7 +801,17 @@
           "form": "Normal",
           "method": "Breeding"
         }
-      ]
+      ],
+      "base_critical_hit_rate": "4.17%",
+      "pokemon_legends_za_data": {
+        "cooldown": "",
+        "base_power_za": "",
+        "distance": "",
+        "effect_rate_za": "",
+        "effect_duration": "",
+        "frame_data": "",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Acid Armor",
@@ -824,7 +823,6 @@
       "battle_effect": "The user boosts its Defense stat for a while by altering its cellular structure to become liquefied.",
       "secondary_effect": "Raises user's Defense two stages.",
       "effect_rate": "",
-      "base_critical_hit_rate": "None",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Self",
       "physical_contact": false,
@@ -842,17 +840,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": false,
       "copyable_by_mirror_move": false,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "9 seconds",
-        "base_power_za": "0",
-        "distance": "0-99",
-        "effect_rate_za": "-- %",
-        "effect_duration": "0 seconds",
-        "frame_data": "Charge: 1 Frames Attack Loop: 20 Frames",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0072",
@@ -1127,7 +1114,17 @@
           "method": "Z-A Level Up",
           "level": 1
         }
-      ]
+      ],
+      "base_critical_hit_rate": "None",
+      "pokemon_legends_za_data": {
+        "cooldown": "9 seconds",
+        "base_power_za": "0",
+        "distance": "0-99",
+        "effect_rate_za": "-- %",
+        "effect_duration": "0 seconds",
+        "frame_data": "Charge: 1 Frames Attack Loop: 20 Frames",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Acid Spray",
@@ -1139,7 +1136,6 @@
       "battle_effect": "The user attacks by spitting fluid that works to melt the target. This also harshly lowers the target's Sp. Def stat.",
       "secondary_effect": "Lowers opponent's Special Defense two stages.",
       "effect_rate": "",
-      "base_critical_hit_rate": "4.17%",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Selected Target",
       "physical_contact": false,
@@ -1157,17 +1153,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "",
-        "base_power_za": "",
-        "distance": "",
-        "effect_rate_za": "",
-        "effect_duration": "",
-        "frame_data": "",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0023",
@@ -1848,7 +1833,17 @@
           "form": "Normal",
           "method": "Breeding"
         }
-      ]
+      ],
+      "base_critical_hit_rate": "4.17%",
+      "pokemon_legends_za_data": {
+        "cooldown": "",
+        "base_power_za": "",
+        "distance": "",
+        "effect_rate_za": "",
+        "effect_duration": "",
+        "frame_data": "",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Acrobatics",
@@ -1860,7 +1855,6 @@
       "battle_effect": "The user nimbly strikes the target. This attack does massive damage if the user isn't holding an item.",
       "secondary_effect": "Increases damage by 100% if user is not holding an item.",
       "effect_rate": "",
-      "base_critical_hit_rate": "4.17%",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Selected Target",
       "physical_contact": true,
@@ -1878,17 +1872,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "",
-        "base_power_za": "",
-        "distance": "",
-        "effect_rate_za": "",
-        "effect_duration": "",
-        "frame_data": "",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0187",
@@ -2906,7 +2889,17 @@
           "form": "Normal",
           "method": "Level Up"
         }
-      ]
+      ],
+      "base_critical_hit_rate": "4.17%",
+      "pokemon_legends_za_data": {
+        "cooldown": "",
+        "base_power_za": "",
+        "distance": "",
+        "effect_rate_za": "",
+        "effect_duration": "",
+        "frame_data": "",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Acupressure",
@@ -2918,7 +2911,6 @@
       "battle_effect": "The user applies pressure to stress points, sharply boosting one of its or its allies' stats.",
       "secondary_effect": "Raises one of the user's stats randomly by two stages.",
       "effect_rate": "",
-      "base_critical_hit_rate": "None",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Self or Ally",
       "physical_contact": false,
@@ -2936,17 +2928,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": false,
       "copyable_by_mirror_move": false,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "",
-        "base_power_za": "",
-        "distance": "",
-        "effect_rate_za": "",
-        "effect_duration": "",
-        "frame_data": "",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0084",
@@ -3070,7 +3051,17 @@
           "form": "Normal",
           "method": "Breeding"
         }
-      ]
+      ],
+      "base_critical_hit_rate": "None",
+      "pokemon_legends_za_data": {
+        "cooldown": "",
+        "base_power_za": "",
+        "distance": "",
+        "effect_rate_za": "",
+        "effect_duration": "",
+        "frame_data": "",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Aerial Ace",
@@ -3082,7 +3073,6 @@
       "battle_effect": "The user attacks by confounding targets with swift movements before slashing.",
       "secondary_effect": "Cannot miss.",
       "effect_rate": "",
-      "base_critical_hit_rate": "4.17%",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Selected Target",
       "physical_contact": true,
@@ -3100,17 +3090,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "9 seconds",
-        "base_power_za": "60",
-        "distance": "0.5-2",
-        "effect_rate_za": "-- %",
-        "effect_duration": "30 seconds",
-        "frame_data": "Charge: 1 Frames Attack Loop: 20 Frames",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0214",
@@ -4916,7 +4895,17 @@
           "form": "Normal",
           "method": "Z-A Level Up"
         }
-      ]
+      ],
+      "base_critical_hit_rate": "4.17%",
+      "pokemon_legends_za_data": {
+        "cooldown": "9 seconds",
+        "base_power_za": "60",
+        "distance": "0.5-2",
+        "effect_rate_za": "-- %",
+        "effect_duration": "30 seconds",
+        "frame_data": "Charge: 1 Frames Attack Loop: 20 Frames",
+        "base_critical_hit_rate_za": ""
+      }
     },
     {
       "name": "Aeroblast",
@@ -4928,7 +4917,6 @@
       "battle_effect": "A vortex of air is shot at the target to inflict damage. This move has a heightened chance of landing a critical hit.",
       "secondary_effect": "Has an increased Critical Hit ratio",
       "effect_rate": "",
-      "base_critical_hit_rate": "12.5%",
       "speed_priority": 0,
       "pokemon_hit_in_battle": "Selected Target",
       "physical_contact": false,
@@ -4946,17 +4934,6 @@
       "reflected_by_magic_coat": false,
       "blocked_by_protect": true,
       "copyable_by_mirror_move": true,
-      "z_move_power": "",
-      "z_move_effect": "",
-      "pokemon_legends_za_data": {
-        "cooldown": "",
-        "base_power_za": "",
-        "distance": "",
-        "effect_rate_za": "",
-        "effect_duration": "",
-        "frame_data": "",
-        "base_critical_hit_rate_za": ""
-      },
       "learned_by": [
         {
           "dex_number": "0249",
@@ -4965,7 +4942,17 @@
           "method": "Level Up",
           "level": 54
         }
-      ]
+      ],
+      "base_critical_hit_rate": "12.5%",
+      "pokemon_legends_za_data": {
+        "cooldown": "",
+        "base_power_za": "",
+        "distance": "",
+        "effect_rate_za": "",
+        "effect_duration": "",
+        "frame_data": "",
+        "base_critical_hit_rate_za": ""
+      }
     }
   ]
 }

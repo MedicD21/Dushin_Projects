@@ -3,10 +3,11 @@
     "generation": 9,
     "games": [
       "Scarlet",
-      "Violet"
+      "Violet",
+      "Legends: Z-A"
     ],
-    "source": "Serebii.net AttackDex-SV",
-    "scraped_date": "2025-11-14 00:57:49",
+    "source": "Serebii.net AttackDx-SV",
+    "scraped_date": "2025-11-14 00:59:26",
     "total_moves": 9
   },
   "moves": [

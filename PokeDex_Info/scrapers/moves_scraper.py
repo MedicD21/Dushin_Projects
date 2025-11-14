@@ -38,43 +38,106 @@ class MovesDataScraper:
         }
 
     def _get_generation_config(self, generation: int) -> Dict[str, Any]:
-        """Get generation-specific configuration"""
+        """Get generation-specific configuration with data structure info"""
         configs = {
+            1: {
+                "url": "https://www.serebii.net/attackdex-rby/",
+                "games": ["Red", "Blue", "Yellow"],
+                "filename": "moves_data_gen1.json",
+                "has_critical_hit_rate": False,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
+                "has_za_data": False,
+                "has_contests": False,
+            },
+            2: {
+                "url": "https://www.serebii.net/attackdex-gs/",
+                "games": ["Gold", "Silver", "Crystal"],
+                "filename": "moves_data_gen2.json",
+                "has_critical_hit_rate": False,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
+                "has_za_data": False,
+                "has_contests": False,
+            },
+            3: {
+                "url": "https://www.serebii.net/attackdex/",
+                "games": ["Ruby", "Sapphire", "Emerald"],
+                "filename": "moves_data_gen3.json",
+                "has_critical_hit_rate": False,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
+                "has_za_data": False,
+                "has_contests": True,
+            },
             4: {
                 "url": "https://www.serebii.net/attackdex-dp/",
                 "games": ["Diamond", "Pearl", "Platinum"],
                 "filename": "moves_data_gen4.json",
+                "has_critical_hit_rate": True,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
                 "has_za_data": False,
+                "has_contests": True,
             },
             5: {
                 "url": "https://www.serebii.net/attackdex-bw/",
                 "games": ["Black", "White", "Black 2", "White 2"],
                 "filename": "moves_data_gen5.json",
+                "has_critical_hit_rate": False,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
                 "has_za_data": False,
+                "has_contests": False,
             },
             6: {
                 "url": "https://www.serebii.net/attackdex-xy/",
                 "games": ["X", "Y", "Omega Ruby", "Alpha Sapphire"],
                 "filename": "moves_data_gen6.json",
+                "has_critical_hit_rate": True,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
                 "has_za_data": False,
+                "has_contests": True,
             },
             7: {
                 "url": "https://www.serebii.net/attackdex-sm/",
                 "games": ["Sun", "Moon", "Ultra Sun", "Ultra Moon"],
                 "filename": "moves_data_gen7.json",
+                "has_critical_hit_rate": True,
+                "has_z_move_data": True,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
                 "has_za_data": False,
+                "has_contests": False,
             },
             8: {
                 "url": "https://www.serebii.net/attackdex-swsh/",
                 "games": ["Sword", "Shield", "Legends: Arceus"],
                 "filename": "moves_data_gen8.json",
+                "has_critical_hit_rate": True,
+                "has_z_move_data": False,
+                "has_max_move_data": True,
+                "has_arceus_data": True,
                 "has_za_data": False,
+                "has_contests": False,
             },
             9: {
                 "url": "https://www.serebii.net/attackdex-sv/",
                 "games": ["Scarlet", "Violet", "Legends: Z-A"],
                 "filename": "moves_data_gen9.json",
+                "has_critical_hit_rate": True,
+                "has_z_move_data": False,
+                "has_max_move_data": False,
+                "has_arceus_data": False,
                 "has_za_data": True,
+                "has_contests": False,
             },
         }
 
@@ -102,11 +165,15 @@ class MovesDataScraper:
                 options = select.find_all("option")
                 for option in options:
                     value = option.get("value", "")
-                    # Look for options with attackdex-sv URLs
-                    if value and "/attackdex-sv/" in value and value.endswith(".shtml"):
+                    # Look for options with attackdex URLs for this generation
+                    # Extract the generation-specific path from base_url
+                    # e.g., "https://www.serebii.net/attackdex-sv/" -> "attackdex-sv"
+                    gen_path = self.base_url.split("/")[-2]  # Get "attackdex-sv" part
+
+                    if value and f"/{gen_path}/" in value and value.endswith(".shtml"):
                         # Extract move filename from the full path
                         # e.g., "/attackdex-sv/thunderbolt.shtml" -> "thunderbolt"
-                        move_filename = value.split("/attackdex-sv/")[-1].replace(
+                        move_filename = value.split(f"/{gen_path}/")[-1].replace(
                             ".shtml", ""
                         )
                         if move_filename and move_filename not in move_links:
@@ -152,7 +219,7 @@ class MovesDataScraper:
             if not soup:
                 return None
 
-            # Comprehensive move data structure matching Serebii layout
+            # Base move data structure (all generations)
             move_data = {
                 "name": "",
                 "battle_type": "",
@@ -163,7 +230,6 @@ class MovesDataScraper:
                 "battle_effect": "",
                 "secondary_effect": "",
                 "effect_rate": "",
-                "base_critical_hit_rate": "",
                 "speed_priority": 0,
                 "pokemon_hit_in_battle": "",
                 "physical_contact": False,
@@ -181,12 +247,35 @@ class MovesDataScraper:
                 "reflected_by_magic_coat": False,
                 "blocked_by_protect": False,
                 "copyable_by_mirror_move": False,
-                "z_move_power": "",
-                "z_move_effect": "",
                 "learned_by": [],  # Pokemon that can learn this move
             }
 
-            # Add Pokemon Legends Z-A data structure only for supported generations
+            # Add generation-specific fields
+            if self.gen_config["has_critical_hit_rate"]:
+                move_data["base_critical_hit_rate"] = ""
+
+            if self.gen_config["has_z_move_data"]:
+                move_data["z_move_power"] = ""
+                move_data["z_move_effect"] = ""
+
+            if self.gen_config["has_max_move_data"]:
+                move_data["max_move_power"] = ""
+                move_data["max_move_effect"] = ""
+
+            if self.gen_config["has_arceus_data"]:
+                move_data["arceus_data"] = {
+                    "power_points": None,
+                    "base_power_standard": None,
+                    "base_power_agile": None,
+                    "base_power_strong": None,
+                    "accuracy": None,
+                    "battle_effect": "",
+                    "effect_rate_standard": "",
+                    "effect_rate_strong": "",
+                    "speed_priority_standard": 0,
+                    "speed_priority_strong": 0,
+                }
+
             if self.gen_config["has_za_data"]:
                 move_data["pokemon_legends_za_data"] = {
                     "cooldown": "",
@@ -198,12 +287,21 @@ class MovesDataScraper:
                     "base_critical_hit_rate_za": "",
                 }
 
+            if self.gen_config["has_contests"]:
+                move_data["contest"] = {
+                    "contest_type": "",
+                    "appeal": "",
+                    "jam": "",
+                    "effect": "",
+                }
+
             # Extract move name from page title
             title = soup.find("title")
             if title:
                 title_text = title.get_text()
                 if " - " in title_text:
-                    move_data["name"] = title_text.split(" - ")[0].strip()
+                    # Split on last " - " to get move name (format: "Serebii.net Generation X AttackDex - Move Name")
+                    move_data["name"] = title_text.split(" - ")[-1].strip()
 
             # Find the main move details table
             tables = soup.find_all("table", class_="dextable")
@@ -306,9 +404,11 @@ class MovesDataScraper:
                             next_row = rows[i + 1]
                             crit_cells = next_row.find_all("td")
                             if len(crit_cells) >= 3:
-                                move_data["base_critical_hit_rate"] = (
-                                    crit_cells[0].get_text().strip()
-                                )
+                                # Only store critical hit rate for generations that have it
+                                if self.gen_config["has_critical_hit_rate"]:
+                                    move_data["base_critical_hit_rate"] = (
+                                        crit_cells[0].get_text().strip()
+                                    )
                                 priority_text = crit_cells[1].get_text().strip()
                                 if priority_text.lstrip("-").isdigit():
                                     move_data["speed_priority"] = int(priority_text)
@@ -398,6 +498,46 @@ class MovesDataScraper:
                                         == "yes"
                                     )
 
+                        # Z-Move data (Gen 7 only)
+                        elif self.gen_config["has_z_move_data"] and (
+                            "Corresponding Z-Move" in cell_text
+                            or "Z-Move Power" in cell_text
+                        ):
+                            if i + 1 < len(rows):
+                                values_row = rows[i + 1]
+                                zmove_cells = values_row.find_all("td")
+                                if len(zmove_cells) >= 2:
+                                    # Corresponding Z-Move name
+                                    move_data["z_move_effect"] = (
+                                        zmove_cells[0].get_text().strip()
+                                    )
+                                    # Z-Move Power
+                                    if len(zmove_cells) > 1:
+                                        power_text = zmove_cells[1].get_text().strip()
+                                        if power_text.isdigit():
+                                            move_data["z_move_power"] = int(power_text)
+
+                        # Max Move data (Gen 8 only)
+                        elif self.gen_config["has_max_move_data"] and (
+                            "Corresponding Max Move" in cell_text
+                            or "MaxMove Power" in cell_text
+                        ):
+                            if i + 1 < len(rows):
+                                values_row = rows[i + 1]
+                                maxmove_cells = values_row.find_all("td")
+                                if len(maxmove_cells) >= 2:
+                                    # Corresponding Max Move name
+                                    move_data["max_move_effect"] = (
+                                        maxmove_cells[0].get_text().strip()
+                                    )
+                                    # Max Move Power
+                                    if len(maxmove_cells) > 1:
+                                        power_text = maxmove_cells[1].get_text().strip()
+                                        if power_text.isdigit():
+                                            move_data["max_move_power"] = int(
+                                                power_text
+                                            )
+
                         # Pokémon Legends: Z-A Data section (only for supported generations)
                         elif self.gen_config["has_za_data"] and (
                             "Pokémon Legends: Z-A Data" in cell_text
@@ -473,6 +613,85 @@ class MovesDataScraper:
                                                     "base_critical_hit_rate_za"
                                                 ] = (value_cells[0].get_text().strip())
 
+                        # Legends: Arceus Data section (only for Gen 8)
+                        elif self.gen_config["has_arceus_data"] and (
+                            "Legends: Arceus Data" in cell_text
+                            or "Legends: Arceus" in cell_text
+                        ):
+                            # Look for Arceus-specific data in following rows
+                            for arceus_row in rows[i:]:
+                                arceus_cells = arceus_row.find_all("td")
+                                if not arceus_cells:
+                                    continue
+
+                                # Check for Base Power with Standard/Agile/Strong variants
+                                if any(
+                                    "Base Power" in cell.get_text()
+                                    for cell in arceus_cells
+                                ):
+                                    if len(arceus_cells) >= 1:
+                                        power_text = arceus_cells[0].get_text().strip()
+                                        # Parse "Standard: 80 Agile: 60 Strong: 100"
+                                        if "Standard:" in power_text:
+                                            parts = power_text.split()
+                                            for idx, part in enumerate(parts):
+                                                if (
+                                                    part == "Standard:"
+                                                    and idx + 1 < len(parts)
+                                                ):
+                                                    val = parts[idx + 1]
+                                                    if val.isdigit():
+                                                        move_data["arceus_data"][
+                                                            "base_power_standard"
+                                                        ] = int(val)
+                                                elif part == "Agile:" and idx + 1 < len(
+                                                    parts
+                                                ):
+                                                    val = parts[idx + 1]
+                                                    if val.isdigit():
+                                                        move_data["arceus_data"][
+                                                            "base_power_agile"
+                                                        ] = int(val)
+                                                elif (
+                                                    part == "Strong:"
+                                                    and idx + 1 < len(parts)
+                                                ):
+                                                    val = parts[idx + 1]
+                                                    if val.isdigit():
+                                                        move_data["arceus_data"][
+                                                            "base_power_strong"
+                                                        ] = int(val)
+
+                                # Check for Speed Priority with Standard/Strong variants
+                                elif any(
+                                    "Speed" in cell.get_text()
+                                    and "Priority" in cell.get_text()
+                                    for cell in arceus_cells
+                                ):
+                                    if len(arceus_cells) >= 1:
+                                        speed_text = arceus_cells[0].get_text().strip()
+                                        if "Standard:" in speed_text:
+                                            parts = speed_text.split()
+                                            for idx, part in enumerate(parts):
+                                                if (
+                                                    part == "Standard:"
+                                                    and idx + 1 < len(parts)
+                                                ):
+                                                    val = parts[idx + 1]
+                                                    if val.lstrip("-").isdigit():
+                                                        move_data["arceus_data"][
+                                                            "speed_priority_standard"
+                                                        ] = int(val)
+                                                elif (
+                                                    part == "Strong:"
+                                                    and idx + 1 < len(parts)
+                                                ):
+                                                    val = parts[idx + 1]
+                                                    if val.lstrip("-").isdigit():
+                                                        move_data["arceus_data"][
+                                                            "speed_priority_strong"
+                                                        ] = int(val)
+
             # Extract Pokemon that learn this move
             move_data["learned_by"] = self.extract_pokemon_learners(soup)
 
@@ -491,18 +710,15 @@ class MovesDataScraper:
         learners = []
 
         try:
-            # Look for specific learning method sections
-            learning_methods = {
-                "Level Up": "Level Up",
-                "Move Reminder": "Move Reminder",
-                "Breeding": "Breeding",
-                "Z-A Data": "Z-A Level Up",
-            }
-
             # Find all tables with Pokemon learning data
-            tables = soup.find_all("table", class_="dextable")
+            # Gen 1-2, 4-9: use "dextable" class
+            # Gen 3: uses "dextab" class instead
+            tables = soup.find_all(
+                "table", class_=lambda x: x and ("dextable" in x or "dextab" in x)
+            )
 
-            for table in tables:
+            # Skip first table (it's the move data), process learner tables
+            for table_idx, table in enumerate(tables[1:], start=1):
                 # Determine learning method from nearby headers
                 current_method = "Level Up"  # default
 
@@ -522,79 +738,114 @@ class MovesDataScraper:
 
                 # Check for learning method indicators
                 prev_text = " ".join(prev_elements).lower()
-                if "move reminder" in prev_text:
-                    current_method = "Move Reminder"
-                elif "breeding" in prev_text:
+                if "move reminder" in prev_text or "move tutor" in prev_text:
+                    current_method = "Move Tutor"
+                elif "breeding" in prev_text or "egg move" in prev_text:
                     current_method = "Breeding"
                 elif "z-a" in prev_text:
                     current_method = "Z-A Level Up"
+                elif "machine" in prev_text or "tm" in prev_text:
+                    current_method = "TM"
+                else:
+                    current_method = "Level Up"
 
-                # Parse table rows
+                # Parse table rows - skip header rows (first 2 rows)
                 rows = table.find_all("tr")
-                for row in rows:
-                    cells = row.find_all("td", class_="fooinfo")
 
-                    if len(cells) >= 3:  # Need at least dex#, pic, name columns
-                        try:
-                            # Extract dex number (first cell with #0XXX format)
-                            dex_cell = cells[0]
-                            dex_text = dex_cell.get_text().strip()
+                for row_idx, row in enumerate(rows):
+                    # Skip header rows (first 2 rows typically contain headers)
+                    if row_idx < 2:
+                        continue
 
-                            if dex_text.startswith("#") and len(dex_text) >= 5:
-                                dex_number = dex_text[
-                                    1:
-                                ]  # Remove # and keep 4-digit format (0270)
+                    cells = row.find_all("td")
 
-                                # Extract Pokemon name and form (usually 3rd cell with link)
+                    # Need minimum cells for data extraction (at least dex#, pic, name, type)
+                    if len(cells) < 4:
+                        continue
+
+                    try:
+                        # Extract dex number (usually first cell with #0XXX format)
+                        dex_cell = cells[0]
+                        dex_text = dex_cell.get_text().strip()
+
+                        # Check for dex number format: #001, #0001, etc.
+                        if dex_text.startswith("#") and len(dex_text) >= 4:
+                            # Extract dex number after #
+                            dex_num_str = dex_text[1:].strip()
+                            # Check if it's numeric
+                            if dex_num_str.isdigit():
+                                # Pad to 4 digits
+                                dex_number = dex_num_str.zfill(4)
+
+                                # Extract Pokemon name
                                 pokemon_name = ""
                                 pokemon_form = "Normal"
-                                if len(cells) >= 3:
-                                    name_cell = cells[2]  # Usually the name column
+
+                                # Look for a cell with a link to Pokemon page
+                                for i in range(len(cells)):
+                                    name_cell = cells[i]
                                     name_link = name_cell.find("a")
                                     if name_link:
-                                        pokemon_name = name_link.get_text().strip()
-                                    else:
-                                        pokemon_name = name_cell.get_text().strip()
+                                        link_text = name_link.get_text().strip()
+                                        # Make sure it's a valid Pokemon name
+                                        if link_text and not link_text.isdigit():
+                                            pokemon_name = link_text
+                                            break
 
-                                # Check for form variants by looking at the image in the 2nd cell
-                                if len(cells) >= 2:
-                                    pic_cell = cells[1]  # Usually the picture column
-                                    img_tag = pic_cell.find("img")
+                                # If no link found, try to get text directly
+                                if not pokemon_name:
+                                    for i in range(2, min(5, len(cells))):
+                                        text = cells[i].get_text(strip=True)
+                                        if (
+                                            text
+                                            and not text.isdigit()
+                                            and not text.startswith("Lv")
+                                        ):
+                                            pokemon_name = text
+                                            break
+
+                                # Check for form variants by looking at images
+                                for cell in cells[:5]:
+                                    img_tag = cell.find("img")
                                     if img_tag and img_tag.get("src"):
                                         img_src = img_tag.get("src")
                                         # Check for form indicators in image filename
                                         if "-h.png" in img_src or "-h/" in img_src:
                                             pokemon_form = "Hisuian"
+                                            break
                                         elif "-a.png" in img_src or "-a/" in img_src:
                                             pokemon_form = "Alolan"
+                                            break
                                         elif "-g.png" in img_src or "-g/" in img_src:
                                             pokemon_form = "Galarian"
+                                            break
                                         elif "-p.png" in img_src or "-p/" in img_src:
                                             pokemon_form = "Paldean"
+                                            break
                                         elif "-mega" in img_src.lower():
                                             pokemon_form = "Mega"
+                                            break
                                         elif "-gmax" in img_src.lower():
                                             pokemon_form = "Gigantamax"
+                                            break
 
-                                # Extract level (last cell with "Lv. X" format)
+                                # Extract level - look for "Lv. X" in the last few cells
                                 learn_level = None
-                                level_text = ""
-                                if len(cells) >= 4:
-                                    # Level is usually in the last cell
-                                    level_cell = cells[-1]
-                                    level_text = level_cell.get_text().strip()
 
+                                for cell in reversed(cells[-3:]):
+                                    level_text = cell.get_text().strip()
                                     if level_text.startswith("Lv. "):
                                         try:
                                             learn_level = int(
                                                 level_text.replace("Lv. ", "")
                                             )
+                                            break
                                         except ValueError:
-                                            learn_level = None
+                                            pass
 
                                 # Create learner entry
                                 learner_data = {
-                                    "dex_number": dex_number,  # Keep 4-digit format like "0270"
+                                    "dex_number": dex_number,
                                     "name": pokemon_name,
                                     "form": pokemon_form,
                                     "method": current_method,
@@ -604,11 +855,11 @@ class MovesDataScraper:
                                     learner_data["level"] = learn_level
 
                                 # Only add if we have valid dex number and name
-                                if dex_number and pokemon_name and len(dex_number) == 4:
+                                if dex_number and pokemon_name:
                                     learners.append(learner_data)
 
-                        except (ValueError, IndexError, AttributeError) as e:
-                            continue
+                    except (ValueError, IndexError, AttributeError) as e:
+                        continue
 
         except Exception as e:
             print(f"Error extracting Pokemon learners: {e}")
@@ -655,11 +906,11 @@ class MovesDataScraper:
 
             move_data = self.scrape_move_data(move_file)
             if move_data:
-                # Skip moves that no Pokemon can learn (not usable in Gen 9)
+                # Skip moves that no Pokemon can learn (not usable in this generation)
                 learners_count = len(move_data["learned_by"])
                 if learners_count == 0:
                     print(
-                        f"  ⚠ {move_data['name']} - {move_data['battle_type']} type, no Pokemon can learn it (skipping - not usable in Gen 9)"
+                        f"  ⚠ {move_data['name']} - {move_data['battle_type']} type, no Pokemon can learn it (skipping - not usable in Gen {self.generation})"
                     )
                 else:
                     moves_data.append(move_data)
@@ -680,23 +931,65 @@ class MovesDataScraper:
         usable_moves = len(moves_data)
         skipped_moves = total_scraped - usable_moves
 
-        print(f"\n✅ Scraping complete! Collected {usable_moves} usable Gen 9 moves")
+        print(
+            f"\n✅ Scraping complete! Collected {usable_moves} usable Gen {self.generation} moves"
+        )
         if skipped_moves > 0:
             print(
-                f"   ⚠ Skipped {skipped_moves} moves (no Pokemon can learn them in Gen 9)"
+                f"   ⚠ Skipped {skipped_moves} moves (no Pokemon can learn them in Gen {self.generation})"
             )
         return moves_data
 
     def save_moves_data(self, moves_data: List[Dict[str, Any]]):
-        """Save moves data to JSON file"""
+        """Save moves data to JSON file with smart merging"""
         # Use generation-specific filename
         output_file = f"data/{self.gen_config['filename']}"
 
-        # Create backup if file exists
+        # Ensure data directory exists
+        os.makedirs("data", exist_ok=True)
+
+        # Smart merge: If file exists, merge new moves without duplicating
+        existing_moves = {}
+        if os.path.exists(output_file):
+            try:
+                existing_data = self.utils.load_json_data(output_file)
+                if isinstance(existing_data, dict) and "moves" in existing_data:
+                    # Index existing moves by name for quick lookup
+                    for move in existing_data["moves"]:
+                        existing_moves[move.get("name", "").lower()] = move
+                    print(f"Found {len(existing_moves)} existing moves")
+            except Exception as e:
+                print(f"Warning: Could not read existing file: {e}")
+
+        # Merge new moves, avoiding duplicates
+        merged_moves = list(existing_moves.values())
+        new_move_count = 0
+        updated_move_count = 0
+
+        for move in moves_data:
+            move_name = move.get("name", "").lower()
+            if move_name in existing_moves:
+                # Update existing move
+                idx = next(
+                    i
+                    for i, m in enumerate(merged_moves)
+                    if m.get("name", "").lower() == move_name
+                )
+                merged_moves[idx] = move
+                updated_move_count += 1
+            else:
+                # Add new move
+                merged_moves.append(move)
+                new_move_count += 1
+
+        # Create backup before saving if file exists
         if os.path.exists(output_file):
             backup_file = output_file.replace(".json", "_backup.json")
-            os.rename(output_file, backup_file)
-            print(f"Created backup: {backup_file}")
+            try:
+                os.rename(output_file, backup_file)
+                print(f"Created backup: {backup_file}")
+            except Exception as e:
+                print(f"Warning: Could not create backup: {e}")
 
         # Create structured data with metadata
         structured_data = {
@@ -705,21 +998,30 @@ class MovesDataScraper:
                 "games": self.gen_config["games"],
                 "source": f"Serebii.net AttackDex-Gen{self.generation}",
                 "scraped_date": time.strftime("%Y-%m-%d %H:%M:%S"),
-                "total_moves": len(moves_data),
+                "total_moves": len(merged_moves),
+                "merge_info": {
+                    "new_moves": new_move_count,
+                    "updated_moves": updated_move_count,
+                    "total_after_merge": len(merged_moves),
+                },
             },
-            "moves": moves_data,
+            "moves": merged_moves,
         }
 
-        # Save new data
+        # Save merged data
         self.utils.save_json_data(structured_data, output_file)
-        print(f"✅ Saved {len(moves_data)} Gen 9 moves to {output_file}")
+        print(f"\n✅ Saved {len(merged_moves)} moves to {output_file}")
+        if new_move_count > 0 or updated_move_count > 0:
+            print(f"   - {new_move_count} new moves added")
+            if updated_move_count > 0:
+                print(f"   - {updated_move_count} existing moves updated")
 
         # Print summary stats
         types_count = {}
         categories_count = {}
         total_learners = 0
 
-        for move in moves_data:
+        for move in merged_moves:
             # Count by type
             move_type = move.get("battle_type", "Unknown")
             types_count[move_type] = types_count.get(move_type, 0) + 1
@@ -732,8 +1034,8 @@ class MovesDataScraper:
             total_learners += len(move.get("learned_by", []))
 
         print(f"\n📊 Moves Data Summary:")
-        print(f"   Total Moves: {len(moves_data)}")
-        print(f"   Total Pokemon-Move Relationships: {total_learners}")
+        print(f"   Total Moves: {len(merged_moves)}")
+        print(f"   Total Pokémon-Move Relationships: {total_learners}")
         print(f"   Move Types: {len(types_count)}")
         print(f"   Move Categories: {len(categories_count)}")
 
@@ -742,24 +1044,25 @@ def main():
     """Main execution function"""
     print("=== Pokémon Moves Data Scraper ===")
     print("Available generations:")
-    print("4 - Generation 4 (Diamond/Pearl/Platinum/HeartGold/SoulSilver)")
-    print("5 - Generation 5 (Black/White/Black2/White2)")
+    print("1 - Generation 1 (Red/Blue/Yellow)")
+    print("2 - Generation 2 (Gold/Silver/Crystal)")
+    print("3 - Generation 3 (Ruby/Sapphire/Emerald)")
+    print("4 - Generation 4 (Diamond/Pearl/Platinum)")
+    print("5 - Generation 5 (Black/White/Black 2/White 2)")
     print("6 - Generation 6 (X/Y/Omega Ruby/Alpha Sapphire)")
     print("7 - Generation 7 (Sun/Moon/Ultra Sun/Ultra Moon)")
-    print(
-        "8 - Generation 8 (Sword/Shield/Brilliant Diamond/Shining Pearl/Legends Arceus)"
-    )
-    print("9 - Generation 9 (Scarlet/Violet/Legends Z-A)")
+    print("8 - Generation 8 (Sword/Shield/Legends: Arceus)")
+    print("9 - Generation 9 (Scarlet/Violet/Legends: Z-A)")
 
     while True:
         try:
             generation = int(
-                input("\nWhich generation would you like to scrape? (4-9): ")
+                input("\nWhich generation would you like to scrape? (1-9): ")
             )
-            if 4 <= generation <= 9:
+            if 1 <= generation <= 9:
                 break
             else:
-                print("Please enter a number between 4 and 9.")
+                print("Please enter a number between 1 and 9.")
         except ValueError:
             print("Please enter a valid number.")
 
