@@ -91,6 +91,12 @@ def fetch_pokemon():
                 sp_defense = None
                 speed = None
 
+                # Debug: print all column values for first Pokemon
+                if number_text == "#0001":
+                    print(f"Bulbasaur columns ({len(cols)} total):")
+                    for i, col in enumerate(cols):
+                        print(f"  Col {i}: '{col.get_text(strip=True)}'")
+
                 # HP is in column 7
                 if len(cols) > 7:
                     hp_value = cols[7].get_text(strip=True)
@@ -115,19 +121,17 @@ def fetch_pokemon():
                     if sp_attack_value.isdigit():
                         sp_attack = int(sp_attack_value)
 
-                # Special Defense is in column 11
-                if len(cols) > 11:
-                    sp_defense_value = cols[11].get_text(strip=True)
+                # Special Defense is in column 10
+                if len(cols) > 10:
+                    sp_defense_value = cols[10].get_text(strip=True)
                     if sp_defense_value.isdigit():
                         sp_defense = int(sp_defense_value)
 
-                # Speed is in column 12
-                if len(cols) > 12:
-                    speed_value = cols[12].get_text(strip=True)
+                # Speed is in column 11 (12th column, 0-indexed)
+                if len(cols) > 11:
+                    speed_value = cols[11].get_text(strip=True)
                     if speed_value.isdigit():
-                        speed = int(speed_value)
-
-                # Only add if we have valid data
+                        speed = int(speed_value)  # Only add if we have valid data
                 if number and name and name != "Unknown":
 
                     base_stats = {
@@ -163,7 +167,8 @@ def fetch_pokemon():
 
     return pokemon_list
 
-#running the scraper and saving to JSON
+
+# running the scraper and saving to JSON
 
 if __name__ == "__main__":
     print("Starting Pokemon scraper...")
@@ -176,7 +181,7 @@ if __name__ == "__main__":
     else:
         print("No Pokemon found!")
 
-    output_path = "pokemon_data.json"
+    output_path = "../data/pokemon_data.json"
 
     with open(output_path, "w") as f:
         json.dump(pokemons, f, indent=2)

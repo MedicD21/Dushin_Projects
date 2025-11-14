@@ -203,7 +203,7 @@ def fetch_ability_details(ability_link):
         return {"name": "Error", "description": f"Failed to fetch: {e}"}
 
 
-def export_to_json(abilities_data, filename="Ability_Dex.json"):
+def export_to_json(abilities_data, filename="../data/abilities_data.json"):
     """Export abilities data to a JSON file for web app use"""
     import json
     from datetime import datetime
@@ -238,7 +238,7 @@ def export_to_json(abilities_data, filename="Ability_Dex.json"):
     print(f"JSON data exported to {filename}")
 
 
-def export_to_text(abilities_data, filename="Ability_Dex.txt"):
+def export_to_text(abilities_data, filename="../data/abilities_data.txt"):
     """Export abilities data to a structured text file"""
     with open(filename, "w", encoding="utf-8") as f:
         f.write("=" * 80 + "\n")
