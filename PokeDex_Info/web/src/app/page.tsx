@@ -33,13 +33,16 @@ export default function Home() {
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <a
+            href="/pokedex"
+            className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all cursor-pointer"
+          >
             <div className="text-4xl mb-3">🐱</div>
-            <h3 className="font-bold text-lg mb-2">Pokémon</h3>
+            <h3 className="font-bold text-lg mb-2">PokéOS Dex</h3>
             <p className="text-gray-600">
-              Browse all Pokémon with stats, moves, and abilities
+              Browse all Pokémon with stats, types, and sprites
             </p>
-          </div>
+          </a>
           <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
             <div className="text-4xl mb-3">🎒</div>
             <h3 className="font-bold text-lg mb-2">Items</h3>

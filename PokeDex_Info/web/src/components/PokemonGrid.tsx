@@ -1,0 +1,210 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import PokemonModal from "./PokemonModal";
+
+interface Pokemon {
+  id: string;
+  number: number;
+  name: string;
+  types: string[];
+  abilities: string[];
+  base_stats: {
+    hp: number;
+    attack: number;
+    defense: number;
+    sp_attack: number;
+    sp_defense: number;
+    speed: number;
+  };
+  dex_entries: Record<string, string>;
+  species: string;
+  physical_info: Record<string, string>;
+  game_appearances: string[];
+}
+
+interface PokemonGridProps {
+  typeFilter?: string;
+  generationFilter?: number;
+  searchQuery?: string;
+}
+
+export default function PokemonGrid({
+  typeFilter,
+  generationFilter,
+  searchQuery,
+}: PokemonGridProps) {
+  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
+  const [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
+  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [shinyView, setShinyView] = useState(false);
+
+  useEffect(() => {
+    const fetchPokemon = async () => {
+      try {
+        const response = await fetch("/api/data");
+        const data = await response.json();
+        setPokemon(data);
+      } catch (error) {
+        console.error("Error fetching pokemon:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPokemon();
+  }, []);
+
+  useEffect(() => {
+    let filtered = pokemon;
+
+    // Filter by type
+    if (typeFilter && typeFilter !== "all") {
+      filtered = filtered.filter((p) =>
+        p.types
+          .map((t: string) => t.toLowerCase())
+          .includes(typeFilter.toLowerCase())
+      );
+    }
+
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query) ||
+          p.types.some((t: string) => t.toLowerCase().includes(query))
+      );
+    }
+
+    setFilteredPokemon(filtered);
+  }, [pokemon, typeFilter, generationFilter, searchQuery]);
+
+  const getTypeColor = (type: string): string => {
+    const colors: Record<string, string> = {
+      normal: "bg-gray-400",
+      fire: "bg-red-500",
+      water: "bg-blue-500",
+      grass: "bg-green-500",
+      electric: "bg-yellow-400",
+      ice: "bg-blue-300",
+      fighting: "bg-red-700",
+      poison: "bg-purple-500",
+      ground: "bg-yellow-600",
+      flying: "bg-blue-400",
+      psychic: "bg-pink-500",
+      bug: "bg-green-600",
+      rock: "bg-gray-600",
+      ghost: "bg-purple-700",
+      dragon: "bg-blue-700",
+      dark: "bg-gray-800",
+      steel: "bg-gray-500",
+      fairy: "bg-pink-300",
+    };
+    return colors[type.toLowerCase()] || "bg-gray-400";
+  };
+
+  const getSpriteUrl = (pokemonName: string): string => {
+    const formatted = pokemonName.toLowerCase().replace(/\s+/g, "-");
+    if (shinyView) {
+      return `/home-sprites/${formatted}.shiny.png`;
+    }
+    return `/home-sprites/${formatted}.png`;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="text-xl font-semibold text-gray-600">
+          Loading Pokédex...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      {/* Shiny Toggle */}
+      <div className="mb-6 flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-white">
+          Pokédex ({filteredPokemon.length})
+        </h2>
+        <button
+          onClick={() => setShinyView(!shinyView)}
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            shinyView
+              ? "bg-yellow-400 text-gray-900 shadow-lg"
+              : "bg-gray-700 text-white hover:bg-gray-600"
+          }`}
+        >
+          {shinyView ? "✨ Shiny Mode" : "🎨 Normal Mode"}
+        </button>
+      </div>
+
+      {/* Pokemon Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {filteredPokemon.map((p) => (
+          <div
+            key={p.id}
+            onClick={() => setSelectedPokemon(p)}
+            className="group cursor-pointer bg-gray-900 rounded-lg shadow-lg hover:shadow-2xl transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-500"
+          >
+            {/* Pokemon Card */}
+            <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
+              <img
+                src={getSpriteUrl(p.name)}
+                alt={p.name}
+                className="w-24 h-24 object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
+                }}
+              />
+            </div>
+
+            {/* Pokemon Info */}
+            <div className="p-3 bg-gray-900">
+              <h3 className="font-bold text-sm text-white truncate">
+                {p.name}
+              </h3>
+              <p className="text-xs text-gray-400 mb-2">
+                #{String(p.number).padStart(3, "0")}
+              </p>
+              <div className="flex gap-1 flex-wrap">
+                {p.types.slice(0, 2).map((t: string) => (
+                  <span
+                    key={t}
+                    className={`text-xs font-semibold text-white px-2 py-1 rounded ${getTypeColor(
+                      t
+                    )}`}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* No Results */}
+      {filteredPokemon.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-lg">
+            No Pokémon found matching your filters.
+          </p>
+        </div>
+      )}
+
+      {/* Pokemon Detail Modal */}
+      {selectedPokemon && (
+        <PokemonModal
+          pokemon={selectedPokemon}
+          isShiny={shinyView}
+          onShinyToggle={() => setShinyView(!shinyView)}
+          onClose={() => setSelectedPokemon(null)}
+        />
+      )}
+    </div>
+  );
+}
