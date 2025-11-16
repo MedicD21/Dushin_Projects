@@ -7,122 +7,15 @@
       "Yellow"
     ],
     "source": "Serebii.net AttackDex-Gen1",
-    "scraped_date": "2025-11-14 05:56:36",
-    "total_moves": 165,
+    "scraped_date": "2025-11-14 08:48:56",
+    "total_moves": 164,
     "merge_info": {
-      "new_moves": 154,
-      "updated_moves": 10,
-      "total_after_merge": 165
+      "new_moves": 164,
+      "updated_moves": 0,
+      "total_after_merge": 164
     }
   },
   "moves": [
-    {
-      "name": "Serebii.net Generation 1 AttackDex",
-      "battle_type": "Normal",
-      "category": "",
-      "power_points": 20,
-      "base_power": 15,
-      "accuracy": 85,
-      "battle_effect": "Traps and squeezes the target over two to five turns. The target cannot move while under attack.",
-      "secondary_effect": "",
-      "effect_rate": "",
-      "speed_priority": 0,
-      "pokemon_hit_in_battle": "",
-      "physical_contact": false,
-      "sound_type": false,
-      "punch_move": false,
-      "biting_move": false,
-      "snatchable": false,
-      "slicing_move": false,
-      "bullet_type": false,
-      "wind_move": false,
-      "powder_move": false,
-      "metronome": false,
-      "affected_by_gravity": false,
-      "defrosts_when_used": false,
-      "reflected_by_magic_coat": false,
-      "blocked_by_protect": false,
-      "copyable_by_mirror_move": false,
-      "learned_by": [
-        {
-          "dex_number": "0023",
-          "name": "Ekans",
-          "form": "Normal",
-          "method": "TM",
-          "level": 1
-        },
-        {
-          "dex_number": "0024",
-          "name": "Arbok",
-          "form": "Normal",
-          "method": "TM",
-          "level": 1
-        },
-        {
-          "dex_number": "0069",
-          "name": "Bellsprout",
-          "form": "Normal",
-          "method": "TM",
-          "level": 13
-        },
-        {
-          "dex_number": "0070",
-          "name": "Weepinbell",
-          "form": "Normal",
-          "method": "TM",
-          "level": 113
-        },
-        {
-          "dex_number": "0071",
-          "name": "Victreebel",
-          "form": "Normal",
-          "method": "TM",
-          "level": 13
-        },
-        {
-          "dex_number": "0072",
-          "name": "Tentacool",
-          "form": "Normal",
-          "method": "TM",
-          "level": 13
-        },
-        {
-          "dex_number": "0073",
-          "name": "Tentacruel",
-          "form": "Normal",
-          "method": "TM",
-          "level": 113
-        },
-        {
-          "dex_number": "0108",
-          "name": "Lickitung",
-          "form": "Normal",
-          "method": "TM",
-          "level": 1
-        },
-        {
-          "dex_number": "0147",
-          "name": "Dratini",
-          "form": "Normal",
-          "method": "TM",
-          "level": 1
-        },
-        {
-          "dex_number": "0148",
-          "name": "Dragonair",
-          "form": "Normal",
-          "method": "TM",
-          "level": 1
-        },
-        {
-          "dex_number": "0149",
-          "name": "Dragonite",
-          "form": "Normal",
-          "method": "TM",
-          "level": 1
-        }
-      ]
-    },
     {
       "name": "Absorb",
       "battle_type": "Grass",

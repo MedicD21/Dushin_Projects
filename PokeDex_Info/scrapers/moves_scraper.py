@@ -50,6 +50,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": False,
+                "has_physical_special_split": False,
             },
             2: {
                 "url": "https://www.serebii.net/attackdex-gs/",
@@ -61,6 +62,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": False,
+                "has_physical_special_split": False,
             },
             3: {
                 "url": "https://www.serebii.net/attackdex/",
@@ -72,6 +74,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": True,
+                "has_physical_special_split": False,
             },
             4: {
                 "url": "https://www.serebii.net/attackdex-dp/",
@@ -83,6 +86,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": True,
+                "has_physical_special_split": True,
             },
             5: {
                 "url": "https://www.serebii.net/attackdex-bw/",
@@ -94,6 +98,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": False,
+                "has_physical_special_split": True,
             },
             6: {
                 "url": "https://www.serebii.net/attackdex-xy/",
@@ -105,6 +110,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": True,
+                "has_physical_special_split": True,
             },
             7: {
                 "url": "https://www.serebii.net/attackdex-sm/",
@@ -116,6 +122,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": False,
                 "has_contests": False,
+                "has_physical_special_split": True,
             },
             8: {
                 "url": "https://www.serebii.net/attackdex-swsh/",
@@ -127,6 +134,7 @@ class MovesDataScraper:
                 "has_arceus_data": True,
                 "has_za_data": False,
                 "has_contests": False,
+                "has_physical_special_split": True,
             },
             9: {
                 "url": "https://www.serebii.net/attackdex-sv/",
@@ -138,6 +146,7 @@ class MovesDataScraper:
                 "has_arceus_data": False,
                 "has_za_data": True,
                 "has_contests": False,
+                "has_physical_special_split": True,
             },
         }
 
@@ -302,6 +311,12 @@ class MovesDataScraper:
                 if " - " in title_text:
                     # Split on last " - " to get move name (format: "Serebii.net Generation X AttackDex - Move Name")
                     move_data["name"] = title_text.split(" - ")[-1].strip()
+                else:
+                    # Fallback: use the filename as the move name (convert underscores to spaces, title case)
+                    move_data["name"] = move_filename.replace("_", " ").title()
+            else:
+                # Last resort fallback: use filename
+                move_data["name"] = move_filename.replace("_", " ").title()
 
             # Find the main move details table
             tables = soup.find_all("table", class_="dextable")
@@ -335,20 +350,42 @@ class MovesDataScraper:
                                         )
 
                         # Category (from image src)
-                        elif "Category" in cell_text and j == 2 and i + 1 < len(rows):
+                        elif "Category" in cell_text and i + 1 < len(rows):
                             next_row = rows[i + 1]
                             cat_cells = next_row.find_all("td")
-                            if len(cat_cells) > 2:
-                                cat_img = cat_cells[2].find("img")
+                            # Look through all cells to find the category image
+                            for cat_cell in cat_cells:
+                                cat_img = cat_cell.find("img")
                                 if cat_img and cat_img.get("src"):
                                     src = cat_img.get("src")
-                                    if "/type/" in src:
+                                    # Category image can be from physical/special/status paths
+                                    if any(
+                                        path in src
+                                        for path in [
+                                            "/physical/",
+                                            "/special/",
+                                            "/status/",
+                                        ]
+                                    ):
+                                        category_name = None
+                                        if "/physical/" in src:
+                                            category_name = "Physical"
+                                        elif "/special/" in src:
+                                            category_name = "Special"
+                                        elif "/status/" in src:
+                                            category_name = "Status"
+                                        if category_name:
+                                            move_data["category"] = category_name
+                                            break
+                                    # Fallback: try type path
+                                    elif "/type/" in src:
                                         move_data["category"] = (
                                             src.split("/type/")[1]
                                             .replace(".gif", "")
                                             .replace(".png", "")
                                             .title()
                                         )
+                                        break
 
                         # Power Points, Base Power, Accuracy (numeric values)
                         elif "Power Points" in cell_text and i + 1 < len(rows):
@@ -942,11 +979,12 @@ class MovesDataScraper:
 
     def save_moves_data(self, moves_data: List[Dict[str, Any]]):
         """Save moves data to JSON file with smart merging"""
-        # Use generation-specific filename
-        output_file = f"data/{self.gen_config['filename']}"
+        # Use generation-specific filename with absolute path to project root
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        output_file = os.path.join(project_root, "data", self.gen_config["filename"])
 
         # Ensure data directory exists
-        os.makedirs("data", exist_ok=True)
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
         # Smart merge: If file exists, merge new moves without duplicating
         existing_moves = {}

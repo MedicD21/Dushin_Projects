@@ -1,18 +1,14 @@
 {
   "metadata": {
     "generation": 1,
-    "games": [
-      "Red",
-      "Blue",
-      "Yellow"
-    ],
+    "games": ["Red", "Blue", "Yellow"],
     "source": "Serebii.net AttackDex-Gen1",
-    "scraped_date": "2025-11-14 10:09:45",
-    "total_moves": 160,
+    "scraped_date": "2025-11-14 09:01:28",
+    "total_moves": 164,
     "merge_info": {
-      "new_moves": 160,
-      "updated_moves": 0,
-      "total_after_merge": 160
+      "new_moves": 0,
+      "updated_moves": 164,
+      "total_after_merge": 164
     }
   },
   "moves": [
@@ -21619,6 +21615,341 @@
       ]
     },
     {
+      "name": "Smokescreen",
+      "battle_type": "Normal",
+      "category": "",
+      "power_points": 20,
+      "base_power": 0,
+      "accuracy": 100,
+      "battle_effect": "Creates an obscuring cloud of smoke that reduces the enemy's accuracy.",
+      "secondary_effect": "",
+      "effect_rate": "",
+      "speed_priority": 0,
+      "pokemon_hit_in_battle": "",
+      "physical_contact": false,
+      "sound_type": false,
+      "punch_move": false,
+      "biting_move": false,
+      "snatchable": false,
+      "slicing_move": false,
+      "bullet_type": false,
+      "wind_move": false,
+      "powder_move": false,
+      "metronome": false,
+      "affected_by_gravity": false,
+      "defrosts_when_used": false,
+      "reflected_by_magic_coat": false,
+      "blocked_by_protect": false,
+      "copyable_by_mirror_move": false,
+      "learned_by": [
+        {
+          "dex_number": "0109",
+          "name": "Koffing",
+          "form": "Normal",
+          "method": "TM",
+          "level": 37
+        },
+        {
+          "dex_number": "0110",
+          "name": "Weezing",
+          "form": "Normal",
+          "method": "TM",
+          "level": 39
+        },
+        {
+          "dex_number": "0116",
+          "name": "Horsea",
+          "form": "Normal",
+          "method": "TM",
+          "level": 19
+        },
+        {
+          "dex_number": "0117",
+          "name": "Seadra",
+          "form": "Normal",
+          "method": "TM",
+          "level": 119
+        },
+        {
+          "dex_number": "0126",
+          "name": "Magmar",
+          "form": "Normal",
+          "method": "TM",
+          "level": 48
+        }
+      ]
+    },
+    {
+      "name": "Soft-Boiled",
+      "battle_type": "Normal",
+      "category": "",
+      "power_points": 10,
+      "base_power": 0,
+      "accuracy": 100,
+      "battle_effect": "Restores HP by 1/2 of the user's maximum HP. May also be used in the field.",
+      "secondary_effect": "",
+      "effect_rate": "",
+      "speed_priority": 0,
+      "pokemon_hit_in_battle": "",
+      "physical_contact": false,
+      "sound_type": false,
+      "punch_move": false,
+      "biting_move": false,
+      "snatchable": false,
+      "slicing_move": false,
+      "bullet_type": false,
+      "wind_move": false,
+      "powder_move": false,
+      "metronome": false,
+      "affected_by_gravity": false,
+      "defrosts_when_used": false,
+      "reflected_by_magic_coat": false,
+      "blocked_by_protect": false,
+      "copyable_by_mirror_move": false,
+      "learned_by": [
+        {
+          "dex_number": "0113",
+          "name": "Chansey",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0151",
+          "name": "Mew",
+          "form": "Normal",
+          "method": "Level Up"
+        }
+      ]
+    },
+    {
+      "name": "Solar Beam",
+      "battle_type": "Grass",
+      "category": "",
+      "power_points": 10,
+      "base_power": 120,
+      "accuracy": 100,
+      "battle_effect": "The strongest GRASS-type attack. Energy is absorbed in the first turn, then fired the next turn.",
+      "secondary_effect": "",
+      "effect_rate": "",
+      "speed_priority": 0,
+      "pokemon_hit_in_battle": "",
+      "physical_contact": false,
+      "sound_type": false,
+      "punch_move": false,
+      "biting_move": false,
+      "snatchable": false,
+      "slicing_move": false,
+      "bullet_type": false,
+      "wind_move": false,
+      "powder_move": false,
+      "metronome": false,
+      "affected_by_gravity": false,
+      "defrosts_when_used": false,
+      "reflected_by_magic_coat": false,
+      "blocked_by_protect": false,
+      "copyable_by_mirror_move": false,
+      "learned_by": [
+        {
+          "dex_number": "0001",
+          "name": "Bulbasaur",
+          "form": "Normal",
+          "method": "TM",
+          "level": 48
+        },
+        {
+          "dex_number": "0002",
+          "name": "Ivysaur",
+          "form": "Normal",
+          "method": "TM",
+          "level": 54
+        },
+        {
+          "dex_number": "0003",
+          "name": "Venusaur",
+          "form": "Normal",
+          "method": "TM",
+          "level": 65
+        },
+        {
+          "dex_number": "0043",
+          "name": "Oddish",
+          "form": "Normal",
+          "method": "TM",
+          "level": 46
+        },
+        {
+          "dex_number": "0044",
+          "name": "Gloom",
+          "form": "Normal",
+          "method": "TM",
+          "level": 52
+        },
+        {
+          "dex_number": "0102",
+          "name": "Exeggcute",
+          "form": "Normal",
+          "method": "TM",
+          "level": 42
+        },
+        {
+          "dex_number": "0001",
+          "name": "Bulbasaur",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0002",
+          "name": "Ivysaur",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0003",
+          "name": "Venusaur",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0012",
+          "name": "Butterfree",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0035",
+          "name": "Clefairy",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0036",
+          "name": "Clefable",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0039",
+          "name": "Jigglypuff",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0040",
+          "name": "Wigglytuff",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0043",
+          "name": "Oddish",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0044",
+          "name": "Gloom",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0045",
+          "name": "Vileplume",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0046",
+          "name": "Paras",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0047",
+          "name": "Parasect",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0048",
+          "name": "Venonat",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0049",
+          "name": "Venomoth",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0069",
+          "name": "Bellsprout",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0070",
+          "name": "Weepinbell",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0071",
+          "name": "Victreebel",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0103",
+          "name": "Exeggutor",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0113",
+          "name": "Chansey",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0114",
+          "name": "Tangela",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0122",
+          "name": "Mr. Mime",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0131",
+          "name": "Lapras",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0143",
+          "name": "Snorlax",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0150",
+          "name": "Mewtwo",
+          "form": "Normal",
+          "method": "Level Up"
+        },
+        {
+          "dex_number": "0151",
+          "name": "Mew",
+          "form": "Normal",
+          "method": "Level Up"
+        }
+      ]
+    },
+    {
       "name": "Sonic Boom",
       "battle_type": "Normal",
       "category": "",
@@ -21761,6 +22092,50 @@
           "form": "Normal",
           "method": "TM",
           "level": 1
+        }
+      ]
+    },
+    {
+      "name": "Spore",
+      "battle_type": "Grass",
+      "category": "",
+      "power_points": 15,
+      "base_power": 0,
+      "accuracy": 100,
+      "battle_effect": "Special spores are scattered from mushrooms. If the opponent inhales the spores, it will fall asleep.",
+      "secondary_effect": "",
+      "effect_rate": "",
+      "speed_priority": 0,
+      "pokemon_hit_in_battle": "",
+      "physical_contact": false,
+      "sound_type": false,
+      "punch_move": false,
+      "biting_move": false,
+      "snatchable": false,
+      "slicing_move": false,
+      "bullet_type": false,
+      "wind_move": false,
+      "powder_move": false,
+      "metronome": false,
+      "affected_by_gravity": false,
+      "defrosts_when_used": false,
+      "reflected_by_magic_coat": false,
+      "blocked_by_protect": false,
+      "copyable_by_mirror_move": false,
+      "learned_by": [
+        {
+          "dex_number": "0046",
+          "name": "Paras",
+          "form": "Normal",
+          "method": "TM",
+          "level": 27
+        },
+        {
+          "dex_number": "0047",
+          "name": "Parasect",
+          "form": "Normal",
+          "method": "TM",
+          "level": 30
         }
       ]
     },
