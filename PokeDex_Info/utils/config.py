@@ -21,10 +21,10 @@ BASE_URLS = {
 # Data file paths
 DATA_FILES = {
     "pokemon": "data/pokemon_data.json",
-    "abilities": "data/abilities_data.json",
-    "moves": "data/moves_data_gen9.json",
-    "items": "data/items_data.json",
-    "games": "data/pokemon_games.json",
+    "abilities": "data/abilities/abilities_data.json",
+    "moves": "data/moves/moves_data_gen9.json",
+    "items": "data/items/items_data.json",
+    "games": "data/games/pokemon_games.json",
 }
 
 # Request settings

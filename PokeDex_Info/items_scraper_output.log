@@ -1,0 +1,153 @@
+============================================================
+🔄 Starting ItemDex Scraper
+============================================================
+
+📂 Scraping Poké Balls...
+  ⚙️  Beast Ball                          ✓
+  ⚙️  Cherish Ball                        ✓
+  ⚙️  Dive Ball                           ✓
+  ⚙️  Dream Ball                          ✓
+  ⚙️  Dusk Ball                           ✓
+  ⚙️  Fast Ball                           ✓
+  ⚙️  Feather Ball                        ✓
+  ⚙️  Friend Ball                         ✓
+  ⚙️  Gigaton Ball                        ✓
+  ⚙️  Great Ball                          ✓
+  ⚙️  Great Ball                          ✓
+  ⚙️  Heal Ball                           ✓
+  ⚙️  Heavy Ball                          ✓
+  ⚙️  Heavy Ball                          ✓
+  ⚙️  Jet Ball                            ✓
+  ⚙️  Leaden Ball                         ✓
+  ⚙️  Level Ball                          ✓
+  ⚙️  Love Ball                           ✓
+  ⚙️  Lure Ball                           ✓
+  ⚙️  Luxury Ball                         ✓
+  ⚙️  Master Ball                         ✓
+  ⚙️  Moon Ball                           ✓
+  ⚙️  Nest Ball                           ✓
+  ⚙️  Net Ball                            ✓
+  ⚙️  Origin Ball                         ✓
+  ⚙️  Park Ball                           ✓
+  ⚙️  Poke Ball                           ✓
+  ⚙️  Poke Ball                           ✓
+  ⚙️  Premier Ball                        ✓
+  ⚙️  Quick Ball                          ✓
+  ⚙️  Repeat Ball                         ✓
+  ⚙️  Safari Ball                         ✓
+  ⚙️  Sport Ball                          ✓
+  ⚙️  Strange Ball                        ✓
+  ⚙️  Timer Ball                          ✓
+  ⚙️  Ultra Ball                          ✓
+  ⚙️  Ultra Ball                          ✓
+  ⚙️  Wing Ball                           ✓
+  ✅ Found 38 items in Poké Balls
+
+📂 Scraping Recovery...
+  ⚙️  Antidote                            ✓
+  ⚙️  Awakening                           ✓
+  ⚙️  Berry Juice                         ✓
+  ⚙️  Big Malasada                        ✓
+  ⚙️  Burn Heal                           ✓
+  ⚙️  Casteliacone                        ✓
+  ⚙️  Elixir                              ✓
+  ⚙️  Energy Powder                       ✓
+  ⚙️  Energy Root                         ✓
+  ⚙️  Ether                               ✓
+  ⚙️  Fine Remedy                         ✓
+  ⚙️  Fresh Water                         ✓
+  ⚙️  Full Heal                           ✓
+  ⚙️  Full Restore                        ✓
+  ⚙️  Heal Powder                         ✓
+  ⚙️  Hyper Potion                        ✓
+  ⚙️  Ice Heal                            ✓
+  ⚙️  Jubilife Muffin                     ✓
+  ⚙️  Lava Cookie                         ✓
+  ⚙️  Lemonade                            ✓
+  ⚙️  Lumiose Galette                     ✓
+  ⚙️  Max Elixir                          ✓
+  ⚙️  Max Ether                           ✓
+  ⚙️  Max Honey                           ✓
+  ⚙️  Max Potion                          ✓
+  ⚙️  Max Revive                          ✓
+  ⚙️  Moomoo Milk                         ✓
+  ⚙️  Old Gateau                          ✓
+  ⚙️  Paralyze Heal                       ✓
+  ⚙️  Pewter Crunchies                    ✓
+  ⚙️  Potion                              ✓
+  ⚙️  Rage Candy Bar                      ✓
+  ⚙️  Remedy                              ✓
+  ⚙️  Revival Herb                        ✓
+  ⚙️  Revive                              ✓
+  ⚙️  Roto HP Restore                     ✓
+  ⚙️  Roto PP Restore                     ✓
+  ⚙️  Sacred Ash                          ✓
+  ⚙️  Shalour Sable                       ✓
+  ⚙️  Soda Pop                            ✓
+  ⚙️  Super Potion                        ✓
+  ⚙️  Superb Remedy                       ✓
+  ⚙️  Sweet Heart                         ✓
+  ✅ Found 43 items in Recovery
+
+📂 Scraping Hold Item...
+  ⚙️  Ability Shield                      ✓
+  ⚙️  Absorb Bulb                         ✓
+  ⚙️  Adamant Crystal                     ✓
+  ⚙️  Adamant Orb                         ✓
+  ⚙️  Air Balloon                         ✓
+  ⚙️  Aloraichium Z                       ✓
+  ⚙️  Amulet Coin                         ✓
+  ⚙️  Assault Vest                        ✓
+  ⚙️  Berry Sweet                         ✓
+  ⚙️  Berserk Gene                        ✓
+  ⚙️  Big Root                            ✓
+  ⚙️  Binding Band                        ✓
+  ⚙️  Black Belt                          ✓
+  ⚙️  Black Glasses                       ✓
+  ⚙️  Black Sludge                        ✓
+  ⚙️  Blue Orb                            ✓
+  ⚙️  Blue Scarf                          ✓
+  ⚙️  Blunder Policy                      ✓
+  ⚙️  Booster Energy                      ✓
+  ⚙️  Bright Powder                       ✓
+  ⚙️  Bug Gem                             ✓
+  ⚙️  Bug Memory                          ✓
+  ⚙️  Buginium Z                          ✓
+  ⚙️  Burn Drive                          ✓
+  ⚙️  Cell Battery                        ✓
+  ⚙️  Charcoal                            ✓
+  ⚙️  Chill Drive                         ✓
+  ⚙️  Choice Band                         ✓
+  ⚙️  Choice Scarf                        ✓
+  ⚙️  Choice Specs                        ✓
+  ⚙️  Cleanse Tag                         ✓
+  ⚙️  Clear Amulet                        ✓
+  ⚙️  Clover Sweet                        ✓
+  ⚙️  Cornerstone Mask                    ✓
+  ⚙️  Covert Cloak                        ✓
+  ⚙️  Damp Rock                           ✓
+  ⚙️  Dark Gem                            ✓
+  ⚙️  Dark Memory                         ✓
+  ⚙️  Darkinium Z                         ✓
+  ⚙️  Decidium Z                          ✓
+  ⚙️  Deep Sea Scale                      ✓
+  ⚙️  Deep Sea Tooth                      ✓
+  ⚙️  Destiny Knot                        ✓
+  ⚙️  Douse Drive                         ✓
+  ⚙️  Draco Plate                         ✓
+  ⚙️  Dragon Fang                         ✓
+  ⚙️  Dragon Gem                          ✓
+  ⚙️  Dragon Memory                       ✓
+  ⚙️  Dragonium Z                         ✓
+  ⚙️  Dread Plate                         ✓
+  ⚙️  Dubious Disc                        ✓
+  ⚙️  Earth Plate                         ✓
+  ⚙️  Eevium Z                            ✓
+  ⚙️  Eject Button                        ✓
+  ⚙️  Eject Pack                          ✓
+  ⚙️  Electirizer                         ✓
+  ⚙️  Electric Gem                        ✓
+  ⚙️  Electric Memory                     ✓
+  ⚙️  Electric Seed                       ✓
+  ⚙️  Electrium Z                         ✓
+  ⚙️  Everstone                           

@@ -1,427 +1,580 @@
 #!/usr/bin/env python3
 """
-Pokemon Items Scraper
-Scrapes comprehensive item data from Serebii.net including item details and locations.
+Serebii ItemDex Scraper
+Extracts all items from Serebii ItemDex with detailed information
 """
 
 import sys
 import os
 import json
 import time
-import re
-from typing import Dict, List, Any, Optional
+import requests
+from bs4 import BeautifulSoup
+from typing import Dict, List, Optional
+from pathlib import Path
+from tqdm import tqdm
 
 # Add project paths
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "utils"))
 
 from config import PokeDataUtils, DATA_FILES
 
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+}
 
-class ItemsDataScraper:
-    """Scrapes Pokemon items data from Serebii"""
+# Category list pages on Serebii (based on what we found)
+CATEGORY_PAGES = {
+    'Poké Balls': '/itemdex/list/pokeball.shtml',
+    'Recovery': '/itemdex/list/recovery.shtml',
+    'Hold Item': '/itemdex/list/holditem.shtml',
+    'Evolutionary Items': '/itemdex/list/evolutionary.shtml',
+    'Key Items': '/itemdex/list/keyitem.shtml',
+    'Fossils & Others': '/itemdex/list/fossil.shtml',
+    'Stat Items': '/itemdex/list/vitamins.shtml',
+    'Mail': '/itemdex/list/mail.shtml',
+    'Berries': '/itemdex/list/berry.shtml',
+}
+
+
+class ItemDexScraper:
+    """Scrapes items from Serebii ItemDex"""
+
+    # Map shorthand game codes to full game names (for compatibility with pokemon_games.json)
+    GAME_CODE_MAP = {
+        # Gen 1
+        'RGBY': ['Red', 'Blue', 'Yellow'],
+        # Gen 2
+        'GS': ['Gold', 'Silver'],
+        'C': ['Crystal'],
+        # Gen 3
+        'RS': ['Ruby', 'Sapphire'],
+        'E': ['Emerald'],
+        'FRLG': ['FireRed', 'LeafGreen'],
+        # Gen 4
+        'DP': ['Diamond', 'Pearl'],
+        'Pt': ['Platinum'],
+        'HG': ['HeartGold'],
+        'SS': ['SoulSilver'],
+        # Gen 5
+        'B': ['Black'],
+        'W': ['White'],
+        'B2': ['Black 2'],
+        'W2': ['White 2'],
+        # Gen 6
+        'X': ['X'],
+        'Y': ['Y'],
+        'ΩR': ['Omega Ruby'],
+        'αS': ['Alpha Sapphire'],
+        # Gen 7
+        'S': ['Sun'],
+        'M': ['Moon'],
+        'US': ['Ultra Sun'],
+        'UM': ['Ultra Moon'],
+        'LGP': ['Let\'s Go Pikachu'],
+        'LGE': ['Let\'s Go Eevee'],
+        # Gen 8
+        'SW': ['Sword'],
+        'SH': ['Shield'],
+        'BDSP': ['Brilliant Diamond', 'Shining Pearl'],
+        'PLA': ['Legends Arceus'],
+        # Gen 9
+        # Scarlet and Violet don't have shorthand in the scrapes
+    }
 
     def __init__(self):
         self.utils = PokeDataUtils()
-        self.items_data = []
-        self.base_url = "https://www.serebii.net/itemdex/"
+        self.session = requests.Session()
+        self.base_url = "https://www.serebii.net"
+        self.items = {}
+        self.items_by_category = {}
 
-        # Item categories
-        self.item_categories = {
-            "tm": "Technical Machine",
-            "tr": "Technical Record",
-            "berry": "Berry",
-            "ball": "Poké Ball",
-            "medicine": "Medicine",
-            "battle": "Battle Item",
-            "key": "Key Item",
-            "general": "General Item",
-            "hold": "Hold Item",
-            "evolution": "Evolution Item",
+
+    def fetch_page(self, url: str) -> Optional[BeautifulSoup]:
+        """Fetch and parse a page"""
+        try:
+            response = self.session.get(url, headers=HEADERS, timeout=10)
+            if response.status_code == 200:
+                return BeautifulSoup(response.content, 'html.parser')
+        except Exception as e:
+            print(f"Error fetching {url}: {e}")
+        return None
+
+    def extract_item_from_page(self, item_url: str, item_name: str, category: str) -> Dict:
+        """Extract detailed information from an individual item page"""
+        full_url = f"{self.base_url}{item_url}"
+        soup = self.fetch_page(full_url)
+
+        if not soup:
+            return self._create_empty_item(item_name, category, item_url)
+
+        item_data = {
+            'name': item_name,
+            'category': category,
+            'url': item_url,
+            'effect': '',
+            'held_item_effects': [],  # NEW: stat boosts and special effects
+            'price': {'purchase': 0, 'sell': 0},
+            'games': [],
+            'flavor_text': {},
+            'locations': {},
+            'japanese_name': '',
+            'generation_introduced': None,  # NEW: when item was added
+            'evolution_info': {  # NEW: which Pokemon evolve with this item
+                'pokemon': [],
+                'method': ''
+            },
+            'breeding_info': '',  # NEW: breeding-related information
+            'pokemon_usage': []  # NEW: Pokemon that use/hold this item
         }
 
-    def scrape_items_list(self) -> List[str]:
-        """Get list of all items from the main item dex"""
-        print("Fetching items list from Serebii...")
+        tables = soup.find_all('table')
+        page_text = soup.get_text().lower()
 
-        try:
-            soup = self.utils.safe_request(self.base_url)
-            if not soup:
-                return []
+        for table in tables:
+            rows = table.find_all('tr')
 
-            item_links = []
+            # Look for specific sections in the table
+            for i, row in enumerate(rows):
+                cells = row.find_all(['td', 'th'])
+                if not cells:
+                    continue
 
-            # Look for all links that could be item pages
-            for link in soup.find_all("a", href=True):
-                href = link.get("href", "")
-                if href.endswith(".shtml") and not href.startswith("http"):
-                    item_file = href.replace(".shtml", "")
-                    if item_file and item_file != "index":
-                        item_links.append(item_file)
+                first_cell = cells[0].get_text().strip()
 
-            # Also try to find items from category pages
-            category_pages = ["tm", "berry", "ball", "medicine", "keyitem"]
-            for category in category_pages:
-                try:
-                    category_url = f"{self.base_url}{category}.shtml"
-                    category_soup = self.utils.safe_request(category_url)
-                    if category_soup:
-                        for link in category_soup.find_all("a", href=True):
-                            href = link.get("href", "")
-                            if href.endswith(".shtml") and not href.startswith("http"):
-                                item_file = href.replace(".shtml", "")
-                                if item_file and item_file not in item_links:
-                                    item_links.append(item_file)
-                    time.sleep(0.3)  # Rate limiting
-                except Exception as e:
-                    print(f"Error fetching {category} items: {e}")
+                # Japanese Name and Item Type
+                if 'Japanese Name' in first_cell and len(cells) > 1:
+                    jp_text = cells[1].get_text().strip()
+                    if jp_text:
+                        item_data['japanese_name'] = jp_text.split('\n')[0]
 
-            print(f"Found {len(item_links)} items to scrape")
-            return list(set(item_links))  # Remove duplicates
+                # Price information
+                if 'Purchase Price' in first_cell and len(cells) > 1:
+                    try:
+                        price_text = cells[1].get_text().strip()
+                        price_val = ''.join(c for c in price_text if c.isdigit())
+                        if price_val:
+                            item_data['price']['purchase'] = int(price_val)
+                    except:
+                        pass
 
-        except Exception as e:
-            print(f"Error fetching items list: {e}")
-            return []
+                if 'Sell Price' in first_cell and len(cells) > 1:
+                    try:
+                        price_text = cells[1].get_text().strip()
+                        price_val = ''.join(c for c in price_text if c.isdigit())
+                        if price_val:
+                            item_data['price']['sell'] = int(price_val)
+                    except:
+                        pass
 
-    def scrape_item_data(self, item_filename: str) -> Optional[Dict[str, Any]]:
-        """Scrape detailed data for a specific item"""
-        item_url = f"{self.base_url}{item_filename}.shtml"
+                # In-Depth Effect
+                if 'In-Depth Effect' in first_cell or 'In-Game Description' in first_cell:
+                    if i + 1 < len(rows):
+                        effect_text = rows[i + 1].get_text().strip()
+                        item_data['effect'] = effect_text[:500]
 
-        try:
-            soup = self.utils.safe_request(item_url)
-            if not soup:
-                return None
+                # Flavor Text (game-specific descriptions)
+                # Format: Each row has [Game1, Game2, FlavorText] or [Game, FlavorText]
+                if 'Flavour Text' in first_cell or 'Flavor Text' in first_cell:
+                    j = i + 1
+                    while j < len(rows) and j < i + 20:
+                        flavor_cells = rows[j].find_all(['td', 'th'])
+                        if len(flavor_cells) >= 2:
+                            # Get all cell texts
+                            cell_texts = [cell.get_text().strip() for cell in flavor_cells]
+                            
+                            # Last cell is always the flavor text description
+                            flavor_text_content = cell_texts[-1]
+                            
+                            # First 1-2 cells are game names
+                            game_names = cell_texts[:-1]
+                            
+                            # Store with each game name as key
+                            if flavor_text_content and len(flavor_text_content) > 10:  # Ensure it's actual text
+                                for game_name in game_names:
+                                    if game_name and game_name not in ['Flavour Text', 'Flavor Text']:
+                                        item_data['flavor_text'][game_name] = flavor_text_content[:300]
+                        j += 1
 
-            item_data = {
-                "name": "",
-                "category": "",
-                "description": "",
-                "effect": "",
-                "buy_price": None,
-                "sell_price": None,
-                "locations": [],  # Where to find this item
-                "games_available": [],  # Which games have this item
-            }
+                # Games available (Attainable In section)
+                # Format: Row 1 = game abbrevs, Row 2 = Yes confirmations, Row 3 = more games, etc.
+                if 'Attainable In' in first_cell:
+                    j = i + 1
+                    games_found = set()
+                    while j < len(rows) and j < i + 8:
+                        games_row = rows[j]
+                        games_cells = games_row.find_all(['td', 'th'])
+                        if games_cells:
+                            games_text = [cell.get_text().strip() for cell in games_cells]
+                            
+                            # Filter: only add game abbreviations, not "Yes" or empty values
+                            # Valid game codes: 1-5 chars, no spaces, not "Yes"
+                            for game_code in games_text:
+                                if game_code and game_code != 'Yes' and 0 < len(game_code) <= 5:
+                                    # Exclude common non-game text
+                                    if not any(skip in game_code for skip in ['Attainable', 'Text']):
+                                        games_found.add(game_code)
+                        j += 1
+                    
+                    # Convert shorthand codes to full game names
+                    if games_found:
+                        full_game_names = self._convert_game_codes_to_names(games_found)
+                        item_data['games'].extend(full_game_names)
 
-            # Extract item name from page title
-            title = soup.find("title")
-            if title:
-                title_text = title.get_text()
-                if " - " in title_text:
-                    item_data["name"] = title_text.split(" - ")[0].strip()
+        # Extract additional data from page content
+        item_data['generation_introduced'] = self._extract_generation(page_text)
+        item_data['held_item_effects'] = self._extract_held_item_effects(soup, item_name)
+        item_data['evolution_info'] = self._extract_evolution_info(soup, item_name)
+        item_data['breeding_info'] = self._extract_breeding_info(soup)
+        item_data['pokemon_usage'] = self._extract_pokemon_usage(item_name)
 
-            # Look for item data tables
-            tables = soup.find_all("table")
-            for table in tables:
-                rows = table.find_all("tr")
-                for row in rows:
-                    cells = row.find_all(["td", "th"])
-                    if len(cells) >= 2:
-                        header = cells[0].get_text().strip().lower()
-                        value = cells[1].get_text().strip()
+        return item_data
 
-                        if "category" in header or "type" in header:
-                            item_data["category"] = value
-                        elif "description" in header or "effect" in header:
-                            item_data["description"] = value
-                        elif "buy" in header and "price" in header:
-                            try:
-                                # Extract number from price string
-                                price_match = re.search(
-                                    r"(\d+)", value.replace(",", "")
-                                )
-                                if price_match:
-                                    item_data["buy_price"] = int(price_match.group(1))
-                            except:
-                                pass
-                        elif "sell" in header and "price" in header:
-                            try:
-                                price_match = re.search(
-                                    r"(\d+)", value.replace(",", "")
-                                )
-                                if price_match:
-                                    item_data["sell_price"] = int(price_match.group(1))
-                            except:
-                                pass
+    def _convert_game_codes_to_names(self, game_codes: set) -> List[str]:
+        """Convert game shorthand codes to full game names for consistency with pokemon_games.json"""
+        full_names = set()
+        unmatched_codes = []
+        
+        for code in game_codes:
+            if code in self.GAME_CODE_MAP:
+                full_names.update(self.GAME_CODE_MAP[code])
+            else:
+                # Handle any special cases (like Scarlet, Violet which don't have shorthand)
+                # These might be passed through directly
+                unmatched_codes.append(code)
+        
+        # Add any unmatched codes directly (for future-proofing)
+        full_names.update(unmatched_codes)
+        
+        return sorted(list(full_names))
 
-            # Extract locations where item can be found
-            item_data["locations"] = self.extract_item_locations(soup)
+    def _create_empty_item(self, name: str, category: str, url: str) -> Dict:
+        """Create an empty item template"""
+        return {
+            'name': name,
+            'category': category,
+            'url': url,
+            'effect': '',
+            'held_item_effects': [],
+            'price': {'purchase': 0, 'sell': 0},
+            'games': [],
+            'flavor_text': {},
+            'locations': {},
+            'japanese_name': '',
+            'generation_introduced': None,
+            'evolution_info': {'pokemon': [], 'method': ''},
+            'breeding_info': '',
+            'pokemon_usage': []
+        }
 
-            # Extract games where item is available
-            item_data["games_available"] = self.extract_games_available(soup)
+    def _extract_generation(self, page_text: str) -> Optional[int]:
+        """Extract which generation item was introduced in"""
+        gen_mapping = {
+            'generation i': 1, 'gen i': 1, 'gen 1': 1,
+            'generation ii': 2, 'gen ii': 2, 'gen 2': 2,
+            'generation iii': 3, 'gen iii': 3, 'gen 3': 3,
+            'generation iv': 4, 'gen iv': 4, 'gen 4': 4,
+            'generation v': 5, 'gen v': 5, 'gen 5': 5,
+            'generation vi': 6, 'gen vi': 6, 'gen 6': 6,
+            'generation vii': 7, 'gen vii': 7, 'gen 7': 7,
+            'generation viii': 8, 'gen viii': 8, 'gen 8': 8,
+            'generation ix': 9, 'gen ix': 9, 'gen 9': 9,
+        }
 
-            # Determine category from filename if not found
-            if not item_data["category"]:
-                if "tm" in item_filename.lower():
-                    item_data["category"] = "Technical Machine"
-                elif "berry" in item_filename.lower():
-                    item_data["category"] = "Berry"
-                elif "ball" in item_filename.lower():
-                    item_data["category"] = "Poké Ball"
-                else:
-                    item_data["category"] = "General Item"
+        for gen_text, gen_num in gen_mapping.items():
+            if gen_text in page_text:
+                return gen_num
 
-            # Extract description from page content if not found in table
-            if not item_data["description"]:
-                for element in soup.find_all(["p", "div"]):
-                    text = element.get_text().strip()
-                    if len(text) > 30 and not any(
-                        skip in text.lower()
-                        for skip in ["copyright", "serebii", "navigation", "menu"]
-                    ):
-                        item_data["description"] = (
-                            text[:300] + "..." if len(text) > 300 else text
-                        )
-                        break
+        return None
 
-            # Set fallback name
-            if not item_data["name"]:
-                item_data["name"] = item_filename.replace("-", " ").title()
+    def _extract_held_item_effects(self, soup: BeautifulSoup, item_name: str) -> List[str]:
+        """Extract held item effects and stat boosts"""
+        effects = []
+        page_text = soup.get_text()
 
-            return item_data
+        # Look for common held item effect patterns
+        effect_patterns = [
+            'raises', 'boosts', 'increases', 'multiplies', 'doubles',
+            'reduces', 'decreases', 'resistance', 'immunity', 'prevents',
+            'damage', 'accuracy', 'evasion', 'speed', 'critical',
+            '+10%', '+20%', '+50%', '1.5x', '2x',
+        ]
 
-        except Exception as e:
-            print(f"Error scraping item {item_filename}: {e}")
-            return None
+        paragraphs = soup.find_all(['p', 'div'])
+        for para in paragraphs:
+            text = para.get_text().strip()
+            if any(pattern in text.lower() for pattern in effect_patterns) and len(text) > 20 and len(text) < 300:
+                if text not in effects:
+                    effects.append(text)
 
-    def extract_item_locations(self, soup) -> List[Dict[str, Any]]:
-        """Extract locations where this item can be found"""
-        locations = []
+        return effects[:5]  # Return first 5 effects
 
-        try:
-            tables = soup.find_all("table")
-            for table in tables:
-                rows = table.find_all("tr")
-                for row in rows:
-                    cells = row.find_all(["td", "th"])
-                    if len(cells) >= 2:
-                        # Look for location information
-                        for i, cell in enumerate(cells):
-                            text = cell.get_text().strip()
+    def _extract_evolution_info(self, soup: BeautifulSoup, item_name: str) -> Dict:
+        """Extract evolution items and which Pokemon they evolve"""
+        evolution_info = {'pokemon': [], 'method': ''}
 
-                            # Common location keywords
-                            location_keywords = [
-                                "route",
-                                "city",
-                                "town",
-                                "cave",
-                                "forest",
-                                "mountain",
-                                "tower",
-                                "gym",
-                                "shop",
-                                "mart",
-                            ]
+        page_text = soup.get_text()
+        
+        # Check if this is an evolution item
+        if 'evolution' in page_text.lower() or 'evolve' in page_text.lower():
+            evolution_info['method'] = 'Evolution Item'
 
-                            if any(
-                                keyword in text.lower() for keyword in location_keywords
-                            ):
-                                location_data = {
-                                    "location": text,
-                                    "method": "Found",
-                                    "game": "Various",
-                                }
-
-                                # Try to find method in nearby cells
-                                if i + 1 < len(cells):
-                                    method_text = cells[i + 1].get_text().strip()
-                                    if method_text and len(method_text) < 50:
-                                        location_data["method"] = method_text
-
-                                # Try to find game in nearby cells
-                                for other_cell in cells:
-                                    other_text = other_cell.get_text().strip()
-                                    if any(
-                                        game in other_text
-                                        for game in [
-                                            "Red",
-                                            "Blue",
-                                            "Yellow",
-                                            "Gold",
-                                            "Silver",
-                                            "Ruby",
-                                            "Sapphire",
-                                            "Diamond",
-                                            "Pearl",
-                                            "Black",
-                                            "White",
-                                            "X",
-                                            "Y",
-                                        ]
-                                    ):
-                                        location_data["game"] = other_text
-                                        break
-
-                                locations.append(location_data)
-
-        except Exception as e:
-            print(f"Error extracting locations: {e}")
-
-        return locations
-
-    def extract_games_available(self, soup) -> List[str]:
-        """Extract which games this item appears in"""
-        games = []
-
-        try:
-            # Look for game names in the page content
-            content = soup.get_text().lower()
-
-            game_names = [
-                "red",
-                "blue",
-                "yellow",
-                "gold",
-                "silver",
-                "crystal",
-                "ruby",
-                "sapphire",
-                "emerald",
-                "firered",
-                "leafgreen",
-                "diamond",
-                "pearl",
-                "platinum",
-                "heartgold",
-                "soulsilver",
-                "black",
-                "white",
-                "x",
-                "y",
-                "omega ruby",
-                "alpha sapphire",
-                "sun",
-                "moon",
-                "ultra sun",
-                "ultra moon",
-                "sword",
-                "shield",
-                "scarlet",
-                "violet",
+            # Try to find Pokemon names that use this item for evolution
+            # Common Pokemon names (simplified list - you can expand)
+            pokemon_list = [
+                'Pikachu', 'Raichu', 'Nidoran', 'Nidoking', 'Nidoqueen',
+                'Cleffa', 'Clefairy', 'Clefable', 'Vulpix', 'Ninetales',
+                'Jigglypuff', 'Wigglytuff', 'Oddish', 'Gloom', 'Vileplume',
+                'Paras', 'Parasect', 'Venonat', 'Venomoth', 'Diglett',
+                'Dugtrio', 'Meowth', 'Persian', 'Psyduck', 'Golduck',
+                'Mankey', 'Primeape', 'Growlithe', 'Arcanine', 'Poliwag',
+                'Poliwrath', 'Poliwag', 'Abra', 'Kadabra', 'Alakazam',
+                'Machop', 'Machoke', 'Machamp', 'Bellsprout', 'Weepinbell',
+                'Victreebel', 'Tentacool', 'Tentacruel', 'Slowpoke', 'Slowbro',
+                'Seel', 'Dewgong', 'Shellder', 'Cloyster', 'Gastly',
+                'Haunter', 'Gengar', 'Onix', 'Steelix', 'Drowzee', 'Hypno',
+                'Krabby', 'Kingler', 'Voltorb', 'Electrode', 'Exeggcute',
+                'Exeggutor', 'Cubone', 'Marowak', 'Hitmonlee', 'Hitmonchan',
+                'Lickitung', 'Lickilicky', 'Koffing', 'Weezing', 'Rhyhorn',
+                'Rhydon', 'Rhyperior', 'Chansey', 'Blissey', 'Tangela',
+                'Tangrowth', 'Kangaskhan', 'Horsea', 'Seadra', 'Kingdra',
+                'Goldeen', 'Seaking', 'Staryu', 'Starmie', 'Mr. Mime',
+                'Jynx', 'Electabuzz', 'Electivire', 'Magby', 'Magnemite',
+                'Magneton', 'Magnezone', 'Farfetch\'d', 'Doduo', 'Dodrio',
+                'Seel', 'Dewgong', 'Grimer', 'Muk', 'Shellder', 'Cloyster',
+                'Gastly', 'Haunter', 'Gengar', 'Onix', 'Drowzee', 'Hypno',
+                'Krabby', 'Kingler', 'Exeggcute', 'Exeggutor', 'Cubone',
+                'Marowak', 'Hitmonlee', 'Hitmonchan', 'Lickitung', 'Koffing',
+                'Weezing', 'Rhyhorn', 'Rhydon', 'Chansey', 'Tangela',
+                'Kangaskhan', 'Horsea', 'Seadra', 'Goldeen', 'Seaking',
+                'Staryu', 'Starmie', 'Mr. Mime', 'Jynx', 'Electabuzz',
+                'Magnemite', 'Magneton', 'Farfetch\'d', 'Doduo', 'Dodrio',
+                'Seel', 'Grimer', 'Muk', 'Shellder', 'Gastly', 'Haunter',
+                'Gengar', 'Onix', 'Drowzee', 'Krabby', 'Kingler', 'Voltorb',
+                'Electrode', 'Exeggcute', 'Cubone', 'Hitmonlee', 'Hitmonchan',
+                'Lickitung', 'Rhyhorn', 'Chansey', 'Tangela', 'Kangaskhan',
+                'Horsea', 'Goldeen', 'Staryu', 'Starmie', 'Mr. Mime', 'Jynx',
+                'Electabuzz', 'Magnemite', 'Magneton', 'Doduo', 'Seel',
             ]
 
-            for game in game_names:
-                if game in content:
-                    games.append(game.title())
+            for pokemon in pokemon_list:
+                if pokemon.lower() in page_text.lower():
+                    evolution_info['pokemon'].append(pokemon)
 
-        except Exception as e:
-            print(f"Error extracting games: {e}")
+        return evolution_info
 
-        return list(set(games))  # Remove duplicates
+    def _extract_breeding_info(self, soup: BeautifulSoup) -> str:
+        """Extract breeding-related information"""
+        page_text = soup.get_text().lower()
 
-    def scrape_all_items(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Scrape all items data"""
-        print("=== Pokemon Items Scraper ===")
-        print("Fetching comprehensive items data from Serebii.net")
-        print()
+        breeding_keywords = [
+            'breeding', 'egg', 'hatch', 'incubate', 'fertility',
+            'parent', 'offspring', 'breed', 'breedable'
+        ]
 
-        # Get list of items
-        item_files = self.scrape_items_list()
-        if not item_files:
-            print("No items found to scrape!")
+        if any(keyword in page_text for keyword in breeding_keywords):
+            # Find relevant text sections
+            paragraphs = soup.find_all(['p', 'div'])
+            for para in paragraphs:
+                text = para.get_text().strip()
+                if any(keyword in text.lower() for keyword in breeding_keywords) and len(text) > 30:
+                    return text[:200]
+
+        return ""
+
+    def _extract_pokemon_usage(self, item_name: str) -> List[str]:
+        """Extract Pokemon that use or hold this item"""
+        # This would require cross-referencing with Pokemon data
+        # For now, we'll implement a basic version
+        pokemon_usage = []
+
+        # Known common mappings (can be expanded with Pokemon data)
+        usage_mappings = {
+            'Assault Vest': ['Pokémon that value special defense'],
+            'Choice Band': ['Physical attacking Pokémon'],
+            'Choice Scarf': ['Fast Pokémon needing speed'],
+            'Destiny Knot': ['Breeding'],
+            'Focus Sash': ['Fragile sweepers'],
+            'Life Orb': ['Sweepers and attackers'],
+            'Leftovers': ['Walls and bulky Pokémon'],
+            'Trick Room': ['Slow Pokémon'],
+        }
+
+        if item_name in usage_mappings:
+            pokemon_usage = usage_mappings[item_name]
+
+        return pokemon_usage
+
+    def scrape_category(self, category_name: str, category_url: str) -> List[Dict]:
+        """Scrape all items in a category"""
+        print(f"\n📂 Scraping {category_name}...")
+        full_url = f"{self.base_url}{category_url}"
+        soup = self.fetch_page(full_url)
+
+        if not soup:
+            print(f"  ❌ Failed to fetch {category_name}")
             return []
 
-        if limit:
-            item_files = item_files[:limit]
-            print(f"Limiting to first {limit} items for testing")
+        items = []
+        tables = soup.find_all('table')
+        item_links_found = []
 
-        print(f"Scraping {len(item_files)} items...")
-        print()
+        # Find the main items table (usually table 1, the big one with all items)
+        for table in tables[1:]:
+            rows = table.find_all('tr')
 
-        items_data = []
+            # Skip header and separator rows
+            for row in rows[1:]:
+                cells = row.find_all(['td', 'th'])
+                if not cells or len(cells) < 3:
+                    continue
 
-        for i, item_file in enumerate(item_files, 1):
-            print(f"[{i:3d}/{len(item_files)}] Scraping {item_file}...")
+                # Item link is usually in one of the first 3 cells
+                item_link = None
+                item_name = ''
 
-            item_data = self.scrape_item_data(item_file)
-            if item_data:
-                items_data.append(item_data)
-                location_count = len(item_data["locations"])
-                print(
-                    f"  ✓ {item_data['name']} - {item_data['category']}, {location_count} locations"
-                )
-            else:
-                print(f"  ✗ Failed to scrape {item_file}")
+                for cell in cells[:3]:
+                    link = cell.find('a', href=True)
+                    if link and '/itemdex/' in link['href'] and not 'list' in link['href']:
+                        item_link = link['href']
+                        item_name = link.get_text().strip()
+                        break
 
-            # Rate limiting
-            time.sleep(0.5)
+                # If no link found in cells, get text from cell
+                if not item_name:
+                    for cell in cells:
+                        text = cell.get_text().strip()
+                        # Valid item names are 2-100 chars and don't contain headers
+                        if text and 2 < len(text) < 100 and '====' not in text:
+                            item_name = text
+                            break
 
-            # Progress update every 25 items
-            if i % 25 == 0:
-                print(f"\n--- Progress: {i}/{len(item_files)} items completed ---\n")
+                if item_link and item_name:
+                    # Skip empty or separator rows
+                    if not item_name or '====' in item_name:
+                        continue
 
-        print(f"\n✅ Scraping complete! Collected {len(items_data)} items")
-        return items_data
+                    item_links_found.append((item_name, item_link))
 
-    def save_items_data(self, items_data: List[Dict[str, Any]]):
-        """Save items data to JSON file"""
-        output_file = DATA_FILES["items"]
+        # Scrape each item with progress bar
+        with tqdm(total=len(item_links_found), desc=f"  {category_name}", ncols=80, unit="items") as pbar:
+            for item_name, item_link in item_links_found:
+                item_data = self.extract_item_from_page(item_link, item_name, category_name)
+                items.append(item_data)
+                pbar.update(1)
+                
+                # Rate limiting
+                time.sleep(0.2)
 
-        # Create backup if file exists
-        if os.path.exists(output_file):
-            backup_file = output_file.replace(".json", "_backup.json")
-            os.rename(output_file, backup_file)
-            print(f"Created backup: {backup_file}")
+        if items:
+            print(f"  ✅ Found {len(items)} items in {category_name}")
+        return items
 
-        # Save new data
-        self.utils.save_json_data(items_data, output_file)
-        print(f"✅ Saved {len(items_data)} items to {output_file}")
+    def scrape_all(self) -> tuple:
+        """Scrape all item categories"""
+        print("="*60)
+        print("🔄 Starting ItemDex Scraper")
+        print(f"📊 Categories to scrape: {len(CATEGORY_PAGES)}")
+        print("="*60)
 
-        # Print summary stats
-        categories_count = {}
-        total_locations = 0
-        items_with_prices = 0
+        all_items = []
+        categories_dict = {}
 
-        for item in items_data:
-            # Count by category
-            category = item.get("category", "Unknown")
-            categories_count[category] = categories_count.get(category, 0) + 1
+        with tqdm(total=len(CATEGORY_PAGES), desc="Overall Progress", ncols=80, unit="categories") as cat_pbar:
+            for category_name, category_url in CATEGORY_PAGES.items():
+                items = self.scrape_category(category_name, category_url)
+                all_items.extend(items)
+                categories_dict[category_name] = items
+                self.items_by_category[category_name] = items
+                cat_pbar.update(1)
 
-            # Count locations
-            total_locations += len(item.get("locations", []))
+        self.items = {item['name'].lower().replace(' ', '_'): item for item in all_items}
 
-            # Count items with prices
-            if item.get("buy_price") or item.get("sell_price"):
-                items_with_prices += 1
+        print("\n" + "="*60)
+        print(f"✅ Total items scraped: {len(all_items)}")
+        print("="*60)
 
-        print(f"\n📊 Items Data Summary:")
-        print(f"   Total Items: {len(items_data)}")
-        print(f"   Total Item Locations: {total_locations}")
-        print(f"   Items with Price Data: {items_with_prices}")
-        print(f"   Item Categories: {len(categories_count)}")
-        for category, count in sorted(categories_count.items()):
-            print(f"     {category}: {count}")
+        return all_items, categories_dict
+
+    def save_to_json(self, items: List[Dict], filename: str = 'items_data.json') -> str:
+        """Save items to JSON file"""
+        filepath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'items', filename)
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+        # Sort items by name
+        sorted_items = sorted(items, key=lambda x: x['name'].lower())
+
+        # Create structure with metadata
+        data = {
+            'metadata': {
+                'total_items': len(sorted_items),
+                'categories': sorted(list(set(item['category'] for item in sorted_items))),
+                'scrape_date': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'version': '2.0',
+                'new_fields': ['generation_introduced', 'evolution_info', 'breeding_info', 'pokemon_usage', 'held_item_effects']
+            },
+            'items': sorted_items
+        }
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        print(f"\n💾 Saved {len(sorted_items)} items to {filepath}")
+        return filepath
+
+    def save_by_category(self) -> str:
+        """Save items organized by category"""
+        category_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'items', 'by_category')
+        os.makedirs(category_dir, exist_ok=True)
+
+        print("\n📁 Saving items by category...")
+
+        for category_name, items in self.items_by_category.items():
+            # Create filename from category name
+            safe_name = category_name.lower().replace(' ', '_').replace('&', 'and')
+            filepath = os.path.join(category_dir, f'{safe_name}.json')
+
+            sorted_items = sorted(items, key=lambda x: x['name'].lower())
+
+            category_data = {
+                'metadata': {
+                    'category': category_name,
+                    'total_items': len(sorted_items),
+                    'scrape_date': time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'version': '2.0'
+                },
+                'items': sorted_items
+            }
+
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(category_data, f, indent=2, ensure_ascii=False)
+
+            print(f"  ✓ {category_name:<30} {len(items):>4} items")
+
+        print(f"\n✅ Saved category files to {category_dir}")
+        return category_dir
 
 
 def main():
-    """Main execution function"""
-    scraper = ItemsDataScraper()
+    """Main execution"""
+    scraper = ItemDexScraper()
 
-    # Ask user for scraping options
-    print("Pokemon Items Scraper")
-    print("1. Scrape all items (full dataset)")
-    print("2. Scrape first 50 items (testing)")
-    print("3. Scrape first 10 items (quick test)")
+    # Scrape all items
+    all_items, categories = scraper.scrape_all()
 
-    choice = input("Choose option (1-3): ").strip()
+    if all_items:
+        # Save comprehensive file
+        scraper.save_to_json(all_items)
 
-    limit = None
-    if choice == "2":
-        limit = 50
-    elif choice == "3":
-        limit = 10
-    elif choice != "1":
-        print("Invalid choice, defaulting to full scrape")
+        # Save by category
+        scraper.save_by_category()
 
-    # Scrape items data
-    items_data = scraper.scrape_all_items(limit=limit)
-
-    if items_data:
-        # Save data
-        scraper.save_items_data(items_data)
-        print(f"\n🎉 Items scraping completed successfully!")
+        print("\n" + "="*60)
+        print("🎉 ItemDex Scraper completed successfully!")
+        print("="*60)
     else:
-        print("❌ No items data collected")
+        print("❌ No items were scraped. Please check the website structure.")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
