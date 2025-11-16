@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
           name: p.name || "",
           types: p.types || [],
           abilities: p.abilities || [],
+          generation: p.generation || 0,
           base_stats: p.base_stats || {
             hp: 0,
             attack: 0,
@@ -29,7 +30,10 @@ export async function GET(request: NextRequest) {
           species: p.species || "",
           physical_info: p.physical_info || {},
           game_appearances: p.game_appearances || [],
-          generation: 0, // Will be calculated from types if needed
+          evolution: p.evolution || {
+            name: p.name || "",
+            evolutions: [],
+          },
         }))
       : [];
 
@@ -39,3 +43,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json([], { status: 200 });
   }
 }
+
