@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/* Pokemon-themed styles */
+.pokemon-card {
+  transition: all 0.3s ease;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(255, 0, 0, 0.2);
+}
+
+.pokemon-gradient {
+  background: linear-gradient(135deg, #ffcc00 0%, #ff0000 100%);
+}
+
+.type-normal {
+  @apply bg-gray-400;
+}
+.type-fire {
+  @apply bg-orange-500;
+}
+.type-water {
+  @apply bg-blue-500;
+}
+.type-grass {
+  @apply bg-green-500;
+}
+.type-electric {
+  @apply bg-yellow-400;
+}
+.type-ice {
+  @apply bg-cyan-400;
+}
+.type-fighting {
+  @apply bg-red-700;
+}
+.type-poison {
+  @apply bg-purple-600;
+}
+.type-ground {
+  @apply bg-yellow-700;
+}
+.type-flying {
+  @apply bg-indigo-400;
+}
+.type-psychic {
+  @apply bg-pink-500;
+}
+.type-bug {
+  @apply bg-green-600;
+}
+.type-rock {
+  @apply bg-gray-600;
+}
+.type-ghost {
+  @apply bg-purple-700;
+}
+.type-dragon {
+  @apply bg-indigo-600;
+}
+.type-dark {
+  @apply bg-gray-800;
+}
+.type-steel {
+  @apply bg-gray-500;
+}
+.type-fairy {
+  @apply bg-pink-400;
+}
