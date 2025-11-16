@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "gfix",
+      "type": "shell",
+      "command": "git add -A && git commit -m \"Auto-commit\" && git push",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "venv",
+      "type": "shell",
+      "command": "python -m venv .venv && source .venv/bin/activate",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "start backend",
+      "type": "shell",
+      "command": "uvicorn main:app --reload",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "start node",
+      "type": "shell",
+      "command": "npm run dev",
+      "presentation": {
+        "reveal": "always"
+      }
+    }
+  ]
+}
