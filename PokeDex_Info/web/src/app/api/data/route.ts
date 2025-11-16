@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     // Use absolute path
-    const dataPath = "/Users/dustinschaaf/Desktop/Dushin_Projects/PokeDex_Info/data/pokemon_data.json";
+    const dataPath =
+      "/Users/dustinschaaf/Desktop/Dushin_Projects/PokeDex_Info/data/pokemon_data.json";
     const data = await readFile(dataPath, "utf-8");
     const pokemon = JSON.parse(data);
 
@@ -43,4 +44,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json([], { status: 200 });
   }
 }
-

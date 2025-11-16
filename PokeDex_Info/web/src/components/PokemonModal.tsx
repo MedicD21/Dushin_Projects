@@ -270,57 +270,52 @@ export default function PokemonModal({
               <h3 className="font-bold text-white mb-4 text-lg">
                 Evolution Chain
               </h3>
-              <div className="bg-gray-800 rounded-lg border border-gray-700 p-4">
-                {/* Starting Pokemon */}
-                <div className="flex flex-col items-center">
-                  <div className="text-center mb-4">
-                    <img
-                      src={getSpriteUrl(pokemon.name)}
-                      alt={pokemon.name}
-                      className="w-24 h-24 object-contain mx-auto mb-2"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/placeholder.svg";
-                      }}
-                    />
-                    <p className="font-bold text-white text-sm">
-                      {pokemon.name}
-                    </p>
+              <div className="bg-gray-800 rounded-lg border border-gray-700 p-4 overflow-x-auto">
+                {/* Horizontal Evolution Chain */}
+                <div className="flex items-center justify-start gap-2 min-w-max pb-2">
+                  {/* Starting Pokemon */}
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <div className="text-center">
+                      <img
+                        src={getSpriteUrl(pokemon.name)}
+                        alt={pokemon.name}
+                        className="w-24 h-24 object-contain mx-auto mb-2"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/placeholder.svg";
+                        }}
+                      />
+                      <p className="font-bold text-white text-sm">
+                        {pokemon.name}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Evolution Chain */}
                   {pokemon.evolution.evolutions.map(
                     (evo: Evolution, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex flex-col items-center w-full"
-                      >
-                        <div className="text-yellow-400 text-sm font-bold mb-3">
-                          ↓
+                      <div key={idx} className="flex items-center gap-2 flex-shrink-0">
+                        <div className="text-yellow-400 text-lg font-bold">
+                          →
                         </div>
-                        <div className="text-center">
+                        <div className="flex flex-col items-center">
                           <img
                             src={`/home-sprites/${evo.sprite}.png`}
                             alt={evo.name}
-                            className="w-20 h-20 object-contain mx-auto mb-2"
+                            className="w-24 h-24 object-contain mx-auto mb-2"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 "/placeholder.svg";
                             }}
                           />
                           <Link href={`/pokedex?search=${evo.name}`}>
-                            <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer">
+                            <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer whitespace-nowrap">
                               {evo.name}
                             </p>
                           </Link>
-                          <p className="text-xs text-gray-400 mt-1">
+                          <p className="text-xs text-gray-400 mt-1 text-center max-w-[120px]">
                             {evo.method}
                           </p>
                         </div>
-                        {idx < pokemon.evolution.evolutions.length - 1 && (
-                          <div className="text-yellow-400 text-sm font-bold my-3">
-                            ↓
-                          </div>
-                        )}
                       </div>
                     )
                   )}
