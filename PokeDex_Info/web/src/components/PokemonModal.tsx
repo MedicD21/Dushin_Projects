@@ -3,6 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 
+interface Evolution {
+  name: string;
+  method: string;
+  sprite: string;
+}
+
+interface EvolutionChain {
+  name: string;
+  evolutions: Evolution[];
+}
+
 interface Pokemon {
   id: string;
   number: number;
@@ -21,6 +32,7 @@ interface Pokemon {
   species: string;
   physical_info: Record<string, string>;
   game_appearances: Record<string, any>;
+  evolution?: EvolutionChain;
 }
 
 interface PokemonModalProps {
@@ -247,6 +259,55 @@ export default function PokemonModal({
               💡 <strong>Evolution Tip:</strong> Evolution chain data coming soon! Check related Pokémon by searching for evolution stages in the Pokédex.
             </p>
           </div>
+
+          {/* Evolution Chain */}
+          {pokemon.evolution && pokemon.evolution.evolutions.length > 0 && (
+            <div>
+              <h3 className="font-bold text-white mb-4 text-lg">Evolution Chain</h3>
+              <div className="bg-gray-800 rounded-lg border border-gray-700 p-4">
+                {/* Starting Pokemon */}
+                <div className="flex flex-col items-center">
+                  <div className="text-center mb-4">
+                    <img
+                      src={getSpriteUrl(pokemon.name)}
+                      alt={pokemon.name}
+                      className="w-24 h-24 object-contain mx-auto mb-2"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/placeholder.svg";
+                      }}
+                    />
+                    <p className="font-bold text-white text-sm">{pokemon.name}</p>
+                  </div>
+
+                  {/* Evolution Chain */}
+                  {pokemon.evolution.evolutions.map((evo: Evolution, idx: number) => (
+                    <div key={idx} className="flex flex-col items-center w-full">
+                      <div className="text-yellow-400 text-sm font-bold mb-3">↓</div>
+                      <div className="text-center">
+                        <img
+                          src={`/home-sprites/${evo.sprite}.png`}
+                          alt={evo.name}
+                          className="w-20 h-20 object-contain mx-auto mb-2"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/placeholder.svg";
+                          }}
+                        />
+                        <Link href={`/pokedex?search=${evo.name}`}>
+                          <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer">
+                            {evo.name}
+                          </p>
+                        </Link>
+                        <p className="text-xs text-gray-400 mt-1">{evo.method}</p>
+                      </div>
+                      {idx < pokemon.evolution.evolutions.length - 1 && (
+                        <div className="text-yellow-400 text-sm font-bold my-3">↓</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Type Weaknesses */}
           <div>
