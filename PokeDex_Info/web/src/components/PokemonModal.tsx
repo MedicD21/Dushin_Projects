@@ -39,6 +39,24 @@ export default function PokemonModal({
   const [selectedGame, setSelectedGame] = useState<string>(
     Object.keys(pokemon.game_appearances || {})[0] || ""
   );
+
+  const getDexEntryForGame = (gameName: string): string => {
+    if (!gameName || !pokemon.dex_entries) return Object.values(pokemon.dex_entries)[0] || "";
+    
+    // Try exact lowercase match
+    const lowerKey = gameName.toLowerCase();
+    if (pokemon.dex_entries[lowerKey]) return pokemon.dex_entries[lowerKey];
+    
+    // Try removing spaces and special chars
+    const cleanKey = gameName.toLowerCase().replace(/['\s-]/g, "");
+    const matchKey = Object.keys(pokemon.dex_entries).find(
+      (key) => key.toLowerCase().replace(/['\s-]/g, "") === cleanKey
+    );
+    if (matchKey) return pokemon.dex_entries[matchKey];
+    
+    // Fallback to first entry
+    return Object.values(pokemon.dex_entries)[0] || "";
+  };
   const getSpriteUrl = (pokemonName: string): string => {
     const formatted = pokemonName.toLowerCase().replace(/\s+/g, "-");
     if (isShiny) {
@@ -172,14 +190,18 @@ export default function PokemonModal({
             <h3 className="font-bold text-white mb-3 text-lg">Types</h3>
             <div className="flex gap-3 flex-wrap">
               {pokemon.types.map((t: string) => (
-                <span
+                <Link
                   key={t}
-                  className={`text-white font-bold px-5 py-2 rounded-full ${getTypeColor(
-                    t
-                  )}`}
+                  href={`/types/${t.toLowerCase()}`}
                 >
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </span>
+                  <span
+                    className={`text-white font-bold px-5 py-2 rounded-full ${getTypeColor(
+                      t
+                    )} hover:opacity-80 transition-opacity cursor-pointer`}
+                  >
+                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                  </span>
+                </Link>
               ))}
             </div>
           </div>
@@ -191,10 +213,7 @@ export default function PokemonModal({
               {selectedGame && ` (${selectedGame})`}
             </h3>
             <p className="text-gray-300 leading-relaxed bg-gray-800 p-4 rounded border border-gray-700">
-              {selectedGame && pokemon.dex_entries[selectedGame.toLowerCase()]
-                ? pokemon.dex_entries[selectedGame.toLowerCase()]
-                : Object.values(pokemon.dex_entries)[0] ||
-                  "No description available."}
+              {getDexEntryForGame(selectedGame)}
             </p>
             {selectedGame && pokemon.game_appearances[selectedGame]?.location && (
               <p className="text-gray-400 text-sm mt-2 ml-1">
@@ -221,6 +240,13 @@ export default function PokemonModal({
               </div>
             </div>
           )}
+
+          {/* Evolution Hint */}
+          <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+            <p className="text-gray-300 text-sm">
+              💡 <strong>Evolution Tip:</strong> Evolution chain data coming soon! Check related Pokémon by searching for evolution stages in the Pokédex.
+            </p>
+          </div>
 
           {/* Type Weaknesses */}
           <div>
