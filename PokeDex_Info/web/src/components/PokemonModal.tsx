@@ -281,7 +281,8 @@ export default function PokemonModal({
                         alt={pokemon.name}
                         className="w-24 h-24 object-contain mx-auto mb-2"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = "/placeholder.svg";
+                          (e.target as HTMLImageElement).src =
+                            "/placeholder.svg";
                         }}
                       />
                       <p className="font-bold text-white text-sm">
@@ -293,7 +294,10 @@ export default function PokemonModal({
                   {/* Evolution Chain */}
                   {pokemon.evolution.evolutions.map(
                     (evo: Evolution, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 flex-shrink-0">
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 flex-shrink-0"
+                      >
                         <div className="text-yellow-400 text-lg font-bold">
                           →
                         </div>
