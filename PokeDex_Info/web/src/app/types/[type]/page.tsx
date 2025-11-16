@@ -96,7 +96,11 @@ export default function TypeDetailPage() {
   return (
     <div className="min-h-screen bg-gray-950">
       {/* Header */}
-      <div className={`${TYPE_COLORS[typeName.toLowerCase()] || "bg-gray-700"} text-white p-8`}>
+      <div
+        className={`${
+          TYPE_COLORS[typeName.toLowerCase()] || "bg-gray-700"
+        } text-white p-8`}
+      >
         <button
           onClick={() => router.back()}
           className="mb-4 text-white/70 hover:text-white transition"
@@ -104,9 +108,7 @@ export default function TypeDetailPage() {
           ← Back
         </button>
         <h1 className="text-4xl font-bold capitalize">{typeName} Type</h1>
-        <p className="text-white/70 mt-2">
-          {pokemon.length} Pokémon available
-        </p>
+        <p className="text-white/70 mt-2">{pokemon.length} Pokémon available</p>
       </div>
 
       {/* Content */}
@@ -142,7 +144,9 @@ export default function TypeDetailPage() {
             <p className="text-gray-300">
               {typeName} type moves are effective against{" "}
               {Object.entries(TYPE_WEAKNESSES)
-                .filter(([_, weakTo]) => weakTo.includes(typeName.toLowerCase()))
+                .filter(([_, weakTo]) =>
+                  weakTo.includes(typeName.toLowerCase())
+                )
                 .map(([type]) => type)
                 .join(", ") || "no types"}
             </p>

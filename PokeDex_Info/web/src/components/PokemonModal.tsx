@@ -53,19 +53,20 @@ export default function PokemonModal({
   );
 
   const getDexEntryForGame = (gameName: string): string => {
-    if (!gameName || !pokemon.dex_entries) return Object.values(pokemon.dex_entries)[0] || "";
-    
+    if (!gameName || !pokemon.dex_entries)
+      return Object.values(pokemon.dex_entries)[0] || "";
+
     // Try exact lowercase match
     const lowerKey = gameName.toLowerCase();
     if (pokemon.dex_entries[lowerKey]) return pokemon.dex_entries[lowerKey];
-    
+
     // Try removing spaces and special chars
     const cleanKey = gameName.toLowerCase().replace(/['\s-]/g, "");
     const matchKey = Object.keys(pokemon.dex_entries).find(
       (key) => key.toLowerCase().replace(/['\s-]/g, "") === cleanKey
     );
     if (matchKey) return pokemon.dex_entries[matchKey];
-    
+
     // Fallback to first entry
     return Object.values(pokemon.dex_entries)[0] || "";
   };
@@ -202,10 +203,7 @@ export default function PokemonModal({
             <h3 className="font-bold text-white mb-3 text-lg">Types</h3>
             <div className="flex gap-3 flex-wrap">
               {pokemon.types.map((t: string) => (
-                <Link
-                  key={t}
-                  href={`/types/${t.toLowerCase()}`}
-                >
+                <Link key={t} href={`/types/${t.toLowerCase()}`}>
                   <span
                     className={`text-white font-bold px-5 py-2 rounded-full ${getTypeColor(
                       t
@@ -227,11 +225,13 @@ export default function PokemonModal({
             <p className="text-gray-300 leading-relaxed bg-gray-800 p-4 rounded border border-gray-700">
               {getDexEntryForGame(selectedGame)}
             </p>
-            {selectedGame && pokemon.game_appearances[selectedGame]?.location && (
-              <p className="text-gray-400 text-sm mt-2 ml-1">
-                📍 <strong>Location:</strong> {pokemon.game_appearances[selectedGame].location}
-              </p>
-            )}
+            {selectedGame &&
+              pokemon.game_appearances[selectedGame]?.location && (
+                <p className="text-gray-400 text-sm mt-2 ml-1">
+                  📍 <strong>Location:</strong>{" "}
+                  {pokemon.game_appearances[selectedGame].location}
+                </p>
+              )}
           </div>
 
           {/* Abilities */}
@@ -242,7 +242,9 @@ export default function PokemonModal({
                 {pokemon.abilities.map((ability: string) => (
                   <Link
                     key={ability}
-                    href={`/abilities/${ability.toLowerCase().replace(/\s+/g, "-")}`}
+                    href={`/abilities/${ability
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
                   >
                     <span className="bg-blue-900 text-blue-100 px-4 py-2 rounded-full text-sm font-medium border border-blue-700 hover:bg-blue-800 hover:border-blue-500 cursor-pointer transition-colors">
                       {ability}
@@ -256,14 +258,18 @@ export default function PokemonModal({
           {/* Evolution Hint */}
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
             <p className="text-gray-300 text-sm">
-              💡 <strong>Evolution Tip:</strong> Evolution chain data coming soon! Check related Pokémon by searching for evolution stages in the Pokédex.
+              💡 <strong>Evolution Tip:</strong> Evolution chain data coming
+              soon! Check related Pokémon by searching for evolution stages in
+              the Pokédex.
             </p>
           </div>
 
           {/* Evolution Chain */}
           {pokemon.evolution && pokemon.evolution.evolutions.length > 0 && (
             <div>
-              <h3 className="font-bold text-white mb-4 text-lg">Evolution Chain</h3>
+              <h3 className="font-bold text-white mb-4 text-lg">
+                Evolution Chain
+              </h3>
               <div className="bg-gray-800 rounded-lg border border-gray-700 p-4">
                 {/* Starting Pokemon */}
                 <div className="flex flex-col items-center">
@@ -276,34 +282,48 @@ export default function PokemonModal({
                         (e.target as HTMLImageElement).src = "/placeholder.svg";
                       }}
                     />
-                    <p className="font-bold text-white text-sm">{pokemon.name}</p>
+                    <p className="font-bold text-white text-sm">
+                      {pokemon.name}
+                    </p>
                   </div>
 
                   {/* Evolution Chain */}
-                  {pokemon.evolution.evolutions.map((evo: Evolution, idx: number) => (
-                    <div key={idx} className="flex flex-col items-center w-full">
-                      <div className="text-yellow-400 text-sm font-bold mb-3">↓</div>
-                      <div className="text-center">
-                        <img
-                          src={`/home-sprites/${evo.sprite}.png`}
-                          alt={evo.name}
-                          className="w-20 h-20 object-contain mx-auto mb-2"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = "/placeholder.svg";
-                          }}
-                        />
-                        <Link href={`/pokedex?search=${evo.name}`}>
-                          <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer">
-                            {evo.name}
+                  {pokemon.evolution.evolutions.map(
+                    (evo: Evolution, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex flex-col items-center w-full"
+                      >
+                        <div className="text-yellow-400 text-sm font-bold mb-3">
+                          ↓
+                        </div>
+                        <div className="text-center">
+                          <img
+                            src={`/home-sprites/${evo.sprite}.png`}
+                            alt={evo.name}
+                            className="w-20 h-20 object-contain mx-auto mb-2"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "/placeholder.svg";
+                            }}
+                          />
+                          <Link href={`/pokedex?search=${evo.name}`}>
+                            <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer">
+                              {evo.name}
+                            </p>
+                          </Link>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {evo.method}
                           </p>
-                        </Link>
-                        <p className="text-xs text-gray-400 mt-1">{evo.method}</p>
+                        </div>
+                        {idx < pokemon.evolution.evolutions.length - 1 && (
+                          <div className="text-yellow-400 text-sm font-bold my-3">
+                            ↓
+                          </div>
+                        )}
                       </div>
-                      {idx < pokemon.evolution.evolutions.length - 1 && (
-                        <div className="text-yellow-400 text-sm font-bold my-3">↓</div>
-                      )}
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             </div>

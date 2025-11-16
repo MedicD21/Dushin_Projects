@@ -10,6 +10,7 @@ interface Pokemon {
   name: string;
   types: string[];
   abilities: string[];
+  generation: number;
   base_stats: {
     hp: number;
     attack: number;
@@ -58,6 +59,11 @@ export default function PokemonGrid({
 
   useEffect(() => {
     let filtered = pokemon;
+
+    // Filter by generation
+    if (generationFilter && generationFilter !== 0) {
+      filtered = filtered.filter((p) => p.generation === generationFilter);
+    }
 
     // Filter by type
     if (typeFilter && typeFilter !== "all") {
