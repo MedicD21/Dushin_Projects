@@ -97,27 +97,27 @@ def fetch_pokemon():
                     for i, col in enumerate(cols):
                         print(f"  Col {i}: '{col.get_text(strip=True)}'")
 
-                # HP is in column 7
-                if len(cols) > 7:
-                    hp_value = cols[7].get_text(strip=True)
+                # HP is in column 6
+                if len(cols) > 6:
+                    hp_value = cols[6].get_text(strip=True)
                     if hp_value.isdigit():
                         hp = int(hp_value)
 
-                # Attack is in column 8
-                if len(cols) > 8:
-                    att_value = cols[8].get_text(strip=True)
+                # Attack is in column 7
+                if len(cols) > 7:
+                    att_value = cols[7].get_text(strip=True)
                     if att_value.isdigit():
                         attack = int(att_value)
 
-                # Defense is in column 9
-                if len(cols) > 9:
-                    defense_value = cols[9].get_text(strip=True)
+                # Defense is in column 8
+                if len(cols) > 8:
+                    defense_value = cols[8].get_text(strip=True)
                     if defense_value.isdigit():
                         defense = int(defense_value)
 
-                # Special Attack is in column 10
-                if len(cols) > 10:
-                    sp_attack_value = cols[10].get_text(strip=True)
+                # Special Attack is in column 9
+                if len(cols) > 9:
+                    sp_attack_value = cols[9].get_text(strip=True)
                     if sp_attack_value.isdigit():
                         sp_attack = int(sp_attack_value)
 
@@ -127,7 +127,7 @@ def fetch_pokemon():
                     if sp_defense_value.isdigit():
                         sp_defense = int(sp_defense_value)
 
-                # Speed is in column 11 (12th column, 0-indexed)
+                # Speed is in column 11
                 if len(cols) > 11:
                     speed_value = cols[11].get_text(strip=True)
                     if speed_value.isdigit():
@@ -181,7 +181,12 @@ if __name__ == "__main__":
     else:
         print("No Pokemon found!")
 
-    output_path = "../data/pokemon_data.json"
+    # Get the project root directory and construct the path properly
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    output_path = os.path.join(project_root, "data", "pokemon_data.json")
+    
+    # Ensure the data directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     with open(output_path, "w") as f:
         json.dump(pokemons, f, indent=2)

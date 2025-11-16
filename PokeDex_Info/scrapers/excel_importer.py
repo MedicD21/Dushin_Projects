@@ -26,7 +26,7 @@ class ExcelDataImporter:
         self.column_mappings = {
             # Basic Info
             "name": "Name",
-            "pokedex_number": "National Dex #",
+            "pokedex_number": "National Dex Number",
             "form": "Form",
             "species": "Species",
             "gender": "Gender",
@@ -40,10 +40,10 @@ class ExcelDataImporter:
             "hp": "HP",
             "attack": "Attack",
             "defense": "Defense",
-            "sp_attack": "Sp. Attack",
-            "sp_defense": "Sp. Defense",
+            "sp_attack": "Sp. Atk",
+            "sp_defense": "Sp. Def",
             "speed": "Speed",
-            "bst": "BST",
+            "bst": "Total",
             # Physical Info
             "height": "Height",
             "weight": "Weight",
@@ -360,7 +360,13 @@ class ExcelDataImporter:
 
         # Basic Information
         if pd.notna(row.get("Name")):
-            pokemon["name"] = row["Name"]
+            name = str(row["Name"]).strip()
+            # Clean up names like "Nidoran♀ (female)" and "Nidoran♂ (male)"
+            if " (female)" in name:
+                name = name.replace(" (female)", "")
+            elif " (male)" in name:
+                name = name.replace(" (male)", "")
+            pokemon["name"] = name
 
         # Try multiple column names for pokedex number
         dex_num = row.get("National Dex #") or row.get("National Dex Number")
@@ -388,8 +394,8 @@ class ExcelDataImporter:
             "hp": "HP",
             "attack": "Attack",
             "defense": "Defense",
-            "sp_attack": "Sp. Attack",
-            "sp_defense": "Sp. Defense",
+            "sp_attack": "Sp. Atk",
+            "sp_defense": "Sp. Def",
             "speed": "Speed",
         }
 
@@ -397,8 +403,8 @@ class ExcelDataImporter:
             if pd.notna(row.get(excel_key)):
                 base_stats[json_key] = int(row[excel_key])
 
-        if pd.notna(row.get("BST")):
-            base_stats["total"] = int(row["BST"])
+        if pd.notna(row.get("Total")):
+            base_stats["total"] = int(row["Total"])
 
         if base_stats:
             pokemon["base_stats"] = base_stats
@@ -574,7 +580,8 @@ class ExcelDataImporter:
         }
 
         merged_count = 0
-        new_count = 0
+        skipped_count = 0
+        new_pokemon_list = []
 
         for excel_pokemon_entry in excel_pokemon:
             name = excel_pokemon_entry.get("name", "").lower()
@@ -591,12 +598,29 @@ class ExcelDataImporter:
                 existing_data[existing_index] = merged_entry
                 merged_count += 1
             else:
-                # Add new Pokemon
-                existing_data.append(excel_pokemon_entry)
-                new_count += 1
+                # Check if this is a duplicate by pokedex_number
+                excel_dex_num = excel_pokemon_entry.get("pokedex_number")
+                is_duplicate = False
+                
+                if excel_dex_num is not None:
+                    # Check if any existing Pokemon has the same pokedex_number
+                    for existing_pokemon in existing_data:
+                        existing_dex_num = existing_pokemon.get("pokedex_number")
+                        if existing_dex_num == excel_dex_num:
+                            is_duplicate = True
+                            skipped_count += 1
+                            break
+                
+                if not is_duplicate:
+                    # Add to list of new Pokemon
+                    new_pokemon_list.append(excel_pokemon_entry)
+
+        # Append new Pokemon at the end
+        existing_data.extend(new_pokemon_list)
 
         print(f"Merged {merged_count} existing Pokemon with Excel data")
-        print(f"Added {new_count} new Pokemon from Excel")
+        print(f"Skipped {skipped_count} duplicate Pokemon")
+        print(f"Added {len(new_pokemon_list)} new Pokemon from Excel")
         print(f"Total Pokemon: {len(existing_data)}")
 
         return existing_data
