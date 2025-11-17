@@ -247,7 +247,11 @@ export default function PokemonModal({
                 <div>
                   <p className="text-gray-400 text-xs font-semibold mb-2">Normal</p>
                   <div className="flex gap-2 flex-wrap">
-                    {(pokemon.abilities_info?.normal || pokemon.abilities)?.map((ability: string) => (
+                    {(pokemon.abilities_info?.normal || pokemon.abilities)
+                      ?.filter((ability: string) => 
+                        ability.toLowerCase() !== pokemon.abilities_info?.hidden?.toLowerCase()
+                      )
+                      .map((ability: string) => (
                       <Link
                         key={ability}
                         href={`/abilities/${ability
