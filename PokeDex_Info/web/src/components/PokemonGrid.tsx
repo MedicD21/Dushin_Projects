@@ -10,6 +10,10 @@ interface Pokemon {
   name: string;
   types: string[];
   abilities: string[];
+  abilities_info?: {
+    normal: string[];
+    hidden: string | null;
+  };
   moves: string[];
   generation: number;
   base_stats: {
