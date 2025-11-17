@@ -36,6 +36,18 @@ interface Pokemon {
   species: string;
   physical_info: Record<string, string>;
   game_appearances: Record<string, any>;
+  breeding_info?: {
+    egg_groups: string[];
+    gender_ratio: string;
+    egg_cycles: string;
+    base_friendship: string;
+    growth_rate: string;
+  };
+  game_mechanics?: {
+    ev_yield: string;
+    catch_rate: string;
+    base_exp: string;
+  };
   evolution?: EvolutionChain;
 }
 
@@ -104,6 +116,22 @@ export default function PokemonModal({
       fairy: "bg-pink-500",
     };
     return colors[type.toLowerCase()] || "bg-gray-600";
+  };
+
+  const parseGenderRatio = (
+    genderRatio: string
+  ): { malePercent: number; femalePercent: number; isGenderless: boolean } => {
+    if (!genderRatio || genderRatio.toLowerCase().includes("genderless")) {
+      return { malePercent: 0, femalePercent: 0, isGenderless: true };
+    }
+
+    const maleMatch = genderRatio.match(/(\d+(?:\.\d+)?)\s*%\s*male/i);
+    const femaleMatch = genderRatio.match(/(\d+(?:\.\d+)?)\s*%\s*female/i);
+
+    const malePercent = maleMatch ? parseFloat(maleMatch[1]) : 50;
+    const femalePercent = femaleMatch ? parseFloat(femaleMatch[1]) : 50;
+
+    return { malePercent, femalePercent, isGenderless: false };
   };
 
   const getTypeWeaknesses = (type: string): string[] => {
@@ -288,6 +316,121 @@ export default function PokemonModal({
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* Breeding & Game Info */}
+          {(pokemon.breeding_info || pokemon.game_mechanics) && (
+            <div className="bg-gray-800 rounded-lg p-4 space-y-4">
+              <h3 className="font-bold text-white text-lg">Stats & Info</h3>
+
+              {/* Gender Ratio */}
+              {pokemon.breeding_info && (
+                <div>
+                  <p className="text-gray-400 text-xs font-semibold mb-2">
+                    Gender Ratio
+                  </p>
+                  {(() => {
+                    const genderData = parseGenderRatio(
+                      pokemon.breeding_info.gender_ratio
+                    );
+                    return genderData.isGenderless ? (
+                      <p className="text-white text-sm">Genderless</p>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-6 bg-gray-700 rounded-full overflow-hidden flex">
+                          <div
+                            className="bg-blue-500 h-full"
+                            style={{
+                              width: `${genderData.malePercent}%`,
+                            }}
+                          ></div>
+                          <div
+                            className="bg-pink-500 h-full"
+                            style={{
+                              width: `${genderData.femalePercent}%`,
+                            }}
+                          ></div>
+                        </div>
+                        <div className="text-xs space-y-1">
+                          <p className="text-blue-400">
+                            ♂ {genderData.malePercent}%
+                          </p>
+                          <p className="text-pink-400">
+                            ♀ {genderData.femalePercent}%
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {/* Breeding Info Grid */}
+              {pokemon.breeding_info && (
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      Egg Groups
+                    </p>
+                    <p className="text-white">
+                      {pokemon.breeding_info.egg_groups.join(", ") || "Unknown"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      Egg Cycles
+                    </p>
+                    <p className="text-white">
+                      {pokemon.breeding_info.egg_cycles}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      Growth Rate
+                    </p>
+                    <p className="text-white">
+                      {pokemon.breeding_info.growth_rate}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      Base Friendship
+                    </p>
+                    <p className="text-white">
+                      {pokemon.breeding_info.base_friendship}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Game Mechanics */}
+              {pokemon.game_mechanics && (
+                <div className="grid grid-cols-2 gap-3 text-sm border-t border-gray-700 pt-3">
+                  <div>
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      Base Exp
+                    </p>
+                    <p className="text-white">
+                      {pokemon.game_mechanics.base_exp}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      Catch Rate
+                    </p>
+                    <p className="text-white text-xs">
+                      {pokemon.game_mechanics.catch_rate}
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-gray-400 text-xs font-semibold mb-1">
+                      EV Yield
+                    </p>
+                    <p className="text-white">{pokemon.game_mechanics.ev_yield}</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

@@ -36,6 +36,18 @@ export async function GET(request: NextRequest) {
           species: p.species || "",
           physical_info: p.physical_info || {},
           game_appearances: p.game_appearances || [],
+          breeding_info: p.breeding_info || {
+            egg_groups: [],
+            gender_ratio: "Unknown",
+            egg_cycles: "Unknown",
+            base_friendship: "Unknown",
+            growth_rate: "Unknown",
+          },
+          game_mechanics: p.game_mechanics || {
+            ev_yield: "Unknown",
+            catch_rate: "Unknown",
+            base_exp: "Unknown",
+          },
           evolution: p.evolution || {
             name: p.name || "",
             evolutions: [],
