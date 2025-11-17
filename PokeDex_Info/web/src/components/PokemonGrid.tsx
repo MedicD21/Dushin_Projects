@@ -112,7 +112,14 @@ export default function PokemonGrid({
     }
 
     setFilteredPokemon(filtered);
-  }, [pokemon, typeFilter, generationFilter, abilityFilter, moveFilter, searchQuery]);
+  }, [
+    pokemon,
+    typeFilter,
+    generationFilter,
+    abilityFilter,
+    moveFilter,
+    searchQuery,
+  ]);
 
   const getTypeColor = (type: string): string => {
     const colors: Record<string, string> = {

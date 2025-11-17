@@ -295,7 +295,9 @@ export default function PokemonDex() {
                     ) : (
                       abilities
                         .filter((ability) =>
-                          ability.toLowerCase().includes(abilitySearch.toLowerCase())
+                          ability
+                            .toLowerCase()
+                            .includes(abilitySearch.toLowerCase())
                         )
                         .map((ability) => (
                           <button
@@ -338,9 +340,7 @@ export default function PokemonDex() {
                   />
                   <div className="flex gap-1.5 flex-wrap">
                     {loadingMoves ? (
-                      <p className="text-xs text-gray-400">
-                        Loading moves...
-                      </p>
+                      <p className="text-xs text-gray-400">Loading moves...</p>
                     ) : (
                       moves
                         .filter((move) =>

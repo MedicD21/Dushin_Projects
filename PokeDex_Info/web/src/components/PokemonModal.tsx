@@ -245,38 +245,44 @@ export default function PokemonModal({
               <div className="space-y-3">
                 {/* Normal Abilities */}
                 <div>
-                  <p className="text-gray-400 text-xs font-semibold mb-2">Normal</p>
+                  <p className="text-gray-400 text-xs font-semibold mb-2">
+                    Normal
+                  </p>
                   <div className="flex gap-2 flex-wrap">
                     {(pokemon.abilities_info?.normal || pokemon.abilities)
-                      ?.filter((ability: string) => 
-                        ability.toLowerCase() !== pokemon.abilities_info?.hidden?.toLowerCase()
+                      ?.filter(
+                        (ability: string) =>
+                          ability.toLowerCase() !==
+                          pokemon.abilities_info?.hidden?.toLowerCase()
                       )
                       .map((ability: string) => (
-                      <Link
-                        key={ability}
-                        href={`/abilities/${ability
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")}`}
-                      >
-                        <span className="bg-blue-900 text-blue-100 px-4 py-2 rounded-full text-sm font-medium border border-blue-700 hover:bg-blue-800 hover:border-blue-500 cursor-pointer transition-colors">
-                          {ability}
-                        </span>
-                      </Link>
-                    ))}
+                        <Link
+                          key={ability}
+                          href={`/abilities/${ability
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")}`}
+                        >
+                          <span className="bg-blue-900 text-blue-100 px-4 py-2 rounded-full text-sm font-medium border border-blue-700 hover:bg-blue-800 hover:border-blue-500 cursor-pointer transition-colors">
+                            {ability}
+                          </span>
+                        </Link>
+                      ))}
                   </div>
                 </div>
-                
+
                 {/* Hidden Ability */}
                 {pokemon.abilities_info?.hidden && (
                   <div>
-                    <p className="text-gray-400 text-xs font-semibold mb-2">Hidden</p>
+                    <p className="text-gray-400 text-xs font-semibold mb-2">
+                      Hidden
+                    </p>
                     <Link
                       href={`/abilities/${pokemon.abilities_info.hidden
                         .toLowerCase()
                         .replace(/\s+/g, "-")}`}
                     >
                       <span className="inline-block bg-purple-900 text-purple-100 px-4 py-2 rounded-full text-sm font-medium border border-purple-700 hover:bg-purple-800 hover:border-purple-500 cursor-pointer transition-colors">
-                        {pokemon.abilities_info.hidden} ✦
+                        {pokemon.abilities_info.hidden}
                       </span>
                     </Link>
                   </div>
