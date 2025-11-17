@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import PokemonModal from "./PokemonModal";
+import Link from "next/link";
 
 interface Pokemon {
   id: string;
@@ -67,9 +67,7 @@ export default function PokemonGrid({
 }: PokemonGridProps) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
-  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const [loading, setLoading] = useState(true);
-  const [shinyView, setShinyView] = useState(false);
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -167,9 +165,6 @@ export default function PokemonGrid({
 
   const getSpriteUrl = (pokemonName: string): string => {
     const formatted = pokemonName.toLowerCase().replace(/\s+/g, "-");
-    if (shinyView) {
-      return `/home-sprites/${formatted}.shiny.png`;
-    }
     return `/home-sprites/${formatted}.png`;
   };
 
@@ -185,73 +180,48 @@ export default function PokemonGrid({
 
   return (
     <div className="w-full">
-      {/* Debug info */}
-      {selectedPokemon && (
-        <div className="bg-green-500 p-4 text-white mb-4">
-          Selected: {selectedPokemon.name}
-        </div>
-      )}
-
-      {/* Shiny Toggle */}
-      <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">
-          Pokédex ({filteredPokemon.length})
-        </h2>
-        <button
-          onClick={() => setShinyView(!shinyView)}
-          className={`bubble-btn font-medium transition-all ${
-            shinyView
-              ? "bg-yellow-400 text-gray-900 shadow-lg"
-              : "bg-gray-700 text-white hover:bg-gray-600"
-          }`}
-        >
-          {shinyView ? "✨ Shiny Mode" : "🎨 Normal Mode"}
-        </button>
-      </div>
+      <h2 className="text-2xl font-bold text-white mb-6">
+        Pokédex ({filteredPokemon.length})
+      </h2>
 
       {/* Pokemon Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {filteredPokemon.map((p) => (
-          <div
-            key={p.id}
-            onClick={() => {
-              console.log("Pokemon clicked:", p.name, p);
-              setSelectedPokemon(p);
-            }}
-            className="group cursor-pointer bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-500 grid-item-3d"
-          >
-            {/* Pokemon Card */}
-            <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
-              <img
-                src={getSpriteUrl(p.name)}
-                alt={p.name}
-                className="w-24 h-24 object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/placeholder.svg";
-                }}
-              />
-            </div>
+          <Link key={p.id} href={`/pokemon/${p.name.toLowerCase()}`}>
+            <div className="group cursor-pointer bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-500 grid-item-3d">
+              {/* Pokemon Card */}
+              <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
+                <img
+                  src={getSpriteUrl(p.name)}
+                  alt={p.name}
+                  className="w-24 h-24 object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/placeholder.svg";
+                  }}
+                />
+              </div>
 
-            {/* Pokemon Info */}
-            <div className="p-3 bg-gray-900">
-              <h3 className="font-bold text-sm text-white truncate">
-                {p.name}
-              </h3>
-              <p className="text-xs text-gray-400 mb-2">{p.number}</p>
-              <div className="flex gap-1 flex-wrap">
-                {p.types.slice(0, 2).map((t: string) => (
-                  <span
-                    key={t}
-                    className={`text-xs font-semibold text-white px-2 py-1 rounded ${getTypeColor(
-                      t
-                    )}`}
-                  >
-                    {t}
-                  </span>
-                ))}
+              {/* Pokemon Info */}
+              <div className="p-3 bg-gray-900">
+                <h3 className="font-bold text-sm text-white truncate">
+                  {p.name}
+                </h3>
+                <p className="text-xs text-gray-400 mb-2">{p.number}</p>
+                <div className="flex gap-1 flex-wrap">
+                  {p.types.slice(0, 2).map((t: string) => (
+                    <span
+                      key={t}
+                      className={`text-xs font-semibold text-white px-2 py-1 rounded ${getTypeColor(
+                        t
+                      )}`}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -262,16 +232,6 @@ export default function PokemonGrid({
             No Pokémon found matching your filters.
           </p>
         </div>
-      )}
-
-      {/* Pokemon Detail Modal */}
-      {selectedPokemon && (
-        <PokemonModal
-          pokemon={selectedPokemon}
-          isShiny={shinyView}
-          onShinyToggle={() => setShinyView(!shinyView)}
-          onClose={() => setSelectedPokemon(null)}
-        />
       )}
     </div>
   );
