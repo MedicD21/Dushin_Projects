@@ -282,7 +282,7 @@ export default function PokemonModal({
                         .replace(/\s+/g, "-")}`}
                     >
                       <span className="inline-block bg-purple-900 text-purple-100 px-4 py-2 rounded-full text-sm font-medium border border-purple-700 hover:bg-purple-800 hover:border-purple-500 cursor-pointer transition-colors">
-                        {pokemon.abilities_info.hidden}
+                        {pokemon.abilities_info.hidden.charAt(0).toUpperCase() + pokemon.abilities_info.hidden.slice(1)}
                       </span>
                     </Link>
                   </div>
