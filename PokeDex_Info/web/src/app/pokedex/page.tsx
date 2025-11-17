@@ -5,13 +5,17 @@ import PokemonGrid from "@/components/PokemonGrid";
 
 interface Pokemon {
   abilities: string[];
+  moves: string[];
 }
 
 export default function PokemonDex() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [generationFilter, setGenerationFilter] = useState<number>(0);
   const [abilityFilter, setAbilityFilter] = useState<string>("all");
+  const [moveFilter, setMoveFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [abilitySearch, setAbilitySearch] = useState<string>("");
+  const [moveSearch, setMoveSearch] = useState<string>("");
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [expandedFilters, setExpandedFilters] = useState<
     Record<string, boolean>
@@ -19,9 +23,12 @@ export default function PokemonDex() {
     generation: true,
     type: false,
     ability: false,
+    moves: false,
   });
   const [abilities, setAbilities] = useState<string[]>([]);
   const [loadingAbilities, setLoadingAbilities] = useState(true);
+  const [moves, setMoves] = useState<string[]>([]);
+  const [loadingMoves, setLoadingMoves] = useState(true);
 
   // Fetch unique abilities from Pokemon data
   useEffect(() => {
@@ -49,6 +56,34 @@ export default function PokemonDex() {
     };
 
     fetchAbilities();
+  }, []);
+
+  // Fetch unique moves from Pokemon data
+  useEffect(() => {
+    const fetchMoves = async () => {
+      try {
+        const response = await fetch("/api/data");
+        const data: Pokemon[] = await response.json();
+
+        // Extract and deduplicate moves
+        const uniqueMoves = new Set<string>();
+        data.forEach((pokemon) => {
+          pokemon.moves?.forEach((move) => {
+            uniqueMoves.add(move);
+          });
+        });
+
+        // Sort alphabetically and add "all" at the beginning
+        const sortedMoves = ["all", ...Array.from(uniqueMoves).sort()];
+        setMoves(sortedMoves);
+      } catch (error) {
+        console.error("Error fetching moves:", error);
+      } finally {
+        setLoadingMoves(false);
+      }
+    };
+
+    fetchMoves();
   }, []);
 
   const types = [
@@ -123,6 +158,7 @@ export default function PokemonDex() {
     if (typeFilter !== "all") count++;
     if (generationFilter !== 0) count++;
     if (abilityFilter !== "all") count++;
+    if (moveFilter !== "all") count++;
     if (searchQuery) count++;
     return count;
   };
@@ -235,7 +271,7 @@ export default function PokemonDex() {
             <div className="bg-gray-900 rounded-lg p-4">
               <button
                 onClick={() => toggleFilterSection("ability")}
-                className="w-full flex justify-between items-center hover:text-yellow-400 transition-colors"
+                className="w-full flex justify-between items-center hover:text-yellow-400 transition-colors mb-3"
               >
                 <h3 className="text-sm font-bold text-white">Ability</h3>
                 <span className="text-lg">
@@ -243,26 +279,88 @@ export default function PokemonDex() {
                 </span>
               </button>
               {expandedFilters.ability && (
-                <div className="mt-3 flex gap-1.5 flex-wrap">
-                  {loadingAbilities ? (
-                    <p className="text-xs text-gray-400">
-                      Loading abilities...
-                    </p>
-                  ) : (
-                    abilities.map((ability) => (
-                      <button
-                        key={ability}
-                        onClick={() => setAbilityFilter(ability)}
-                        className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
-                          abilityFilter === ability
-                            ? "bg-purple-600 text-white shadow-lg scale-105"
-                            : "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                        }`}
-                      >
-                        {ability.charAt(0).toUpperCase() + ability.slice(1)}
-                      </button>
-                    ))
-                  )}
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Search abilities..."
+                    value={abilitySearch}
+                    onChange={(e) => setAbilitySearch(e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 text-xs mb-3"
+                  />
+                  <div className="flex gap-1.5 flex-wrap">
+                    {loadingAbilities ? (
+                      <p className="text-xs text-gray-400">
+                        Loading abilities...
+                      </p>
+                    ) : (
+                      abilities
+                        .filter((ability) =>
+                          ability.toLowerCase().includes(abilitySearch.toLowerCase())
+                        )
+                        .map((ability) => (
+                          <button
+                            key={ability}
+                            onClick={() => setAbilityFilter(ability)}
+                            className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                              abilityFilter === ability
+                                ? "bg-purple-600 text-white shadow-lg scale-105"
+                                : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                            }`}
+                          >
+                            {ability.charAt(0).toUpperCase() + ability.slice(1)}
+                          </button>
+                        ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Moves Filter */}
+            <div className="bg-gray-900 rounded-lg p-4">
+              <button
+                onClick={() => toggleFilterSection("moves")}
+                className="w-full flex justify-between items-center hover:text-yellow-400 transition-colors mb-3"
+              >
+                <h3 className="text-sm font-bold text-white">Moves</h3>
+                <span className="text-lg">
+                  {expandedFilters.moves ? "−" : "+"}
+                </span>
+              </button>
+              {expandedFilters.moves && (
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Search moves..."
+                    value={moveSearch}
+                    onChange={(e) => setMoveSearch(e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs mb-3"
+                  />
+                  <div className="flex gap-1.5 flex-wrap">
+                    {loadingMoves ? (
+                      <p className="text-xs text-gray-400">
+                        Loading moves...
+                      </p>
+                    ) : (
+                      moves
+                        .filter((move) =>
+                          move.toLowerCase().includes(moveSearch.toLowerCase())
+                        )
+                        .map((move) => (
+                          <button
+                            key={move}
+                            onClick={() => setMoveFilter(move)}
+                            className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                              moveFilter === move
+                                ? "bg-blue-600 text-white shadow-lg scale-105"
+                                : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                            }`}
+                          >
+                            {move.charAt(0).toUpperCase() + move.slice(1)}
+                          </button>
+                        ))
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -274,6 +372,7 @@ export default function PokemonDex() {
                   setTypeFilter("all");
                   setGenerationFilter(0);
                   setAbilityFilter("all");
+                  setMoveFilter("all");
                   setSearchQuery("");
                 }}
                 className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-sm transition-all"
@@ -291,6 +390,7 @@ export default function PokemonDex() {
           typeFilter={typeFilter}
           generationFilter={generationFilter}
           abilityFilter={abilityFilter}
+          moveFilter={moveFilter}
           searchQuery={searchQuery}
         />
       </div>

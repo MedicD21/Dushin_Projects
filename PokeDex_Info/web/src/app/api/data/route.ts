@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
           name: p.name || "",
           types: p.types || [],
           abilities: p.abilities || [],
+          moves: p.moves || [],
           generation: p.generation || 0,
           base_stats: p.base_stats || {
             hp: 0,
