@@ -186,7 +186,7 @@ export default function PokemonDex() {
             />
             <button
               onClick={() => setFiltersOpen(!filtersOpen)}
-              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+              className={`bubble-btn font-medium transition-all flex items-center gap-2 ${
                 filtersOpen
                   ? "bg-yellow-500 text-gray-900"
                   : "bg-gray-700 text-gray-200 hover:bg-gray-600"
@@ -194,7 +194,7 @@ export default function PokemonDex() {
             >
               <span>⚙️ Filters</span>
               {getActiveFilterCount() > 0 && (
-                <span className="bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                <span className="bg-red-600 text-white text-xs rounded-full px-2 py-0.5 pulse-glow">
                   {getActiveFilterCount()}
                 </span>
               )}
@@ -375,7 +375,7 @@ export default function PokemonDex() {
                   setMoveFilter("all");
                   setSearchQuery("");
                 }}
-                className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-sm transition-all"
+                className="w-full bubble-btn bg-red-600 hover:bg-red-700 text-white text-sm transition-all"
               >
                 Clear All Filters
               </button>

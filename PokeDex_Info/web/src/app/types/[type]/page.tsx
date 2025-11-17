@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -60,7 +60,6 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default function TypeDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const typeParam = params.type as string;
   const typeName = typeParam.charAt(0).toUpperCase() + typeParam.slice(1);
 
@@ -101,12 +100,11 @@ export default function TypeDetailPage() {
           TYPE_COLORS[typeName.toLowerCase()] || "bg-gray-700"
         } text-white p-8`}
       >
-        <button
-          onClick={() => router.back()}
-          className="mb-4 text-white/70 hover:text-white transition"
-        >
-          ← Back
-        </button>
+        <Link href="/pokedex">
+          <button className="mb-4 text-white/70 hover:text-white transition">
+            ← Back to Pokédex
+          </button>
+        </Link>
         <h1 className="text-4xl font-bold capitalize">{typeName} Type</h1>
         <p className="text-white/70 mt-2">{pokemon.length} Pokémon available</p>
       </div>

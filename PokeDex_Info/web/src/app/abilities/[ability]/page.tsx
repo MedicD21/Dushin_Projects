@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -20,7 +20,6 @@ interface Ability {
 
 export default function AbilityDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const abilityParam = params.ability as string;
   const abilityName = abilityParam
     .split("-")
@@ -58,12 +57,11 @@ export default function AbilityDetailPage() {
     <div className="min-h-screen bg-gray-950">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8">
-        <button
-          onClick={() => router.back()}
-          className="mb-4 text-blue-100 hover:text-white transition"
-        >
-          ← Back
-        </button>
+        <Link href="/pokedex">
+          <button className="mb-4 text-blue-100 hover:text-white transition">
+            ← Back to Pokédex
+          </button>
+        </Link>
         <h1 className="text-4xl font-bold">{abilityName}</h1>
         <p className="text-blue-100 mt-2">
           Available to {pokemon.length} Pokémon

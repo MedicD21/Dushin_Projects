@@ -27,7 +27,27 @@ interface Pokemon {
   dex_entries: Record<string, string>;
   species: string;
   physical_info: Record<string, string>;
-  game_appearances: string[];
+  game_appearances: Record<string, any>;
+  breeding_info?: {
+    egg_groups: string[];
+    gender_ratio: string;
+    egg_cycles: string;
+    base_friendship: string;
+    growth_rate: string;
+  };
+  game_mechanics?: {
+    ev_yield: string;
+    catch_rate: string;
+    base_exp: string;
+  };
+  evolution?: {
+    name: string;
+    evolutions: Array<{
+      name: string;
+      method: string;
+      sprite: string;
+    }>;
+  };
 }
 
 interface PokemonGridProps {
@@ -165,6 +185,13 @@ export default function PokemonGrid({
 
   return (
     <div className="w-full">
+      {/* Debug info */}
+      {selectedPokemon && (
+        <div className="bg-green-500 p-4 text-white mb-4">
+          Selected: {selectedPokemon.name}
+        </div>
+      )}
+
       {/* Shiny Toggle */}
       <div className="mb-6 flex justify-between items-center">
         <h2 className="text-2xl font-bold text-white">
@@ -172,7 +199,7 @@ export default function PokemonGrid({
         </h2>
         <button
           onClick={() => setShinyView(!shinyView)}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+          className={`bubble-btn font-medium transition-all ${
             shinyView
               ? "bg-yellow-400 text-gray-900 shadow-lg"
               : "bg-gray-700 text-white hover:bg-gray-600"
@@ -187,8 +214,11 @@ export default function PokemonGrid({
         {filteredPokemon.map((p) => (
           <div
             key={p.id}
-            onClick={() => setSelectedPokemon(p)}
-            className="group cursor-pointer bg-gray-900 rounded-lg shadow-lg hover:shadow-2xl transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-500"
+            onClick={() => {
+              console.log("Pokemon clicked:", p.name, p);
+              setSelectedPokemon(p);
+            }}
+            className="group cursor-pointer bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-500 grid-item-3d"
           >
             {/* Pokemon Card */}
             <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">

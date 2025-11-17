@@ -49,6 +49,7 @@ interface Pokemon {
     base_exp: string;
   };
   evolution?: EvolutionChain;
+  moves?: string[];
 }
 
 interface PokemonModalProps {
@@ -164,7 +165,7 @@ export default function PokemonModal({
       onClick={onClose}
     >
       <div
-        className="bg-gray-900 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500"
+        className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500 modal-3d"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -172,9 +173,19 @@ export default function PokemonModal({
           <div className="flex justify-between items-start mb-4">
             <div>
               <div className="text-sm text-blue-100">
-                #{String(pokemon.number).padStart(3, "0")}
+                National Pokédex: #{String(pokemon.number).padStart(3, "0")}
               </div>
-              <h1 className="text-4xl font-bold capitalize">{pokemon.name}</h1>
+              {selectedGame && pokemon.game_appearances?.[selectedGame] && (
+                <div className="text-sm text-blue-100">
+                  {selectedGame} Pokédex: #
+                  {String(
+                    pokemon.game_appearances[selectedGame].dex_number
+                  ).padStart(3, "0")}
+                </div>
+              )}
+              <h1 className="text-4xl font-bold capitalize mt-2">
+                {pokemon.name}
+              </h1>
               <p className="text-sm opacity-90 capitalize mt-1">
                 {pokemon.species}
               </p>
@@ -191,7 +202,7 @@ export default function PokemonModal({
           <div className="flex gap-3 flex-wrap">
             <button
               onClick={onShinyToggle}
-              className={`px-4 py-2 rounded-lg font-bold transition-all ${
+              className={`bubble-btn font-bold transition-all ${
                 isShiny
                   ? "bg-yellow-400 text-gray-900"
                   : "bg-gray-700 text-gray-200 hover:bg-gray-600"
@@ -219,11 +230,11 @@ export default function PokemonModal({
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Sprite Section */}
-          <div className="flex justify-center bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg py-8 border border-gray-700">
+          <div className="sprite-container border border-gray-600">
             <img
               src={getSpriteUrl(pokemon.name)}
               alt={pokemon.name}
-              className="w-56 h-56 object-contain drop-shadow-lg"
+              className="w-56 h-56 object-contain drop-shadow-lg float-animation"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = "/placeholder.svg";
               }}
@@ -233,14 +244,10 @@ export default function PokemonModal({
           {/* Type Badges */}
           <div>
             <h3 className="font-bold text-white mb-3 text-lg">Types</h3>
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-3 flex-wrap justify-center">
               {pokemon.types.map((t: string) => (
                 <Link key={t} href={`/types/${t.toLowerCase()}`}>
-                  <span
-                    className={`text-white font-bold px-5 py-2 rounded-full ${getTypeColor(
-                      t
-                    )} hover:opacity-80 transition-opacity cursor-pointer`}
-                  >
+                  <span className={`type-badge ${getTypeColor(t)}`}>
                     {t.charAt(0).toUpperCase() + t.slice(1)}
                   </span>
                 </Link>
@@ -270,13 +277,13 @@ export default function PokemonModal({
           {pokemon.abilities.length > 0 && (
             <div>
               <h3 className="font-bold text-white mb-3 text-lg">Abilities</h3>
-              <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-4">
                 {/* Normal Abilities */}
                 <div>
                   <p className="text-gray-400 text-xs font-semibold mb-2">
                     Normal
                   </p>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-col gap-2">
                     {(pokemon.abilities_info?.normal || pokemon.abilities)
                       ?.filter(
                         (ability: string) =>
@@ -290,7 +297,7 @@ export default function PokemonModal({
                             .toLowerCase()
                             .replace(/\s+/g, "-")}`}
                         >
-                          <span className="bg-blue-900 text-blue-100 px-4 py-2 rounded-full text-sm font-medium border border-blue-700 hover:bg-blue-800 hover:border-blue-500 cursor-pointer transition-colors">
+                          <span className="ability-pill bg-blue-900 text-blue-100 border border-blue-700">
                             {ability}
                           </span>
                         </Link>
@@ -299,21 +306,48 @@ export default function PokemonModal({
                 </div>
 
                 {/* Hidden Ability */}
-                {pokemon.abilities_info?.hidden && (
-                  <div>
-                    <p className="text-gray-400 text-xs font-semibold mb-2">
-                      Hidden
-                    </p>
+                <div>
+                  <p className="text-gray-400 text-xs font-semibold mb-2">
+                    Hidden
+                  </p>
+                  {pokemon.abilities_info?.hidden ? (
                     <Link
                       href={`/abilities/${pokemon.abilities_info.hidden
                         .toLowerCase()
                         .replace(/\s+/g, "-")}`}
                     >
-                      <span className="inline-block bg-purple-900 text-purple-100 px-4 py-2 rounded-full text-sm font-medium border border-purple-700 hover:bg-purple-800 hover:border-purple-500 cursor-pointer transition-colors">
-                        {pokemon.abilities_info.hidden.charAt(0).toUpperCase() + pokemon.abilities_info.hidden.slice(1)}
+                      <span className="ability-pill bg-purple-900 text-purple-100 border border-purple-700 hover:bg-purple-800 hover:border-purple-500">
+                        {pokemon.abilities_info.hidden.charAt(0).toUpperCase() +
+                          pokemon.abilities_info.hidden.slice(1)}
                       </span>
                     </Link>
-                  </div>
+                  ) : (
+                    <p className="text-gray-400 text-sm">None</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Physical Info */}
+          {Object.keys(pokemon.physical_info).length > 0 && (
+            <div>
+              <h3 className="font-bold text-white mb-3 text-lg">
+                Physical Info
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {Object.entries(pokemon.physical_info).map(
+                  ([key, value]: [string, string]) => (
+                    <div
+                      key={key}
+                      className="bg-gray-800 p-3 rounded-lg border border-gray-700 info-box-3d"
+                    >
+                      <p className="text-xs text-gray-400 capitalize">{key}</p>
+                      <p className="text-sm font-semibold text-white">
+                        {value}
+                      </p>
+                    </div>
+                  )
                 )}
               </div>
             </div>
@@ -321,7 +355,7 @@ export default function PokemonModal({
 
           {/* Breeding & Game Info */}
           {(pokemon.breeding_info || pokemon.game_mechanics) && (
-            <div className="bg-gray-800 rounded-lg p-4 space-y-4">
+            <div className="bg-gray-800 rounded-2xl p-4 space-y-4 info-box-3d">
               <h3 className="font-bold text-white text-lg">Stats & Info</h3>
 
               {/* Gender Ratio */}
@@ -338,7 +372,7 @@ export default function PokemonModal({
                       <p className="text-white text-sm">Genderless</p>
                     ) : (
                       <div className="flex items-center gap-3">
-                        <div className="flex-1 h-6 bg-gray-700 rounded-full overflow-hidden flex">
+                        <div className="flex-1 stat-bar bg-gray-700 border border-gray-600 overflow-hidden flex">
                           <div
                             className="bg-blue-500 h-full"
                             style={{
@@ -427,21 +461,14 @@ export default function PokemonModal({
                     <p className="text-gray-400 text-xs font-semibold mb-1">
                       EV Yield
                     </p>
-                    <p className="text-white">{pokemon.game_mechanics.ev_yield}</p>
+                    <p className="text-white">
+                      {pokemon.game_mechanics.ev_yield}
+                    </p>
                   </div>
                 </div>
               )}
             </div>
           )}
-
-          {/* Evolution Hint */}
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-            <p className="text-gray-300 text-sm">
-              💡 <strong>Evolution Tip:</strong> Evolution chain data coming
-              soon! Check related Pokémon by searching for evolution stages in
-              the Pokédex.
-            </p>
-          </div>
 
           {/* Evolution Chain */}
           {pokemon.evolution && pokemon.evolution.evolutions.length > 0 && (
@@ -490,7 +517,12 @@ export default function PokemonModal({
                                 "/placeholder.svg";
                             }}
                           />
-                          <Link href={`/pokedex?search=${evo.name}`}>
+                          <Link
+                            href={`/pokedex?search=${encodeURIComponent(
+                              evo.name
+                            )}`}
+                            onClick={onClose}
+                          >
                             <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer whitespace-nowrap">
                               {evo.name}
                             </p>
@@ -504,6 +536,27 @@ export default function PokemonModal({
                   )}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Moves Section */}
+          {pokemon.moves && pokemon.moves.length > 0 && (
+            <div>
+              <h3 className="font-bold text-white mb-3 text-lg">Moves</h3>
+              <p className="text-gray-300 text-sm mb-3">
+                {pokemon.name} can learn {pokemon.moves.length} moves.
+              </p>
+              <button
+                onClick={() => {
+                  onClose();
+                  window.location.href = `/pokedex?search=${encodeURIComponent(
+                    pokemon.name
+                  )}`;
+                }}
+                className="bubble-btn bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white"
+              >
+                View All Moves
+              </button>
             </div>
           )}
 
@@ -568,30 +621,6 @@ export default function PokemonModal({
               ))}
             </div>
           </div>
-
-          {/* Physical Info */}
-          {Object.keys(pokemon.physical_info).length > 0 && (
-            <div>
-              <h3 className="font-bold text-white mb-3 text-lg">
-                Physical Info
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {Object.entries(pokemon.physical_info).map(
-                  ([key, value]: [string, string]) => (
-                    <div
-                      key={key}
-                      className="bg-gray-800 p-3 rounded border border-gray-700"
-                    >
-                      <p className="text-xs text-gray-400 capitalize">{key}</p>
-                      <p className="text-sm font-semibold text-white">
-                        {value}
-                      </p>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
