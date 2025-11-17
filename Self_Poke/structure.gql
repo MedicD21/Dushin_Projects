@@ -1,0 +1,36 @@
+pokemon_pokedex/
+│
+├── data/
+│   ├── raw/               # JSON files exactly as returned by PokeAPI
+│   ├── processed/         # your cleaned/combined JSON
+│   └── images/            # sprites you choose to download
+│
+├── src/
+│   ├── api/               # code that talks to pokeapi
+│   │   ├── client.py      # handles GET requests, caching, rate limits
+│   │   ├── pokemon.py     # fetches Pokémon
+│   │   ├── abilities.py   # fetches abilities
+│   │   ├── moves.py       # fetches moves
+│   │   ├── items.py       # fetches items
+│   │   └── types.py
+│   │
+│   ├── processing/        # code that cleans and restructures data
+│   │   ├── normalize_pokemon.py
+│   │   └── combine_dex.py
+│   │
+│   ├── utils/             # helpers
+│   │   ├── file_io.py
+│   │   ├── logging.py
+│   │   └── exceptions.py
+│   │
+│   └── main.py            # entry point that drives the entire pokedex build
+│
+├── docs/
+│   ├── endpoints.md       # list of PokeAPI endpoints and examples
+│   ├── schema.md          # how your final pokedex JSON is structured
+│   └── notes.md           # your personal notes/learned concepts
+│
+├── venv/ (optional)
+│
+├── requirements.txt
+└── README.md

@@ -250,21 +250,23 @@ class ExcelDataImporter:
         return types
 
     def read_excel_data(self) -> Dict[str, pd.DataFrame]:
-        """Read all sheets from the Excel file"""
+        """Read the MasterDex sheet from the Excel file"""
         print(f"Reading Excel file: {self.excel_file}")
 
         try:
-            # Read all sheets with row 2 as headers (0-indexed, so header=1)
-            excel_data = pd.read_excel(self.excel_file, sheet_name=None, header=1)
+            # Read only the MasterDex sheet with row 2 as headers (0-indexed, so header=1)
+            excel_data = pd.read_excel(
+                self.excel_file, sheet_name="MasterDex", header=1
+            )
 
-            print(f"Found {len(excel_data)} sheets:")
-            for sheet_name, df in excel_data.items():
-                print(f"  - {sheet_name}: {len(df)} rows, {len(df.columns)} columns")
-                print(
-                    f"    Columns: {list(df.columns)[:5]}{'...' if len(df.columns) > 5 else ''}"
-                )
+            print(f"Successfully loaded 'MasterDex' sheet:")
+            print(f"  - {len(excel_data)} rows, {len(excel_data.columns)} columns")
+            print(
+                f"    Columns: {list(excel_data.columns)[:5]}{'...' if len(excel_data.columns) > 5 else ''}"
+            )
 
-            return excel_data
+            # Return as dict format to maintain compatibility with rest of code
+            return {"MasterDex": excel_data}
 
         except Exception as e:
             print(f"Error reading Excel file: {e}")
@@ -388,8 +390,8 @@ class ExcelDataImporter:
             "hp": "HP",
             "attack": "Attack",
             "defense": "Defense",
-            "sp_attack": "Sp. Attack",
-            "sp_defense": "Sp. Defense",
+            "sp_attack": "Sp. Atk",
+            "sp_defense": "Sp. Def",
             "speed": "Speed",
         }
 
@@ -609,9 +611,19 @@ class ExcelDataImporter:
             # Special case: Always overwrite evolution_info from Excel (more accurate)
             if key == "evolution_info":
                 merged[key] = value
-            # Special case: Always overwrite base_stats from Excel (more accurate)
-            elif key == "base_stats":
-                merged[key] = value
+            # Special case: Merge base_stats intelligently (preserve existing + add from Excel)
+            elif key == "base_stats" and isinstance(value, dict):
+                if "base_stats" not in merged:
+                    merged["base_stats"] = {}
+
+                # Keep existing base_stats
+                existing_stats = merged.get("base_stats", {}).copy()
+
+                # Update/add stats from Excel
+                for stat_key, stat_value in value.items():
+                    existing_stats[stat_key] = stat_value
+
+                merged["base_stats"] = existing_stats
             # Special case: Merge game_appearances intelligently
             elif key == "game_appearances" and isinstance(value, dict):
                 if "game_appearances" not in merged:

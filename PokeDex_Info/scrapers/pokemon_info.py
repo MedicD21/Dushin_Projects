@@ -121,15 +121,15 @@ def fetch_pokemon():
                     if sp_attack_value.isdigit():
                         sp_attack = int(sp_attack_value)
 
-                # Special Defense is in column 10
-                if len(cols) > 10:
-                    sp_defense_value = cols[10].get_text(strip=True)
+                # Special Defense is in column 11
+                if len(cols) > 11:
+                    sp_defense_value = cols[11].get_text(strip=True)
                     if sp_defense_value.isdigit():
                         sp_defense = int(sp_defense_value)
 
-                # Speed is in column 11 (12th column, 0-indexed)
-                if len(cols) > 11:
-                    speed_value = cols[11].get_text(strip=True)
+                # Speed is in column 12 (13th column, 0-indexed)
+                if len(cols) > 12:
+                    speed_value = cols[12].get_text(strip=True)
                     if speed_value.isdigit():
                         speed = int(speed_value)  # Only add if we have valid data
                 if number and name and name != "Unknown":
