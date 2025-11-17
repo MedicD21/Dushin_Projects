@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PokemonGrid from "@/components/PokemonGrid";
+
+interface Pokemon {
+  abilities: string[];
+}
 
 export default function PokemonDex() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -9,11 +13,43 @@ export default function PokemonDex() {
   const [abilityFilter, setAbilityFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
-  const [expandedFilters, setExpandedFilters] = useState<Record<string, boolean>>({
+  const [expandedFilters, setExpandedFilters] = useState<
+    Record<string, boolean>
+  >({
     generation: true,
     type: false,
     ability: false,
   });
+  const [abilities, setAbilities] = useState<string[]>([]);
+  const [loadingAbilities, setLoadingAbilities] = useState(true);
+
+  // Fetch unique abilities from Pokemon data
+  useEffect(() => {
+    const fetchAbilities = async () => {
+      try {
+        const response = await fetch("/api/data");
+        const data: Pokemon[] = await response.json();
+
+        // Extract and deduplicate abilities
+        const uniqueAbilities = new Set<string>();
+        data.forEach((pokemon) => {
+          pokemon.abilities?.forEach((ability) => {
+            uniqueAbilities.add(ability);
+          });
+        });
+
+        // Sort alphabetically and add "all" at the beginning
+        const sortedAbilities = ["all", ...Array.from(uniqueAbilities).sort()];
+        setAbilities(sortedAbilities);
+      } catch (error) {
+        console.error("Error fetching abilities:", error);
+      } finally {
+        setLoadingAbilities(false);
+      }
+    };
+
+    fetchAbilities();
+  }, []);
 
   const types = [
     "all",
@@ -195,7 +231,7 @@ export default function PokemonDex() {
               )}
             </div>
 
-            {/* Ability Filter (Placeholder) */}
+            {/* Ability Filter */}
             <div className="bg-gray-900 rounded-lg p-4">
               <button
                 onClick={() => toggleFilterSection("ability")}
@@ -207,8 +243,26 @@ export default function PokemonDex() {
                 </span>
               </button>
               {expandedFilters.ability && (
-                <div className="mt-3">
-                  <p className="text-xs text-gray-400">Ability filters coming soon</p>
+                <div className="mt-3 flex gap-1.5 flex-wrap">
+                  {loadingAbilities ? (
+                    <p className="text-xs text-gray-400">
+                      Loading abilities...
+                    </p>
+                  ) : (
+                    abilities.map((ability) => (
+                      <button
+                        key={ability}
+                        onClick={() => setAbilityFilter(ability)}
+                        className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                          abilityFilter === ability
+                            ? "bg-purple-600 text-white shadow-lg scale-105"
+                            : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                        }`}
+                      >
+                        {ability.charAt(0).toUpperCase() + ability.slice(1)}
+                      </button>
+                    ))
+                  )}
                 </div>
               )}
             </div>
@@ -236,6 +290,7 @@ export default function PokemonDex() {
         <PokemonGrid
           typeFilter={typeFilter}
           generationFilter={generationFilter}
+          abilityFilter={abilityFilter}
           searchQuery={searchQuery}
         />
       </div>

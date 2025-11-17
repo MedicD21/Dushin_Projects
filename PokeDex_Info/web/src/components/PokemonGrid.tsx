@@ -28,12 +28,14 @@ interface Pokemon {
 interface PokemonGridProps {
   typeFilter?: string;
   generationFilter?: number;
+  abilityFilter?: string;
   searchQuery?: string;
 }
 
 export default function PokemonGrid({
   typeFilter,
   generationFilter,
+  abilityFilter,
   searchQuery,
 }: PokemonGridProps) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
@@ -74,6 +76,15 @@ export default function PokemonGrid({
       );
     }
 
+    // Filter by ability
+    if (abilityFilter && abilityFilter !== "all") {
+      filtered = filtered.filter((p) =>
+        p.abilities
+          .map((a: string) => a.toLowerCase())
+          .includes(abilityFilter.toLowerCase())
+      );
+    }
+
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -85,7 +96,7 @@ export default function PokemonGrid({
     }
 
     setFilteredPokemon(filtered);
-  }, [pokemon, typeFilter, generationFilter, searchQuery]);
+  }, [pokemon, typeFilter, generationFilter, abilityFilter, searchQuery]);
 
   const getTypeColor = (type: string): string => {
     const colors: Record<string, string> = {
