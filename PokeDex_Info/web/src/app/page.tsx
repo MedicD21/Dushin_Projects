@@ -1,29 +1,41 @@
 import type { Metadata } from "next";
 import SearchBar from "@/components/SearchBar";
+import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Pokédex Info - Complete Database",
+  title: "PokeNode - Catch the Node. In Every Mode",
   description:
-    "Comprehensive Pokédex with Pokémon, Items, Abilities, and Moves",
+    "Complete Pokémon Database with Pokédex, Abilities, Types, and Evolution Chains",
 };
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-pokemon-yellow via-pokemon-light to-red-100">
+    <main className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-gray-900">
       {/* Header */}
-      <div className="bg-pokemon-gradient text-white py-8 shadow-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-5xl font-bold mb-2">Pokédex Info</h1>
-          <p className="text-lg opacity-90">
-            Complete Pokémon Database with Items, Abilities, and Moves
-          </p>
+          <div className="flex items-center gap-4 mb-4">
+            <Image
+              src="/dex_logo.png"
+              alt="PokeNode Logo"
+              width={80}
+              height={80}
+              className="h-20 w-20 object-contain"
+            />
+            <div>
+              <h1 className="text-5xl font-bold">PokeNode</h1>
+              <p className="text-xl opacity-90 italic">
+                Catch the Node. In Every Mode
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Search Section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-lg shadow-2xl p-8">
-          <h2 className="text-2xl font-bold text-pokemon-dark mb-6 text-center">
+        <div className="bg-gray-800 rounded-lg shadow-2xl p-8 border border-gray-700">
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">
             🔍 Search the Database
           </h2>
           <SearchBar />
@@ -35,32 +47,32 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <a
             href="/pokedex"
-            className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all cursor-pointer"
+            className="bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all cursor-pointer border border-gray-700 hover:border-yellow-500"
           >
             <div className="text-4xl mb-3">🐱</div>
-            <h3 className="font-bold text-lg mb-2">PokéOS Dex</h3>
-            <p className="text-gray-600">
-              Browse all Pokémon with stats, types, and sprites
+            <h3 className="font-bold text-lg mb-2 text-white">PokeNode Dex</h3>
+            <p className="text-gray-400">
+              Browse all 1025 Pokémon with stats, types, and evolution chains
             </p>
           </a>
-          <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-700 hover:border-yellow-500 cursor-pointer">
             <div className="text-4xl mb-3">🎒</div>
-            <h3 className="font-bold text-lg mb-2">Items</h3>
-            <p className="text-gray-600">
+            <h3 className="font-bold text-lg mb-2 text-white">Items</h3>
+            <p className="text-gray-400">
               Explore items with effects and game availability
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-700 hover:border-yellow-500 cursor-pointer">
             <div className="text-4xl mb-3">⚡</div>
-            <h3 className="font-bold text-lg mb-2">Abilities</h3>
-            <p className="text-gray-600">
+            <h3 className="font-bold text-lg mb-2 text-white">Abilities</h3>
+            <p className="text-gray-400">
               Discover Pokémon abilities and their effects
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-700 hover:border-yellow-500 cursor-pointer">
             <div className="text-4xl mb-3">🎯</div>
-            <h3 className="font-bold text-lg mb-2">Moves</h3>
-            <p className="text-gray-600">
+            <h3 className="font-bold text-lg mb-2 text-white">Moves</h3>
+            <p className="text-gray-400">
               Learn about moves across all generations
             </p>
           </div>
@@ -68,10 +80,10 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-pokemon-dark text-white mt-12 py-8">
+      <footer className="bg-gray-950 text-white mt-12 py-8 border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p>
-            Built with ❤️ for Pokémon fans • Data from Serebii & Pokémon Home
+            Built with ❤️ for Pokémon fans • Data from PokéAPI & Serebii
           </p>
         </div>
       </footer>

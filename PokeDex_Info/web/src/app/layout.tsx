@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Pokédex Info',
-  description: 'Complete Pokémon database',
+  title: 'PokeNode - Catch the Node. In Every Mode',
+  description: 'Complete Pokémon database with Pokédex, Abilities, Types, and Evolution Chains',
 }
 
 export default function RootLayout({
