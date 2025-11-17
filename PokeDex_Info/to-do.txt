@@ -7,4 +7,5 @@ configure weaknesses chart
 categories messed up for gen 1 moves
 
 
-
+fix other nav issues to other pages 
+fix search bar

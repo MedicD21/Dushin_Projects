@@ -35,9 +35,9 @@ const PokeBall = ({ color }: { color: string }) => (
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-gray-900">
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12 shadow-lg">
+      <div className="bg-gradient-to-r from-cyan-700 via-teal-700 to-cyan-800 text-white py-12 shadow-lg border-b-4 border-yellow-500">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-4 mb-4">
             <Image
@@ -48,8 +48,8 @@ export default function Home() {
               className="h-20 w-20 object-contain"
             />
             <div>
-              <h1 className="text-5xl font-bold">PokeNode</h1>
-              <p className="text-xl opacity-90 italic">
+              <h1 className="text-5xl font-bold pokemon-header">PokeNode</h1>
+              <p className="text-xl opacity-90 italic pokemon-header">
                 Catch the Node. In Every Mode
               </p>
             </div>

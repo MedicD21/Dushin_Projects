@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface MoveLearnedBy {
   dex_number: string;
@@ -169,7 +170,7 @@ export default function MovesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 p-6 flex items-center justify-center">
         <div className="text-xl font-semibold text-gray-400">
           Loading moves...
         </div>
@@ -178,19 +179,32 @@ export default function MovesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 p-6">
       <div className="max-w-6xl mx-auto">
+        {/* Logo Header */}
+        <div className="mb-6 flex items-center gap-3">
+          <Link href="/" className="hover:opacity-80 transition">
+            <Image
+              src="/dex_logo.png"
+              alt="PokeNode Logo"
+              width={50}
+              height={50}
+              className="h-12 w-12 object-contain"
+            />
+          </Link>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           {pokemonFilter && (
             <Link href={`/pokemon/${pokemonFilter.toLowerCase()}`}>
-              <button className="mb-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-500 text-white font-semibold">
+              <button className="mb-4 px-4 py-2 bg-cyan-700 rounded hover:bg-teal-700 text-white font-semibold">
                 ← Back to{" "}
                 {pokemonFilter.charAt(0).toUpperCase() + pokemonFilter.slice(1)}
               </button>
             </Link>
           )}
-          <h1 className="text-4xl font-bold text-white mb-2">Moves</h1>
+          <h1 className="text-4xl font-bold text-white mb-2 pokemon-header">Moves</h1>
           {pokemonFilter && (
             <p className="text-lg text-gray-300">
               Showing moves that{" "}

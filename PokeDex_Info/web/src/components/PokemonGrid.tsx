@@ -188,7 +188,7 @@ export default function PokemonGrid({
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {filteredPokemon.map((p) => (
           <Link key={p.id} href={`/pokemon/${p.name.toLowerCase()}`}>
-            <div className="group cursor-pointer bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-500 grid-item-3d">
+            <div className="group cursor-pointer bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-yellow-500/30 transition-all hover:scale-105 overflow-hidden border border-gray-700 hover:border-yellow-400 grid-item-3d">
               {/* Pokemon Card */}
               <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
                 <img
@@ -202,8 +202,8 @@ export default function PokemonGrid({
               </div>
 
               {/* Pokemon Info */}
-              <div className="p-3 bg-gray-900">
-                <h3 className="font-bold text-sm text-white truncate">
+              <div className="p-3 bg-gradient-to-r from-gray-900 to-gray-800 border-t border-gray-700 group-hover:border-yellow-500/50">
+                <h3 className="font-bold text-sm text-white truncate group-hover:text-yellow-300 transition-colors">
                   {p.name}
                 </h3>
                 <p className="text-xs text-gray-400 mb-2">{p.number}</p>

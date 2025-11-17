@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Pokemon {
   id: string;
@@ -51,7 +52,6 @@ interface Pokemon {
 
 export default function PokemonPage() {
   const params = useParams();
-  const router = useRouter();
   const pokemonName = params.name as string;
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
   const [isShiny, setIsShiny] = useState(false);
@@ -225,23 +225,34 @@ export default function PokemonPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 p-6">
-      <button
-        onClick={() => router.back()}
-        className="mb-6 px-4 py-2 bg-blue-600 rounded hover:bg-blue-500 text-white"
-      >
-        ← Back
-      </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 p-6">
+      {/* Logo Header */}
+      <div className="mb-6 flex items-center gap-3">
+        <Link href="/" className="hover:opacity-80 transition">
+          <Image
+            src="/dex_logo.png"
+            alt="PokeNode Logo"
+            width={50}
+            height={50}
+            className="h-12 w-12 object-contain"
+          />
+        </Link>
+        <Link href="/pokedex">
+          <button className="px-4 py-2 bg-cyan-700 rounded hover:bg-teal-700 text-white">
+            ← Back to Pokédex
+          </button>
+        </Link>
+      </div>
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white rounded-t-2xl">
+        <div className="bg-gradient-to-r from-cyan-700 via-teal-700 to-cyan-800 p-6 text-white rounded-t-2xl border-b-4 border-yellow-500">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <div className="text-sm text-blue-100">
+              <div className="text-sm text-white/70">
                 National Pokédex: {pokemon.number}
               </div>
-              <h1 className="text-4xl font-bold capitalize mt-2">
+              <h1 className="text-4xl font-bold capitalize mt-2 pokemon-header">
                 {pokemon.name}
               </h1>
               <p className="text-sm opacity-90 capitalize mt-1">

@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Pokemon {
   id: string;
@@ -93,19 +94,30 @@ export default function TypeDetailPage() {
   const weaknesses = TYPE_WEAKNESSES[typeName.toLowerCase()] || [];
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900">
       {/* Header */}
       <div
         className={`${
           TYPE_COLORS[typeName.toLowerCase()] || "bg-gray-700"
         } text-white p-8`}
       >
-        <Link href="/pokedex">
-          <button className="mb-4 text-white/70 hover:text-white transition">
-            ← Back to Pokédex
-          </button>
-        </Link>
-        <h1 className="text-4xl font-bold capitalize">{typeName} Type</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <Link href="/" className="hover:opacity-80 transition">
+            <Image
+              src="/dex_logo.png"
+              alt="PokeNode Logo"
+              width={50}
+              height={50}
+              className="h-12 w-12 object-contain"
+            />
+          </Link>
+          <Link href="/pokedex">
+            <button className="text-white/70 hover:text-white transition">
+              ← Back to Pokédex
+            </button>
+          </Link>
+        </div>
+        <h1 className="text-4xl font-bold capitalize pokemon-header">{typeName} Type</h1>
         <p className="text-white/70 mt-2">{pokemon.length} Pokémon available</p>
       </div>
 

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import PokemonGrid from "@/components/PokemonGrid";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Pokemon {
   abilities: string[];
@@ -164,13 +166,28 @@ export default function PokemonDex() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8">
-        <h1 className="text-4xl font-bold mb-2">PokeNode Dex</h1>
-        <p className="text-sm opacity-90">
-          Explore and filter the complete Pokédex
-        </p>
+      <div className="bg-gradient-to-r from-cyan-700 via-teal-700 to-cyan-800 text-white p-8 border-b-4 border-yellow-500 shadow-lg">
+        <div className="flex items-center gap-6">
+          <Link href="/" className="hover:opacity-80 transition flex-shrink-0">
+            <Image
+              src="/dex_logo.png"
+              alt="PokeNode Logo"
+              width={80}
+              height={80}
+              className="h-20 w-20 object-contain drop-shadow-lg"
+            />
+          </Link>
+          <div>
+            <h1 className="text-5xl font-bold mb-2 drop-shadow-lg pokemon-header">
+              PokeNode Dex
+            </h1>
+            <p className="text-base opacity-95 text-yellow-100 pokemon-header">
+              Explore and filter the complete Pokédex
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Search Bar */}

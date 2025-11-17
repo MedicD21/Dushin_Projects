@@ -1,0 +1,21 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#1e40af" stroke="#ffffff" stroke-width="3"/>
+  
+  <!-- Pokéball -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#ffffff" stroke-width="3"/>
+  <line x1="30" y1="100" x2="170" y2="100" stroke="#ffffff" stroke-width="3"/>
+  
+  <!-- Top half red -->
+  <path d="M 30 100 A 70 70 0 0 1 170 100" fill="#ef4444" stroke="none"/>
+  
+  <!-- Bottom half white -->
+  <path d="M 30 100 A 70 70 0 0 0 170 100" fill="#ffffff" stroke="none"/>
+  
+  <!-- Center circle -->
+  <circle cx="100" cy="100" r="20" fill="#ffffff" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="100" cy="100" r="15" fill="#1e40af"/>
+  
+  <!-- Node symbol - small circle in center -->
+  <circle cx="100" cy="100" r="8" fill="#fbbf24" stroke="none"/>
+</svg>
