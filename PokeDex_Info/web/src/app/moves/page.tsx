@@ -204,7 +204,9 @@ export default function MovesPage() {
               </button>
             </Link>
           )}
-          <h1 className="text-4xl font-bold text-white mb-2 pokemon-header">Moves</h1>
+          <h1 className="text-4xl font-bold text-white mb-2 pokemon-header">
+            Moves
+          </h1>
           {pokemonFilter && (
             <p className="text-lg text-gray-300">
               Showing moves that{" "}

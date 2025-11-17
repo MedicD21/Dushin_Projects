@@ -117,7 +117,9 @@ export default function TypeDetailPage() {
             </button>
           </Link>
         </div>
-        <h1 className="text-4xl font-bold capitalize pokemon-header">{typeName} Type</h1>
+        <h1 className="text-4xl font-bold capitalize pokemon-header">
+          {typeName} Type
+        </h1>
         <p className="text-white/70 mt-2">{pokemon.length} Pokémon available</p>
       </div>
 
