@@ -6,7 +6,14 @@ import PokemonGrid from "@/components/PokemonGrid";
 export default function PokemonDex() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [generationFilter, setGenerationFilter] = useState<number>(0);
+  const [abilityFilter, setAbilityFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
+  const [expandedFilters, setExpandedFilters] = useState<Record<string, boolean>>({
+    generation: true,
+    type: false,
+    ability: false,
+  });
 
   const types = [
     "all",
@@ -43,6 +50,13 @@ export default function PokemonDex() {
     { value: 9, label: "Gen IX" },
   ];
 
+  const toggleFilterSection = (section: string) => {
+    setExpandedFilters((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
   const getTypeColor = (type: string): string => {
     const colors: Record<string, string> = {
       all: "bg-gray-700 text-white",
@@ -68,75 +82,154 @@ export default function PokemonDex() {
     return colors[type] || "bg-gray-700 text-white";
   };
 
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (typeFilter !== "all") count++;
+    if (generationFilter !== 0) count++;
+    if (abilityFilter !== "all") count++;
+    if (searchQuery) count++;
+    return count;
+  };
+
   return (
     <div className="min-h-screen bg-gray-950">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8">
-        <h1 className="text-4xl font-bold mb-2">PokéOS Dex</h1>
+        <h1 className="text-4xl font-bold mb-2">PokeNode Dex</h1>
         <p className="text-sm opacity-90">
           Explore and filter the complete Pokédex
         </p>
       </div>
 
-      {/* Filters */}
-      <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          {/* Search */}
-          <div className="mb-6">
+      {/* Search Bar */}
+      <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-40 px-6 py-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex gap-3 items-center">
             <input
               type="text"
-              placeholder="Search by Pokémon name or type..."
+              placeholder="Search Pokémon..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="flex-1 px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm"
             />
-          </div>
-
-          {/* Generation Filter */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-200 mb-2">
-              Generation
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {generations.map((gen) => (
-                <button
-                  key={gen.value}
-                  onClick={() => setGenerationFilter(gen.value)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    generationFilter === gen.value
-                      ? "bg-blue-600 text-white shadow-lg"
-                      : "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                  }`}
-                >
-                  {gen.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Type Filter */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-200 mb-2">
-              Type
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {types.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setTypeFilter(type)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    typeFilter === type
-                      ? `${getTypeColor(type)} shadow-lg scale-105`
-                      : `${getTypeColor(type)} opacity-60 hover:opacity-100`
-                  }`}
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </button>
-              ))}
-            </div>
+            <button
+              onClick={() => setFiltersOpen(!filtersOpen)}
+              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+                filtersOpen
+                  ? "bg-yellow-500 text-gray-900"
+                  : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+              }`}
+            >
+              <span>⚙️ Filters</span>
+              {getActiveFilterCount() > 0 && (
+                <span className="bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                  {getActiveFilterCount()}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Collapsible Filters */}
+      {filtersOpen && (
+        <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+          <div className="max-w-7xl mx-auto space-y-4">
+            {/* Generation Filter */}
+            <div className="bg-gray-900 rounded-lg p-4">
+              <button
+                onClick={() => toggleFilterSection("generation")}
+                className="w-full flex justify-between items-center hover:text-yellow-400 transition-colors"
+              >
+                <h3 className="text-sm font-bold text-white">Generation</h3>
+                <span className="text-lg">
+                  {expandedFilters.generation ? "−" : "+"}
+                </span>
+              </button>
+              {expandedFilters.generation && (
+                <div className="mt-3 flex gap-1.5 flex-wrap">
+                  {generations.map((gen) => (
+                    <button
+                      key={gen.value}
+                      onClick={() => setGenerationFilter(gen.value)}
+                      className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                        generationFilter === gen.value
+                          ? "bg-blue-600 text-white shadow-lg"
+                          : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      }`}
+                    >
+                      {gen.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Type Filter */}
+            <div className="bg-gray-900 rounded-lg p-4">
+              <button
+                onClick={() => toggleFilterSection("type")}
+                className="w-full flex justify-between items-center hover:text-yellow-400 transition-colors"
+              >
+                <h3 className="text-sm font-bold text-white">Type</h3>
+                <span className="text-lg">
+                  {expandedFilters.type ? "−" : "+"}
+                </span>
+              </button>
+              {expandedFilters.type && (
+                <div className="mt-3 flex gap-1.5 flex-wrap">
+                  {types.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setTypeFilter(type)}
+                      className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                        typeFilter === type
+                          ? `${getTypeColor(type)} shadow-lg scale-105`
+                          : `${getTypeColor(type)} opacity-60 hover:opacity-100`
+                      }`}
+                    >
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Ability Filter (Placeholder) */}
+            <div className="bg-gray-900 rounded-lg p-4">
+              <button
+                onClick={() => toggleFilterSection("ability")}
+                className="w-full flex justify-between items-center hover:text-yellow-400 transition-colors"
+              >
+                <h3 className="text-sm font-bold text-white">Ability</h3>
+                <span className="text-lg">
+                  {expandedFilters.ability ? "−" : "+"}
+                </span>
+              </button>
+              {expandedFilters.ability && (
+                <div className="mt-3">
+                  <p className="text-xs text-gray-400">Ability filters coming soon</p>
+                </div>
+              )}
+            </div>
+
+            {/* Clear Filters Button */}
+            {getActiveFilterCount() > 0 && (
+              <button
+                onClick={() => {
+                  setTypeFilter("all");
+                  setGenerationFilter(0);
+                  setAbilityFilter("all");
+                  setSearchQuery("");
+                }}
+                className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-sm transition-all"
+              >
+                Clear All Filters
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">

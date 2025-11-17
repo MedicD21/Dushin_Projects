@@ -10,14 +10,26 @@ export const metadata: Metadata = {
 
 // Pokéball icon SVG component
 const PokeBall = ({ color }: { color: string }) => (
-  <svg className="w-12 h-12" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="90" stroke={color} strokeWidth="4" fill="none"/>
-    <rect x="10" y="95" width="180" height="10" fill={color}/>
-    <circle cx="100" cy="100" r="15" fill={color}/>
-    <circle cx="100" cy="30" r="25" fill={color}/>
-    <circle cx="100" cy="30" r="20" fill="white"/>
-    <circle cx="100" cy="170" r="25" fill="gray"/>
-    <circle cx="100" cy="170" r="20" fill="white"/>
+  <svg
+    className="w-12 h-12"
+    viewBox="0 0 200 200"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="100"
+      cy="100"
+      r="90"
+      stroke={color}
+      strokeWidth="4"
+      fill="none"
+    />
+    <rect x="10" y="95" width="180" height="10" fill={color} />
+    <circle cx="100" cy="100" r="15" fill={color} />
+    <circle cx="100" cy="30" r="25" fill={color} />
+    <circle cx="100" cy="30" r="20" fill="white" />
+    <circle cx="100" cy="170" r="25" fill="gray" />
+    <circle cx="100" cy="170" r="20" fill="white" />
   </svg>
 );
 
@@ -65,7 +77,9 @@ export default function Home() {
             <div className="mb-4">
               <PokeBall color="#FF4A4A" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-white text-center">PokeNode Dex</h3>
+            <h3 className="font-bold text-lg mb-2 text-white text-center">
+              PokeNode Dex
+            </h3>
             <p className="text-gray-400 text-center text-sm">
               Browse all 1025 Pokémon with stats, types, and evolution chains
             </p>
@@ -74,7 +88,9 @@ export default function Home() {
             <div className="mb-4">
               <PokeBall color="#3B82F6" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-white text-center">Items</h3>
+            <h3 className="font-bold text-lg mb-2 text-white text-center">
+              Items
+            </h3>
             <p className="text-gray-400 text-center text-sm">
               Explore items with effects and game availability
             </p>
@@ -83,7 +99,9 @@ export default function Home() {
             <div className="mb-4">
               <PokeBall color="#FBBF24" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-white text-center">Abilities</h3>
+            <h3 className="font-bold text-lg mb-2 text-white text-center">
+              Abilities
+            </h3>
             <p className="text-gray-400 text-center text-sm">
               Discover Pokémon abilities and their effects
             </p>
@@ -92,7 +110,9 @@ export default function Home() {
             <div className="mb-4">
               <PokeBall color="#10B981" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-white text-center">Moves</h3>
+            <h3 className="font-bold text-lg mb-2 text-white text-center">
+              Moves
+            </h3>
             <p className="text-gray-400 text-center text-sm">
               Learn about moves across all generations
             </p>
@@ -103,9 +123,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-950 text-white mt-12 py-8 border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>
-            Built with ❤️ for Pokémon fans • Data from PokéAPI & Serebii
-          </p>
+          <p>Built with ❤️ for Pokémon fans • Data from PokéAPI & Serebii</p>
         </div>
       </footer>
     </main>
