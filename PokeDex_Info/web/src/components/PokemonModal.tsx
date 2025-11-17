@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 interface Evolution {
@@ -68,6 +68,10 @@ export default function PokemonModal({
   const [selectedGame, setSelectedGame] = useState<string>(
     Object.keys(pokemon.game_appearances || {})[0] || ""
   );
+
+  useEffect(() => {
+    // Modal opened
+  }, [pokemon]);
 
   const getDexEntryForGame = (gameName: string): string => {
     if (!gameName || !pokemon.dex_entries)
@@ -161,12 +165,26 @@ export default function PokemonModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 z-50"
       onClick={onClose}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
+        overflow: "auto",
+      }}
     >
       <div
-        className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500 modal-3d"
+        className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto border-2 border-yellow-500"
         onClick={(e) => e.stopPropagation()}
+        style={{ zIndex: 10000 }}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
