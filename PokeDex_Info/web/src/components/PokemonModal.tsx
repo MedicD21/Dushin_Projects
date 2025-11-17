@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 interface Evolution {
@@ -68,10 +68,6 @@ export default function PokemonModal({
   const [selectedGame, setSelectedGame] = useState<string>(
     Object.keys(pokemon.game_appearances || {})[0] || ""
   );
-
-  useEffect(() => {
-    // Modal opened
-  }, [pokemon]);
 
   const getDexEntryForGame = (gameName: string): string => {
     if (!gameName || !pokemon.dex_entries)
@@ -165,33 +161,19 @@ export default function PokemonModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 bg-black bg-opacity-80 flex items-start justify-center p-4 z-50 pt-8 overflow-y-auto"
       onClick={onClose}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "1rem",
-        overflow: "auto",
-      }}
     >
       <div
-        className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto border-2 border-yellow-500"
+        className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500"
         onClick={(e) => e.stopPropagation()}
-        style={{ zIndex: 10000 }}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
           <div className="flex justify-between items-start mb-4">
             <div>
               <div className="text-sm text-blue-100">
-                National Pokédex: #{String(pokemon.number).padStart(3, "0")}
+                National Pokédex: {pokemon.number}
               </div>
               {selectedGame && pokemon.game_appearances?.[selectedGame] && (
                 <div className="text-sm text-blue-100">
@@ -252,7 +234,7 @@ export default function PokemonModal({
             <img
               src={getSpriteUrl(pokemon.name)}
               alt={pokemon.name}
-              className="w-56 h-56 object-contain drop-shadow-lg float-animation"
+              className="w-56 h-56 object-contain drop-shadow-lg"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = "/placeholder.svg";
               }}
@@ -262,7 +244,7 @@ export default function PokemonModal({
           {/* Type Badges */}
           <div>
             <h3 className="font-bold text-white mb-3 text-lg">Types</h3>
-            <div className="flex gap-3 flex-wrap justify-center">
+            <div className="flex gap-3 flex-wrap">
               {pokemon.types.map((t: string) => (
                 <Link key={t} href={`/types/${t.toLowerCase()}`}>
                   <span className={`type-badge ${getTypeColor(t)}`}>
@@ -271,24 +253,6 @@ export default function PokemonModal({
                 </Link>
               ))}
             </div>
-          </div>
-
-          {/* Description/Dex Entry */}
-          <div>
-            <h3 className="font-bold text-white mb-2 text-lg">
-              Pokédex Entry
-              {selectedGame && ` (${selectedGame})`}
-            </h3>
-            <p className="text-gray-300 leading-relaxed bg-gray-800 p-4 rounded border border-gray-700">
-              {getDexEntryForGame(selectedGame)}
-            </p>
-            {selectedGame &&
-              pokemon.game_appearances[selectedGame]?.location && (
-                <p className="text-gray-400 text-sm mt-2 ml-1">
-                  📍 <strong>Location:</strong>{" "}
-                  {pokemon.game_appearances[selectedGame].location}
-                </p>
-              )}
           </div>
 
           {/* Abilities */}
@@ -344,6 +308,158 @@ export default function PokemonModal({
                   )}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Type Weaknesses */}
+          <div>
+            <h3 className="font-bold text-white mb-3 text-lg">Weaknesses</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {pokemon.types.map((t: string) => {
+                const weaknesses = getTypeWeaknesses(t);
+                return (
+                  <div
+                    key={t}
+                    className="bg-gray-800 p-4 rounded border border-gray-700"
+                  >
+                    <p className="text-sm font-bold text-gray-200 mb-2 capitalize">
+                      {t}
+                    </p>
+                    <div className="flex gap-1 flex-wrap">
+                      {weaknesses.map((weakness: string) => (
+                        <span
+                          key={weakness}
+                          className={`text-xs text-white px-2 py-1 rounded font-medium ${getTypeColor(
+                            weakness
+                          )}`}
+                        >
+                          {weakness.charAt(0).toUpperCase() + weakness.slice(1)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Evolution Chain */}
+          {pokemon.evolution && pokemon.evolution.evolutions.length > 0 && (
+            <div>
+              <h3 className="font-bold text-white mb-4 text-lg">
+                Evolution Chain
+              </h3>
+              <div className="bg-gray-800 rounded-lg border border-gray-700 p-4 overflow-x-auto">
+                {/* Horizontal Evolution Chain */}
+                <div className="flex items-center justify-start gap-2 min-w-max pb-2">
+                  {/* Starting Pokemon */}
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <div className="text-center">
+                      <img
+                        src={getSpriteUrl(pokemon.name)}
+                        alt={pokemon.name}
+                        className="w-24 h-24 object-contain mx-auto mb-2"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "/placeholder.svg";
+                        }}
+                      />
+                      <p className="font-bold text-white text-sm">
+                        {pokemon.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Evolution Chain */}
+                  {pokemon.evolution.evolutions.map(
+                    (evo: Evolution, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 flex-shrink-0"
+                      >
+                        <div className="text-yellow-400 text-lg font-bold">
+                          →
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`/home-sprites/${evo.sprite}.png`}
+                            alt={evo.name}
+                            className="w-24 h-24 object-contain mx-auto mb-2"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "/placeholder.svg";
+                            }}
+                          />
+                          <Link
+                            href={`/pokedex?search=${encodeURIComponent(
+                              evo.name
+                            )}`}
+                            onClick={onClose}
+                          >
+                            <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer whitespace-nowrap">
+                              {evo.name}
+                            </p>
+                          </Link>
+                          <p className="text-xs text-gray-400 mt-1 text-center max-w-[120px]">
+                            {evo.method}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Stats */}
+          <div>
+            <h3 className="font-bold text-white mb-4 text-lg">Base Stats</h3>
+            <div className="space-y-4">
+              {[
+                { label: "HP", value: pokemon.base_stats.hp },
+                { label: "Attack", value: pokemon.base_stats.attack },
+                { label: "Defense", value: pokemon.base_stats.defense },
+                { label: "Sp. Atk", value: pokemon.base_stats.sp_attack },
+                { label: "Sp. Def", value: pokemon.base_stats.sp_defense },
+                { label: "Speed", value: pokemon.base_stats.speed },
+              ].map((stat) => (
+                <div key={stat.label} className="flex items-center gap-4">
+                  <span className="w-20 text-sm font-bold text-gray-200">
+                    {stat.label}
+                  </span>
+                  <div className="flex-1 bg-gray-800 rounded-full h-3 border border-gray-700 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all shadow-lg"
+                      style={{ width: `${(stat.value / 150) * 100}%` }}
+                    />
+                  </div>
+                  <span className="w-10 text-sm font-bold text-yellow-400 text-right">
+                    {stat.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Moves Section */}
+          {pokemon.moves && pokemon.moves.length > 0 && (
+            <div>
+              <h3 className="font-bold text-white mb-3 text-lg">Moves</h3>
+              <p className="text-gray-300 text-sm mb-3">
+                {pokemon.name} can learn {pokemon.moves.length} moves.
+              </p>
+              <button
+                onClick={() => {
+                  onClose();
+                  window.location.href = `/pokedex?search=${encodeURIComponent(
+                    pokemon.name
+                  )}`;
+                }}
+                className="bubble-btn bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white"
+              >
+                View All Moves
+              </button>
             </div>
           )}
 
@@ -487,158 +603,6 @@ export default function PokemonModal({
               )}
             </div>
           )}
-
-          {/* Evolution Chain */}
-          {pokemon.evolution && pokemon.evolution.evolutions.length > 0 && (
-            <div>
-              <h3 className="font-bold text-white mb-4 text-lg">
-                Evolution Chain
-              </h3>
-              <div className="bg-gray-800 rounded-lg border border-gray-700 p-4 overflow-x-auto">
-                {/* Horizontal Evolution Chain */}
-                <div className="flex items-center justify-start gap-2 min-w-max pb-2">
-                  {/* Starting Pokemon */}
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    <div className="text-center">
-                      <img
-                        src={getSpriteUrl(pokemon.name)}
-                        alt={pokemon.name}
-                        className="w-24 h-24 object-contain mx-auto mb-2"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "/placeholder.svg";
-                        }}
-                      />
-                      <p className="font-bold text-white text-sm">
-                        {pokemon.name}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Evolution Chain */}
-                  {pokemon.evolution.evolutions.map(
-                    (evo: Evolution, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-2 flex-shrink-0"
-                      >
-                        <div className="text-yellow-400 text-lg font-bold">
-                          →
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`/home-sprites/${evo.sprite}.png`}
-                            alt={evo.name}
-                            className="w-24 h-24 object-contain mx-auto mb-2"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "/placeholder.svg";
-                            }}
-                          />
-                          <Link
-                            href={`/pokedex?search=${encodeURIComponent(
-                              evo.name
-                            )}`}
-                            onClick={onClose}
-                          >
-                            <p className="font-bold text-blue-400 text-sm hover:underline cursor-pointer whitespace-nowrap">
-                              {evo.name}
-                            </p>
-                          </Link>
-                          <p className="text-xs text-gray-400 mt-1 text-center max-w-[120px]">
-                            {evo.method}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Moves Section */}
-          {pokemon.moves && pokemon.moves.length > 0 && (
-            <div>
-              <h3 className="font-bold text-white mb-3 text-lg">Moves</h3>
-              <p className="text-gray-300 text-sm mb-3">
-                {pokemon.name} can learn {pokemon.moves.length} moves.
-              </p>
-              <button
-                onClick={() => {
-                  onClose();
-                  window.location.href = `/pokedex?search=${encodeURIComponent(
-                    pokemon.name
-                  )}`;
-                }}
-                className="bubble-btn bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white"
-              >
-                View All Moves
-              </button>
-            </div>
-          )}
-
-          {/* Type Weaknesses */}
-          <div>
-            <h3 className="font-bold text-white mb-3 text-lg">Weaknesses</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {pokemon.types.map((t: string) => {
-                const weaknesses = getTypeWeaknesses(t);
-                return (
-                  <div
-                    key={t}
-                    className="bg-gray-800 p-4 rounded border border-gray-700"
-                  >
-                    <p className="text-sm font-bold text-gray-200 mb-2 capitalize">
-                      {t}
-                    </p>
-                    <div className="flex gap-1 flex-wrap">
-                      {weaknesses.map((weakness: string) => (
-                        <span
-                          key={weakness}
-                          className={`text-xs text-white px-2 py-1 rounded font-medium ${getTypeColor(
-                            weakness
-                          )}`}
-                        >
-                          {weakness.charAt(0).toUpperCase() + weakness.slice(1)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div>
-            <h3 className="font-bold text-white mb-4 text-lg">Base Stats</h3>
-            <div className="space-y-4">
-              {[
-                { label: "HP", value: pokemon.base_stats.hp },
-                { label: "Attack", value: pokemon.base_stats.attack },
-                { label: "Defense", value: pokemon.base_stats.defense },
-                { label: "Sp. Atk", value: pokemon.base_stats.sp_attack },
-                { label: "Sp. Def", value: pokemon.base_stats.sp_defense },
-                { label: "Speed", value: pokemon.base_stats.speed },
-              ].map((stat) => (
-                <div key={stat.label} className="flex items-center gap-4">
-                  <span className="w-20 text-sm font-bold text-gray-200">
-                    {stat.label}
-                  </span>
-                  <div className="flex-1 bg-gray-800 rounded-full h-3 border border-gray-700 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all shadow-lg"
-                      style={{ width: `${(stat.value / 150) * 100}%` }}
-                    />
-                  </div>
-                  <span className="w-10 text-sm font-bold text-yellow-400 text-right">
-                    {stat.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -237,9 +237,7 @@ export default function PokemonGrid({
               <h3 className="font-bold text-sm text-white truncate">
                 {p.name}
               </h3>
-              <p className="text-xs text-gray-400 mb-2">
-                #{String(p.number).padStart(3, "0")}
-              </p>
+              <p className="text-xs text-gray-400 mb-2">{p.number}</p>
               <div className="flex gap-1 flex-wrap">
                 {p.types.slice(0, 2).map((t: string) => (
                   <span

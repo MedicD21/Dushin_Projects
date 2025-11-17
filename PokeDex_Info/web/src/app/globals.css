@@ -129,10 +129,6 @@ html {
   transform-style: preserve-3d;
 }
 
-.modal-3d:hover {
-  transform: rotateX(2deg) rotateY(-2deg) scale(1.02);
-}
-
 /* Glowing hover effect */
 .glow-on-hover {
   @apply transition-all duration-300;
