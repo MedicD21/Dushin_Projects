@@ -1,0 +1,14 @@
+for attempts in range(retries):
+            response = requests.get(url, timeout=_timeout)
+            status_code = response.status_code
+            if 200 <= status_code < 300:
+                return status_code
+            elif 300 <= status_code < 400:
+                return status_code, "Redirect"
+            elif 400 <= status_code < 500:
+                return status_code, "Client Error"
+            elif 500 <= status_code < 600:
+                return status_code, "Server Error"
+            else:
+                return status_code, "Unknown"
+            count += 1
