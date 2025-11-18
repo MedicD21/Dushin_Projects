@@ -1,27 +1,23 @@
 import requests
-import time
-from libpath 
+from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 
-def grab_name(): # Grabs Pokemon names from PokeAPI
-    
-    base_url = "https://pokeapi.co/api/v2/"
-    count = 1
-    p_name = []
-    MAX_POKEMON = 1025
-    
-    while count < 4:
-        time.sleep(.5) # to avoid hitting API rate limits
-        response = requests.get(f"{base_url}")
-        if response.status_code == 200:
-            
-            data = response.json()
-            name = data['name'] # gets pokemon name from dict key
-            p_name.append({"id": count, "name": name})
-            print(f"{name} added to {fn}")
+def check_url(url):
+    print(f"Checking URL: {url}...")
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        print(f"Success! Status Code: {response.status_code}")
+    except HTTPError as http_error:
+        print(f"HTTP error: {http_error} for {url}")
+    except ConnectionError as conn_error:
+        print(f"Connection Error: for {conn_error} for {url}")
+    except Timeout as time_error:
+        print(f"Timeout Error: {time_error} for {url}")
+    except RequestException as req_err:
+        print(f"Request Error: {req_err} for {url}")
 
-        else:
-            
-            print("Bad Url: Retry")
-            
-            
-        count += 1
+if __name__ == "__main__":
+    vaild_url = 'https://pokeapi.co/api/v2/pokemon/1'              
+        
+
+        
