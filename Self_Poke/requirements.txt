@@ -1,3 +1,4 @@
 requests
 time
 pathlib
+tqdm

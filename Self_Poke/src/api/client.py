@@ -1,7 +1,4 @@
-
 #to use this client.py "from api.client import get"
-
-
 import requests
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 import time
@@ -10,7 +7,7 @@ import json
 #global constants
 _TIMEOUT = 10
 RETRIES = 3
-RATE_LIMIT_DELAY = 0.1
+RATE_LIMIT_DELAY = 0
 
     
 def validate_url(url): # Validates URL format
