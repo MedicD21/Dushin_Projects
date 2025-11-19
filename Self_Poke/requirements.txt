@@ -2,3 +2,4 @@ requests
 time
 pathlib
 tqdm
+pokebase

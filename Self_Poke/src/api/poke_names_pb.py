@@ -23,6 +23,8 @@ def grab_names():
     
     #creates set of existing ids to avoid duplicates        
     existing_ids = { entry["id"] for entry in existing_data} 
+    ex_name = { entry["name"] for entry in existing_data}
+    ex_order = { entry["order"] for entry in existing_data}
     
     # Fetching function with progress bar
     def fetch_range(start, end, tag="Fetching"):
@@ -38,11 +40,13 @@ def grab_names():
                 continue
 
             name = data["name"]
+            order = data["order"]
             tqdm.write(F"{name} caught!")
 
             pkmn_list.append({
                 "id": pokemon_id,
                 "name": name,
+                "order" : order
             })
 
     # Fetch base Pokémon
