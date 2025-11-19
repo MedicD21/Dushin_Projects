@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data" / "raw"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_FILE = DATA_DIR / "pokemon_abilities.json"
-BASE_URL = "https://pokeapi.co/api/v2/abilities/"
+BASE_URL = "https://pokeapi.co/api/v2/ability/"
 B_ABILITY = 307
 NEW_A_START = 10001
 NEW_A_END = 10060 #change PRN for new abilities 
@@ -23,18 +23,22 @@ def grab_ability():
     exist_ids = { entry["id"] for entry in exist_data}
     
     def fetch_range(start, end, tag="Fetching"):
-        for ability_id in tqdm(range(start, end +1), desc=tag):
-            #if ability id is already been fetched continue
+        for ability_id in tqdm(range(start, end + 1), desc=tag):
+            
             if ability_id in exist_ids:
+                tqdm.write(f"⚠️  Ability {ability_id} already exists. Skipping...")
                 continue
             
             url = BASE_URL + str(ability_id)
             data = get(url)
             
             if data is None:
+                tqdm.write(f"⚠️  No data for ability {ability_id}")
                 continue
+            
             #gets ability name and if in a main series game
             ability_name = data["name"]
+            tqdm.write(f"Getting {ability_name} info...")
             main_series = data["is_main_series"]
             
             #------Gets english ability effect description-----#
@@ -100,9 +104,12 @@ def grab_ability():
     tqdm.write("Updated Abilities Complete...")
     
     out_list = exist_data + ability_list
+    out_list = sorted(out_list, key=lambda x: x["id"]) #sorts by id
     
     with open(OUTPUT_FILE, 'w') as file:
         json.dump(out_list, file, indent=4)
+    
+    tqdm.write("All Abilities fetched and saved!")
         
 if __name__ == "__main__":
     grab_ability()
