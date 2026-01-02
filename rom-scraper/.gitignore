@@ -16,7 +16,6 @@ roms/
 *.sfc
 *.n64
 *.z64
-*.md
 *.smd
 *.gen
 *.psx
