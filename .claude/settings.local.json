@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(powershell -NoProfile -Command \"Get-PnpDevice -Class ''WPD'' | Where-Object { $_Status -eq ''OK'' } | Select-Object FriendlyName, InstanceId | Format-List\")",
+      "Bash(powershell -NoProfile -Command \"\\(New-Object -ComObject Shell.Application\\).NameSpace\\(17\\).Items\\(\\) | Where-Object {$_Type -eq ''Portable Media Player'' -or $_Type -like ''*Portable*''} | Select-Object Name, Path\")"
+    ]
+  }
+}

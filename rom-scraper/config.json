@@ -6,7 +6,7 @@
     "password": "Desmond87"
   },
   "paths": {
-    "default_download_path": "./downloaded_roms",
+    "default_download_path": "C:\\Users\\DScha\\Desktop\\ROM_PY_Downloads",
     "default_metadata_path": "./game_metadata"
   },
   "settings": {

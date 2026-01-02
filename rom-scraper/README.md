@@ -64,6 +64,11 @@ python myrient_rom_downloader.py
 # You'll be asked where to save ROMs
 ```
 
+**Setting the download folder (3 ways):**
+- CLI flag (no prompt): `python myrient_rom_downloader.py --path "D:/ROMs"`
+- Folder picker dialog: `python myrient_rom_downloader.py --pick-path`
+- Config/env: set `paths.default_download_path` in `config.json` or set `MYRIENT_DOWNLOAD_PATH`
+
 **Step 2: Browse Systems**
 ```
 Choose option 1: Browse and Download Complete ROM Sets
