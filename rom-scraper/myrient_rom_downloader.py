@@ -247,8 +247,8 @@ class ScreenScraperIntegration:
         except Exception:
             return {}
 
-    def search_and_download_media(self, system: str, rom_path: Path) -> Optional[Dict]:
-        """Search for game and download box art and media to game folder"""
+    def search_and_download_media(self, system: str, rom_path: Path, media_dir: Path) -> Optional[Dict]:
+        """Search for game and download box art and metadata to media folder"""
         self._wait_for_rate_limit()
 
         system_id = self.SYSTEM_IDS.get(system.lower())
@@ -281,21 +281,16 @@ class ScreenScraperIntegration:
 
             print(f"  📋 Found: {game_name}")
 
-            # Create game folder
-            game_folder = rom_path.parent / rom_path.stem
-            game_folder.mkdir(exist_ok=True)
+            # Create media directory if it doesn't exist
+            media_dir.mkdir(exist_ok=True)
 
-            # Move ROM into game folder
-            new_rom_path = game_folder / rom_path.name
-            if rom_path.exists() and not new_rom_path.exists():
-                rom_path.rename(new_rom_path)
-
-            # Save metadata JSON
-            metadata_file = game_folder / "metadata.json"
+            # Save metadata JSON to media folder
+            rom_basename = rom_path.stem  # filename without extension
+            metadata_file = media_dir / f"{rom_basename}-metadata.json"
             with open(metadata_file, 'w', encoding='utf-8') as f:
                 json.dump(game_data, f, indent=2, ensure_ascii=False)
 
-            # Download box art (2D box)
+            # Download box art (2D box) to media folder
             boxart_path = None
             medias = game_data.get('medias', [])
             for media in medias:
@@ -304,7 +299,7 @@ class ScreenScraperIntegration:
 
                 if media_type == 'box-2D' and media_url:
                     ext = Path(media_url).suffix or '.png'
-                    boxart_path = game_folder / f"boxart{ext}"
+                    boxart_path = media_dir / f"{rom_basename}-boxart{ext}"
 
                     if not boxart_path.exists():
                         self._download_file(media_url, boxart_path)
@@ -312,7 +307,7 @@ class ScreenScraperIntegration:
 
             return {
                 'game_name': game_name,
-                'rom_path': new_rom_path,
+                'rom_path': rom_path,
                 'boxart_path': boxart_path,
                 'metadata': game_data
             }
@@ -796,6 +791,10 @@ class MyrientRomDownloader:
         else:
             print(f"\n✓ Auto-confirmed download to: {system_dir}/")
 
+        # Create media directory
+        media_dir = system_dir / "media"
+        media_dir.mkdir(exist_ok=True)
+
         # Download filtered files
         print(f"\n🚀 Starting download of {len(files_to_download)} files...\n")
 
@@ -833,7 +832,7 @@ class MyrientRomDownloader:
                 # Fetch media from ScreenScraper
                 if self.screenscraper and rom_file_for_scraper.exists():
                     print(f"  🔍 Fetching media from ScreenScraper...")
-                    game_info = self.screenscraper.search_and_download_media(system, rom_file_for_scraper)
+                    game_info = self.screenscraper.search_and_download_media(system, rom_file_for_scraper, media_dir)
                     if game_info:
                         media_count += 1
                         games_info.append(game_info)
@@ -874,9 +873,10 @@ class MyrientRomDownloader:
 
             # Add game metadata
             rom_path = game_info['rom_path']
-            game_folder = rom_path.parent
+            rom_filename = rom_path.name
 
-            ET.SubElement(game_elem, "path").text = f"./{game_folder.name}/{rom_path.name}"
+            # ROM path is relative to system directory
+            ET.SubElement(game_elem, "path").text = f"./{rom_filename}"
             ET.SubElement(game_elem, "name").text = game_info['game_name']
 
             # Add metadata from ScreenScraper
@@ -906,10 +906,10 @@ class MyrientRomDownloader:
                 players = metadata['joueurs'].get('text', '')
                 ET.SubElement(game_elem, "players").text = players
 
-            # Add media paths
+            # Add media paths (relative to system directory)
             if game_info['boxart_path']:
-                boxart_rel_path = f"./{game_folder.name}/{game_info['boxart_path'].name}"
-                ET.SubElement(game_elem, "image").text = boxart_rel_path
+                boxart_filename = game_info['boxart_path'].name
+                ET.SubElement(game_elem, "image").text = f"./media/{boxart_filename}"
 
         # Pretty print XML
         self._indent_xml(root)
